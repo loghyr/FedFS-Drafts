@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<reference anchor='RFC4513'>
+
+<front>
+<title>Lightweight Directory Access Protocol (LDAP): Authentication Methods and Security Mechanisms</title>
+<author initials='R.' surname='Harrison' fullname='R. Harrison'>
+<organization /></author>
+<date year='2006' month='June' />
+<abstract>
+<t>This document describes authentication methods and security mechanisms of the Lightweight Directory Access Protocol (LDAP). This document details establishment of Transport Layer Security (TLS) using the StartTLS operation.&lt;/t>&lt;t> This document details the simple Bind authentication method including anonymous, unauthenticated, and name/password mechanisms and the Simple Authentication and Security Layer (SASL) Bind authentication method including the EXTERNAL mechanism.&lt;/t>&lt;t> This document discusses various authentication and authorization states through which a session to an LDAP server may pass and the actions that trigger these state changes.&lt;/t>&lt;t> This document, together with other documents in the LDAP Technical Specification (see Section 1 of the specification's road map), obsoletes RFC 2251, RFC 2829, and RFC 2830. [STANDARDS TRACK]</t></abstract></front>
+
+<seriesInfo name='RFC' value='4513' />
+<format type='TXT' octets='80546' target='ftp://ftp.isi.edu/in-notes/rfc4513.txt' />
+</reference>

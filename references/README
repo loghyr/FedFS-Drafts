@@ -1,0 +1,10 @@
+Only reference local files (no http URLs) so that the documents can be
+typeset without network access or when xml.resource.org is down.
+
+For RFC XYZ, use this command to fetch its contents into this
+directory:
+
+ wget http://xml.resource.org/public/rfc/bibxml/reference.RFC.XYZ.xml
+
+For other refences (I-Ds, academic publications, etc.), create 
+the file by hand.

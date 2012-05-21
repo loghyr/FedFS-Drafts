@@ -1,0 +1,19 @@
+<!-- Copyright (C) The IETF Trust (2008) -->
+<!-- $Id: author-naik-manoj.xml,v 1.2 2008/08/07 03:00:14 ellard Exp $ -->
+
+<author initials='M.N' surname="Naik" fullname='Manoj Naik'>
+    <organization>
+	IBM Almaden
+    </organization>
+    <address>
+	<postal>
+	    <street> 650 Harry Rd  </street>
+	    <city> San Jose </city>
+	    <region> CA </region>
+	    <code> 95120 </code>
+	    <country> US </country>
+	</postal>
+	<email> manoj@almaden.ibm.com </email>
+    </address>
+</author>
+

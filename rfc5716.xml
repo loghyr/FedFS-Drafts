@@ -1,0 +1,1936 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+
+<?rfc toc="yes" ?>
+<?rfc symrefs="yes" ?>
+<?rfc sortrefs="yes"?>
+<?rfc strict="no" ?>
+<?rfc rfcedstyle="yes"?>
+<?rfc subcompact="no" ?>
+
+<rfc number="5716" category="info" ipr="pre5378Trust200902">
+
+<front>
+        <title>Requirements for Federated File Systems</title>
+
+<author initials='J.L' surname="Lentini" fullname='James Lentini'>
+    <organization>
+	NetApp
+    </organization>
+    <address>
+	<postal>
+	    <street> 1601 Trapelo Rd, Suite 16 </street>
+	    <city> Waltham </city>
+	    <region> MA </region>
+	    <code> 02451 </code>
+	    <country> US </country>
+	</postal>
+	<phone> +1 781-768-5359 </phone>
+	<email> jlentini@netapp.com </email>
+    </address>
+</author>
+
+
+<author initials='C.E' surname="Everhart" fullname='Craig Everhart'>
+    <organization>
+	NetApp
+    </organization>
+    <address>
+	<postal>
+	    <street> 7301 Kit Creek Rd </street>
+	    <city> Research Triangle Park </city>
+	    <region> NC </region>
+	    <code> 27709 </code>
+	    <country> US </country>
+	</postal>
+	<phone> +1 919-476-5320 </phone>
+	<email> everhart@netapp.com </email>
+    </address>
+</author>
+
+
+<author initials='D.E' surname="Ellard" fullname='Daniel Ellard'>
+    <organization>
+	BBN Technologies
+    </organization>
+    <address>
+	<postal>
+	    <street> 10 Moulton Street </street>
+	    <city> Cambridge </city>
+	    <region> MA </region>
+	    <code> 02138 </code>
+	    <country> US </country>
+	</postal>
+	<phone> +1 617-873-8000 </phone>
+	<email> dellard@bbn.com </email>
+    </address>
+</author>
+
+<author initials='R.T' surname="Tewari" fullname='Renu Tewari'>
+    <organization>
+	IBM Almaden
+    </organization>
+    <address>
+	<postal>
+	    <street> 650 Harry Rd  </street>
+	    <city> San Jose </city>
+	    <region> CA </region>
+	    <code> 95120 </code>
+	    <country> US </country>
+	</postal>
+	<email> tewarir@us.ibm.com </email>
+    </address>
+</author>
+
+
+<author initials='M.N' surname="Naik" fullname='Manoj Naik'>
+    <organization>
+	IBM Almaden
+    </organization>
+    <address>
+	<postal>
+	    <street> 650 Harry Rd  </street>
+	    <city> San Jose </city>
+	    <region> CA </region>
+	    <code> 95120 </code>
+	    <country> US </country>
+	</postal>
+	<email> manoj@almaden.ibm.com </email>
+    </address>
+</author>
+
+
+        <date month="December" year="2009"/>
+
+	<area> Internet </area> 
+	<workgroup>NFSv4 Working Group</workgroup>
+	<keyword> Federated File Systems </keyword>
+	<keyword> Federated FS </keyword>
+	<keyword> FedFS </keyword>
+	<keyword> Fed-FS </keyword>
+	<keyword> Federation </keyword>
+
+        <abstract>
+	
+	    <t> This document describes and lists the functional
+		requirements of a federated file system and defines
+		related terms.</t>
+
+	</abstract>
+
+</front>
+
+<middle>
+
+<section title="Overview">
+
+    <t> This document describes and lists the functional requirements of
+	a federated file system and defines related terms. </t>
+
+    <t> We do not describe the mechanisms that might be used to
+	implement this functionality except in cases where specific
+	mechanisms, in our opinion, follow inevitably from the
+	requirements.  Our focus is on the interfaces between the
+	entities of the system, not on the protocols or their
+	implementations.  </t>
+
+    <t> Today, there are collections of fileservers that inter-operate
+	to provide a single namespace comprised of filesystem
+	resources provided by different members of the collection,
+	joined together with inter-filesystem references.  The
+	namespace can either be assembled at the fileservers, the
+	clients, or by an external namespace service, and is often
+	not easy or uniform to manage.  The requirements in this
+	document are meant to lead to a uniform server-based namespace
+	that is capable of spanning a whole enterprise and that is
+	easy to manage. </t>
+
+    <t> We define some terms to better describe the solution space.  A
+	"fileset" is the abstract view of a filesystem in a uniform
+	namespace, and may be implemented behind that abstraction by one or
+	more physical filesystems at any given time.  Each fileset has a
+	name called an "FSN" (fileset name), and each physical filesystem
+	has a fileset location ("FSL").  A fileset is a directory tree
+	containing files and directories, and it may also contain references 
+	to other filesets.  These references are called "junctions".  To
+	provide location independence, a junction does not contain information
+	about the location of the real resource(s), but instead contains an
+	FSN that can be used to look up the location information.  The
+	service that can be used to map from the FSN to the FSL(s) is called a
+	namespace database (NSDB) service.  The NSDB provides a level of
+	indirection from the virtual paths in the uniform namespace to the
+	actual locations of files. By design, the NSDB does not store the 
+	junctions. This allows junction administration and NSDB administration 
+	to be separate roles. </t>
+
+    <t> The servers direct clients to the proper locations by existing
+	mechanisms (e.g., the referrals mechanism within <xref target="RFC3530"/>
+	and <xref target="RFC5661"/>). Updates to the locations make it possible
+	to support migration and replication of physical filesystems that
+	comprise the namespace, in a way that is transparent to filesystem
+	applications. </t>
+
+    <t> <xref target="federation-pic"/> shows an example
+	of a federation.  This federation has two members, named
+	ALPHA and BETA.  Federation members may contain an arbitrary
+	number of fileservers and NSDB nodes; in this illustration,
+	ALPHA and BETA each have three servers, one NSDB node, 
+	and are administered separately. </t>
+
+    <figure anchor="federation-pic">
+
+
+        <artwork>
+
+   +----------------------+       +----------------------+
+   |  Federation Member   |       |  Federation Member   |
+   |        ALPHA         |       |         BETA         |
+   |                      |       |                      |
+   |                      |       |                      |
+   |    +------------+    |       |    +------------+    |
+   |    |    NSDB    |    |       |    |    NSDB    |    |
+   |    |            |    |       |    |            |    |
+   |    +------------+    |       |    +------------+    |
+   |                      |       |                      |
+   |                      |       |                      |
+   |                      |       |                      |
+   |         +----------+ |       |         +----------+ |
+   |         |          | |       |         |          | |
+   |     +-- | Servers  | |       |     +-- | Servers  | |
+   |     |   |          | |       |     |   |          | |
+   | +-- |   |          | |       | +-- |   |          | |
+   | |   |   +----------+ |       | |   |   +----------+ |
+   | |   |          |     |       | |   |          |     |
+   | |   +----------+     |       | |   +----------+     |
+   | |          |         |       | |          |         |
+   | +----------+         |       | +----------+         |
+   +----------------------+       +----------------------+
+
+        </artwork>
+    </figure>
+
+	<section title="Requirements Language">
+
+	    <t> The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
+		"SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",
+		"MAY", and "OPTIONAL" in this document are to be
+		interpreted as described in <xref target="RFC2119"/>. 
+		</t>
+
+	    <t> Note that this is a requirements document, and in many
+		instances where these words are used in this document they
+		refer to qualities of a specification for a system that
+		satisfies the document, or requirements of a system that
+		matches that specification.  These cases are distinguished
+		when there is potential for ambiguity.  </t>
+
+	</section>
+</section>
+
+<section title="Purpose">
+
+    <t> Our objective is to specify a set of protocols by which
+	fileservers or collections of fileservers, with different 
+	administrators, can form a federation of fileservers and
+	NSDB nodes that provides a namespace composed of the filesets
+	hosted on the different fileservers and fileserver collections.  </t>
+
+    <t> It should be possible, using a system that implements the
+	protocols, to share a common namespace across all the
+	fileservers in the federation.  It should also be possible for
+	different fileservers in the federation to project different
+	namespaces and enable clients to traverse them.  </t>
+
+    <t> Such a federation may contain an arbitrary number of NSDB nodes,
+	each belonging to a different administrative entity, and each
+	providing the mappings that define a part of a namespace. 
+	Such a federation may also have an arbitrary number of
+	administrative entities, each responsible for administering a
+	subset of the fileservers and NSDB nodes.  Acting in concert, the
+	administrators should be able to build and administer this
+	multi-fileserver, multi-collection namespace.  </t>
+
+    <t> It is not the intent of the federation to guarantee namespace
+	consistency across all client views.  Since different parts of
+	the namespace may be administered by different entities, it is
+	possible that a client could be accessing a stale area of the
+	namespace managed by one entity because a part of the
+	namespace above it, managed by another entity, has changed. 
+	</t>
+
+</section>
+
+<section title="Examples and Discussion">
+
+    <t> In this section we provide examples and discussion of the
+	basic operations facilitated by the federated file system
+	protocol:  creating a fileset, adding a replica of a fileset,
+	resolving a junction, and creating a junction.  </t>
+
+    <section title="Create a Fileset and Its FSL(s)">
+
+	<t> A fileset is the abstraction of a set of files and the
+	    directory tree that contains them. The fileset abstraction is the
+	    fundamental unit of data management in the federation. 
+	    This abstraction is implemented by an actual directory
+	    tree whose root location is specified by a fileset
+	    location (FSL).  </t>
+
+	<t> In this section, we describe the basic requirements for
+	    starting with a directory tree and creating a fileset that
+	    can be used in the federation protocols.  Note that we do
+	    not assume that the process of creating a fileset requires
+	    any transformation of the files or the directory
+	    hierarchy.  The only thing that is required by this
+	    process is assigning the fileset a fileset name (FSN) and
+	    expressing the location(s) of the implementation of the
+	    fileset as FSL(s).  </t>
+
+	<t> There are many possible variations to this procedure,
+	    depending on how the FSN that binds the FSL is created,
+	    and whether other replicas of the fileset exist, are known
+	    to the federation, and need to be bound to the same FSN. 
+	    </t>
+
+	<t> It is easiest to describe this in terms of how to create
+	    the initial implementation of the fileset, and then
+	    describe how to add replicas.  </t>
+
+	<section title="Creating a Fileset and an FSN">
+
+	    <t>
+		<list style="numbers">
+
+		    <t> Choose the NSDB node that will keep track of the
+			FSL(s) and related information for the
+			fileset.  </t>
+
+		    <t> Request that the NSDB node register a new FSN for
+			the fileset.
+
+			<vspace blankLines="1" />
+
+			The FSN may either be chosen by the NSDB node
+			or by the server.  The latter case is used if
+			the fileset is being restored, perhaps as part
+			of disaster recovery, and the server wishes to
+			specify the FSN in order to permit existing
+			junctions that reference that FSN to work
+			again.
+
+			<vspace blankLines="1" />
+
+			At this point, the FSN exists, but its
+			location is unspecified.
+
+		    </t>
+
+		    <t> Send the FSN, the local volume path, the
+			export path, and the export options for the
+			local implementation of the fileset to the
+			NSDB node.  Annotations about the FSN or the
+			location may also be sent.
+
+			<vspace blankLines="1" />
+
+			The NSDB node records this information and creates the
+			initial FSL for the fileset.
+
+		    </t>
+		</list>
+	    </t>
+	</section>
+
+	<section title="Adding a Replica of a Fileset">
+
+	    <t> Adding a replica is straightforward:  the NSDB node
+		and the FSN are already known.  The only remaining
+		step is to add another FSL.  </t>
+
+	    <t> Note that the federation protocols do not include
+		methods for creating or managing replicas:  this is
+		assumed to be a platform-dependent operation (at least
+		at this time).  The only requirement is that these 
+		fileset replicas be registered and unregistered with
+		the NSDB.  </t>
+
+	</section>
+
+    </section>
+
+    <section title="Junction Resolution">
+
+	<t> A fileset may contain references to other filesets.  These
+	    references are represented by junctions.  If a client
+	    requests access to a fileset object that is a junction,
+	    the server resolves the junction to discover the FSL(s)
+	    that implements the referenced fileset. </t>
+
+	<t> There are many possible variations to this procedure,
+	    depending on how the junctions are represented and how
+	    the information necessary to perform resolution is
+	    represented by the server.  </t>
+
+	<t> Step 4 is the only step that interacts directly with
+	    the federation protocols.  The rest of the steps may
+	    use platform-specific interfaces.  </t>
+
+	<t>
+	    <list style="numbers">
+
+		<t> The server determines that the object being
+		    accessed is a junction.  </t>
+
+		<t> Using the junction, the server does a local
+		    lookup to find the FSN of the target fileset. 
+		    </t>
+
+		<t> Using the FSN, the server finds the NSDB node
+		    responsible for the target object.  </t>
+
+		<t> The server contacts that NSDB node and asks for
+		    the set of FSLs that implement the target FSN. 
+		    The NSDB node responds with a set of FSLs.  </t>
+
+		<t> The server converts one or more of the FSLs to 
+		    the location type used by the client (e.g., 
+		    a Network File System (NFSv4) fs_location,
+		    as described in <xref target="RFC3530"/>).  </t>
+
+		<t> The server redirects (in whatever manner is
+		    appropriate for the client) the client to the
+		    location(s).  </t>
+
+	    </list>
+
+	</t>
+
+	<t> These steps are illustrated in <xref
+	    target='resolution'/>.  The client sends request 1 to
+	    server X, in federation member ALPHA, in an attempt to
+	    reference an object (which appears to the client as a directory).
+	    Server X
+	    recognizes that the referenced object is actually a junction
+	    that refers to a directory in a different fileset.
+	    Server X finds, from the FSN
+	    in the junction, that the NSDB responsible for knowing the
+	    location of the target of the junction is the NSDB of
+	    federation member BETA.  Server X sends request 2 to the
+	    NSDB of BETA, asking for the current location of the
+	    directory.  The NSDB sends response 3 to server X, telling
+	    the server that the directory is located on server Y.&nbsp; 
+	    Server X sends response 4 to the client, indicating that
+	    the directory is in a "new" location on server Y.&nbsp;  The
+	    client then sends request 5 to server Y, repeating the
+	    initial request.  </t>
+
+	<t> Given the current requirements and definitions, this
+	    resolution method MUST work.  However, there is no
+	    requirement that this is the only resolution method that
+	    can be used.  This method may be used as the fallback when
+	    all else fails (or, for a simple implementation, it could
+	    be the only method).  This is a degenerate implementation
+	    of the NSDB service as a simple composition of NSDB nodes;
+	    we expect that large federations will use more
+	    sophisticated methods to share the FSN and FSL information
+	    among multiple NSDB nodes.  </t>
+
+	    <figure anchor="resolution">
+
+		<artwork>
+
+       +---------------+
+       |               |
+       |    Client     | >--------------------------+
+       |               |                            |
+       +---------------+                            |
+         v   ^                                      |
+   +-----+---+-------------+      +-----------------+-----+
+   |     |   |   Federation|      |Federation       |     |
+   |     |   |   member    |      |member           |     |
+   |     |   |   ALPHA     |      |BETA             |     |
+   |     |   |             |      |                 |     |
+   |     |   |             |      |                 |     |
+   |     |   |             |      |                 |     |
+   |     |   |             |      |                 |     |
+   |     |   |             |      |   +---------+   |     |
+   |     |   |   +---------+------+-> |         |   |     |
+   |     |   |   |         |      |   | NSDB Y  |   |     |
+   |     |   |   |   +-----+------+-< |         |   |     |
+   |     |   |   |   |     |      |   +---------+   |     |
+   |     |   |   |   |     |      |                 |     |
+   |     |   |   |   |     |      |                 |     |
+   |     |   |   |   |     |      |                 |     |
+   |    1|  4|  2|  3|     |      |                5|     |
+   |     v   ^   ^   v     |      |                 v     |
+   |   +---------------+   |      |   +---------------+   |
+   |   |               |   |      |   |               |   |
+   |   |   Server X    |   |      |   |   Server Y    |   |
+   |   |               |   |      |   |               |   |
+   |   +---------------+   |      |   +---------------+   |
+   |                       |      |                       |
+   +-----------------------+      +-----------------------+
+		</artwork>
+	    </figure>
+
+    </section>
+
+    <section title="Junction Creation">
+
+	<t> Given a local path and the FSN of a remote fileset, an 
+	    administrator can create a junction from the local path to the
+	    remote fileset.  </t>
+
+	<t> There are many possible variations to this procedure,
+	    depending on how the junctions are represented and how the
+	    information necessary to perform resolution is represented
+	    by the server.  </t>
+
+	<t> Step 1 is the only step that uses the federation
+	    interfaces.  The remaining step may use
+	    platform-specific interfaces.  </t>
+
+	<t>
+	    <list style="numbers">
+
+		<t> The administrator requests the server create a 
+		    junction to the FSN of the remote fileset at the 
+		    given path.  </t>
+
+		<t> The server inserts the junction to the FSN, at the given
+		    path, into the local filesystem.  </t>
+
+	    </list>
+	</t>
+
+    </section>
+</section>
+
+<section title="Glossary">
+
+<t>
+<list style="hanging">
+
+<t hangText="Administrator:"> user with the necessary authority to
+    initiate administrative tasks on one or more servers.  </t>
+
+<t hangText="Admin Entity:"> A server or agent that administers a
+    collection of fileservers and persistently stores the namespace
+    information.  </t>
+
+<t hangText="Client:"> Any client that accesses the fileserver data
+    using a supported filesystem access protocol.  </t>
+
+<t hangText="Federation:"> A set of server collections and singleton
+    servers that use a common set of interfaces and protocols in order
+    to provide to their clients a federated namespace accessible
+    through a filesystem access protocol.  </t>
+
+<t hangText="Fileserver:"> A server exporting a filesystem via a
+    network filesystem access protocol.  </t>
+
+<t hangText="Fileset:"> The abstraction of a set of files and the
+    directory tree that contains them. A fileset is the 
+    fundamental unit of data management in the federation.
+
+    <vspace blankLines="1" />
+
+    Note that all files within a fileset are descendants of one
+    directory, and that filesets do not span filesystems.  </t>
+
+<t hangText="Filesystem:"> A self-contained unit of export for a
+    fileserver, and the mechanism used to implement filesets.  The
+    fileset does not need to be rooted at the root of the filesystem,
+    nor at the export point for the filesystem.
+
+    <vspace blankLines="1" />
+
+    A single filesystem MAY implement more than one fileset, if the
+    client protocol and the fileserver permit this. </t>
+
+<t hangText="Filesystem Access Protocol:"> A network filesystem access
+    protocol such as NFSv2 <xref target="RFC1094"/>, NFSv3 <xref
+    target="RFC1813"/>, NFSv4 <xref target="RFC3530"/>, or
+    CIFS (Common Internet File System) <xref target="MS-SMB"/> 
+    <xref target="MS-SMB2"/> <xref target="MS-CIFS"/>.  </t>
+
+<t hangText="FSL (Fileset Location):"> The location of the
+    implementation of a fileset at a particular moment in time.  An FSL
+    MUST be something that can be translated into a protocol-specific
+    description of a resource that a client can access directly, such
+    as an fs_location (for NFSv4), or share name (for CIFS).  Note that
+    not all FSLs need to be explicitly exported as long as they are
+    contained within an exported path on the fileserver.  </t>
+
+<t hangText="FSN (Fileset Name):"> A platform-independent and globally
+    unique name for a fileset.  Two FSLs that implement replicas of
+    the same fileset MUST have the same FSN, and if a fileset is
+    migrated from one location to another, the FSN of that fileset
+    MUST remain the same.  </t>
+
+<t hangText="Junction:"> A filesystem object used to link a directory
+    name in the current fileset with an object within another fileset. 
+    The server-side "link" from a leaf node in one fileset to the root
+    of another fileset.  </t>
+
+<t hangText="Namespace:"> A filename/directory tree that a
+    sufficiently authorized client can observe.  </t>
+
+<t hangText="NSDB (Namespace Database) Service:"> A service that maps
+    FSNs to FSLs.  The NSDB may also be used to store other
+    information, such as annotations for these mappings and their
+    components.  </t>
+
+<t hangText="NSDB Node:"> The name or location of a server that
+    implements part of the NSDB service and is responsible for keeping
+    track of the FSLs (and related info) that implement a given
+    partition of the FSNs.  </t>
+
+<t hangText="Referral:"> A server response to a client access that
+    directs the client to evaluate the current object as a reference
+    to an object at a different location (specified by an FSL) in
+    another fileset, and possibly hosted on another fileserver.  The
+    client re-attempts the access to the object at the new location. 
+    </t>
+
+<t hangText="Replica:"> A replica is a redundant implementation of a
+    fileset.  Each replica shares the same FSN, but has a different
+    FSL.
+
+    <vspace blankLines="1" />
+
+    Replicas may be used to increase availability or performance. 
+    Updates to replicas of the same fileset MUST appear to occur in
+    the same order, and therefore each replica is self-consistent at
+    any moment.
+
+    <vspace blankLines="1" />
+
+    We do not assume that updates to each replica occur simultaneously.
+    If a replica is offline or unreachable, the other replicas may be
+    updated.  </t>
+
+<t hangText="Server Collection:"> A set of fileservers administered as
+    a unit.  A server collection may be administered with
+    vendor-specific software.
+
+    <vspace blankLines="1" />
+
+    The namespace provided by a server collection could be part of the
+    federated namespace.  </t>
+
+<t hangText="Singleton Server:">  A server collection containing only one server; a
+    stand-alone fileserver.  </t>
+
+</list>
+</t>
+
+</section>
+
+<section title="Proposed Requirements">
+
+    <t> The phrase "USING THE FEDERATION INTERFACES" implies that the
+	subsequent requirement must be satisfied, in its entirety, via
+	the federation interfaces.  </t>
+
+    <t> Note that the requirements are described in terms of correct
+	behavior by all entities.  We do not address the requirements
+	of the system in the presence of faults.  </t>
+
+    <section title="Basic Assumptions">
+
+	<t> Several of the requirements are so fundamental that we
+	    treat them as basic assumptions; if any of these
+	    assumptions are violated, the rest of the requirements
+	    must be reviewed in their entirety.  </t>
+
+	<t>
+	    <list style="format A%d:">
+
+		<t> The federation protocols do not require any
+		    changes to existing client-facing protocols, and
+		    MAY be extended to incorporate new client-facing
+		    protocols.  </t>
+
+		<t> A client SHOULD NOT require any a priori knowledge
+		    of the general structure or composition of the
+		    federation.
+
+		    <vspace blankLines="1" />
+
+		    The client may require some specific knowledge in
+		    order to find and access an instance of the
+		    fileset that defines the root of its view of the
+		    namespace.  As the client traverses the namespace,
+		    the client discovers the information it needs in
+		    order to locate the filesets it accesses.
+
+		</t>
+
+		<t> All requirements MUST be satisfiable via the
+		    federation protocols and the standard protocols
+		    used by the fileservers (i.e., NFS, CIFS, DNS,
+		    etc.).
+
+		    <vspace blankLines="1" />
+
+		    USING THE FEDERATION INTERFACES, a federation
+		    operation that requires an interaction between two
+		    (or more) entities that are members of the
+		    federation MUST be possible without requiring any
+		    proprietary protocols.
+
+		</t>
+
+		<t> All the entities participating in a federation
+		    operation MUST be able to authenticate each
+		    other.
+
+		    <vspace blankLines="1" />
+
+		    All principals (clients, users, administrator of a
+		    singleton or server collection, hosts, NSDB nodes,
+		    etc.) that can assume a role defined by the
+		    federation protocol can identify themselves to
+		    each other via an authentication mechanism.  This
+		    mechanism is not defined or further described in
+		    this document. 
+
+		    <vspace blankLines="1" />
+
+		    The authority of a principal to request that a
+		    second principal perform a specific operation is
+		    ultimately determined by the second. 
+		    Authorization may be partitioned by server
+		    collection or set of servers as well as by
+		    operation.  For example, if a user has
+		    administrative privileges on one server in the
+		    federation, this does not imply that they have
+		    administrative privileges (or, for that matter,
+		    any privileges whatsoever) on any other server in
+		    the federation.
+
+		    <vspace blankLines="1" />
+
+		    In order to access the functionality provided by
+		    the federation interfaces, it may be necessary to
+		    have elevated privileges or authorization.  The
+		    authority required by different operations may be
+		    different.  For example, the authority required to
+		    query the NSDB about the FSLs bound to an FSN may
+		    be different than the authority required to change
+		    the bindings of that FSN.
+
+		    <vspace blankLines="1" />
+
+		    An operation attempted by an unauthorized entity
+		    MUST fail in a manner that indicates that the
+		    failure was due to insufficient authorization.
+
+		    <vspace blankLines="1" />
+
+		    This document does not enumerate the authorization
+		    necessary for any operation.
+
+		</t>
+
+		<t> The federation protocols MUST NOT require changes
+		    to existing authentication/authorization
+		    mechanisms in use at the fileservers for
+		    client-facing protocols.
+
+		    <vspace blankLines="1" />
+
+		    A user's view of the namespace may be limited by
+		    the authentication and authorization privileges it
+		    has on the different fileservers in the
+		    federation.  As such, users may only be able to
+		    traverse the parts of the namespace to which they have
+		    access.
+
+		    <vspace blankLines="1" />
+
+		    The federation protocols do not impose any
+		    restrictions on how users are represented within
+		    the federation.  For example, a single enterprise
+		    could employ a common identity for users across
+		    the federation.  A grid environment could utilize
+		    user mapping or translations across different
+		    administrative domains.
+
+		</t>
+
+		<t> In a federated system, we assume that an FSN MUST
+		    express, or can be used to discover, the following
+		    two pieces of information:
+
+		    <list style="numbers">
+
+			<t> The location of the NSDB node that is
+			    responsible for knowing the filesystem
+			    location(s) (FSLs) of the named fileset.
+
+			    <vspace blankLines="1" />
+
+			    The NSDB node must be specified because
+			    there may be many NSDB nodes in a
+			    federation.  We do not assume that any
+			    single entity knows the location of all of
+			    the NSDB nodes, and therefore exhaustive
+			    search is not an option.
+
+			    <vspace blankLines="1" />
+
+			    There are several ways in which a
+			    fileserver can locate the NSDB node
+			    responsible for a given fileset.  One
+			    approach, given a DNS infrastructure, is
+			    to specify the location of the NSDB node
+			    by the Fully-Qualified Domain Name (FQDN) of the server hosting the NSDB
+			    node.  Another approach is to use a
+			    separate DNS-style hierarchy to resolve
+			    the location of the NSDB node.
+
+			</t>
+
+			<t> The FSN identifier.
+
+			    <vspace blankLines="1" />
+
+			    The FSN identifier is the index used by the NSDB node to
+			    identify the target fileset.
+
+			    <vspace blankLines="1" />
+
+			    There are several ways to represent FSN identifiers.  One 
+			    approach could use 128-bit Universally Unique IDentifiers (UUIDs) as described in
+			    <xref target="RFC4122"/>.
+
+			</t>
+
+		    </list>
+
+		    As an example, an FSN could be represented by a
+		    URL of the form nsdb://nsdb.example.com/UUID where
+		    nsdb is the scheme name, nsdb.example.com is the 
+		    FQDN of the server hosting the NSDB node, and UUID is 
+		    the string representation of the identifier.
+
+		    <vspace blankLines="1" />
+
+		    Note that it is not assumed that it is always
+		    required for a server to contact the NSDB node
+		    specified by the FSN in order to find the FSLs. 
+		    The relevant information stored in that NSDB node
+		    may also be cached local to the server or on a
+		    proxy NSDB node "near" the server.
+
+		</t>
+
+		<t> All federation servers and NSDB nodes are assumed to
+		    execute the federation protocols correctly.  The
+		    behavior of the federation is undefined in the
+		    case of Byzantine behavior by any federation
+		    server or NSDB node.  </t>
+
+		<t> The locations of federation services (such as
+		    NSDBs and FSLs) can be specified in a manner such
+		    that they can be correctly interpreted by all
+		    members of the federation that will access them.
+
+		    <vspace blankLines="1" />
+
+		    For example, if an NSDB node is specified by an FQDN,
+		    then this implies that every member of the
+		    federation that needs to access this NSDB node can
+		    resolve this FQDN to an IP address for that NSDB node. 
+		    (It is not necessary that the FQDN always resolve
+		    to the same address; the same service may appear
+		    at different addresses on different networks.)
+
+		    <vspace blankLines="1" />
+
+		    It is the responsibility of each federation member
+		    to ensure that the resources it wishes to expose
+		    have accessible network locations and that the
+		    necessary resolution mechanisms (i.e., DNS) are
+		    given the necessary data to perform the resolution
+		    correctly.
+
+		</t>
+	    </list>
+	</t>
+    </section>
+
+    <section title="Requirements">
+
+	<t>
+	    <list style="format R%d:">
+
+		<t> Requirements of each FSN:
+
+		    <list style="format %c.">
+
+         		<t> Each FSN MUST be unique within the scope
+			    of its NSDB (so that the FSN is globally
+			    unique). </t>
+
+			<t> The FSN MUST be sufficiently descriptive
+			    to locate an instance of the fileset it
+			    names within the federation at any time. </t>
+
+			<t> All FSNs MUST be invariant when their
+			    underlying filesystems move or are replicated;
+			    only mappings from FSN to FSL(s) change under
+			    these transformations. </t>
+
+			<t> All files accessible from the global namespace
+			    MUST be part of a fileset that has an assigned
+			    FSN. </t>
+
+		    </list>
+
+		    Not all filesets in the federation are required to
+		    have an FSN or be reachable by an FSL.  Only those
+		    filesets that are the target of a junction (as
+		    described in R3) are required to have an FSN.
+
+		    <vspace blankLines="1" />
+
+		    The FSN format MAY be of variable size. If the format is 
+		    variable in size, fileserver implementations MAY have a 
+		    maximum supported FSN size. By bounding the FSN size, 
+		    some fileserver implementations might be able to 
+		    efficiently organize FSNs in stable storage. For 
+		    interoperability, the federation protocols SHOULD define
+		    an FSN size that all fileservers support.	
+		</t>
+
+		<t> USING THE FEDERATION INTERFACES, it MUST be
+		    possible to create an FSN for a fileset, and
+		    it must be possible to bind an FSL to that FSN.
+		    These operations are NSDB operations and do
+		    not require any action on the part of a file
+		    server.
+
+		    <vspace blankLines="1" />
+
+		    It is possible to create an FSN for a fileset that
+		    has not actually been created.  It is also
+		    possible to bind a nonexistent FSL to an FSN.  It
+		    is also possible to create a fileset without
+		    assigning it an FSN.  The binding between an FSN
+		    and an FSL is defined entirely within the context
+		    of the NSDB; the servers do not "know" whether the
+		    filesets they host have been assigned FSNs (or, if
+		    so, what those FSNs are).
+
+		    <vspace blankLines="1" />
+
+		    The requirement that filesets can exist prior to being
+		    assigned an FSN and the requirement that FSNs can exist
+		    independent of filesets are intended to simplify
+		    the construction of the namespace in a convenient
+		    manner.  For example, they permit an admin to
+		    assign FSNs to existing filesets and thereby incorporate
+		    existing filesets into the namespace.  They also
+		    permit the structure of the namespace to be defined
+		    prior to creation of the component filesets.
+		    In either case, 
+		    it is the responsibility of the entity
+		    updating the NSDB with FSNs and FSN-to-FSL mappings
+		    to ensure that the namespace is constructed in
+		    a consistent manner.  (The simplest way to accomplish
+		    this is to ensure that the FSN and FSN-to-FSL mappings
+		    are always recorded in the NSDB prior to the creation
+		    of any junctions that refer to that FSN.)
+
+		    <list style="format %c.">
+
+			<t> An administrator MAY specify the entire
+			    FSN (including both the NSDB node location
+			    and the identifier) of the newly created
+			    FSL, or the administrator MAY specify only
+			    the NSDB node and have the system choose
+			    the identifier.
+
+			    <vspace blankLines="1" />
+
+			    The admin can choose to specify the FSN
+			    explicitly in order to recreate a lost
+			    fileset with a given FSN (for example, as
+			    part of disaster recovery).  It is an
+			    error to assign an FSN that is already in
+			    use by an active fileset.
+
+			    <vspace blankLines="1" />
+
+			    Note that creating a replica of an
+			    existing filesystem is NOT accomplished by
+			    assigning the FSN of the filesystem you
+			    wish to replicate to a new filesystem.
+
+			</t>
+
+			<t> USING THE FEDERATION INTERFACES, it MUST
+			    be possible to create a federation FSL by
+			    specifying a specific local volume, path,
+			    export path, and export options.  </t>
+
+		    </list>
+		</t>
+
+		<t> USING THE FEDERATION INTERFACES, and given the FSN
+		    of a target fileset, it MUST be possible to create
+		    a junction to that fileset at a named place in
+		    another fileset.
+
+		    <vspace blankLines="1" />
+
+		    After a junction has been created, clients that
+		    access the junction transparently interpret it as
+		    a reference to the FSL(s) that implement the FSN
+		    associated with the junction.
+
+		    <list style="format %c.">
+
+			<t> It SHOULD be possible to have more than
+			    one junction whose target is a given
+			    fileset.  In other words, it SHOULD be
+			    possible to mount a fileset at multiple
+			    named places.  </t>
+
+			<t> If the fileset in which the junction is
+			    created is replicated, then the junction
+			    MUST eventually appear in all of its
+			    replicas.
+
+			    <vspace blankLines="1" />
+
+			    The operation of creating a junction
+			    within a fileset is treated as an update
+			    to the fileset, and therefore obeys the
+			    general rules about updates to replicated
+			    filesets.
+
+			</t>
+		    </list>
+		</t>
+
+		<t> USING THE FEDERATION INTERFACES, it MUST be
+		    possible to delete a specific junction from a
+		    fileset.
+
+		    <vspace blankLines="1" />
+
+		    If a junction is deleted, clients who are already
+		    viewing the fileset referred to by the junction
+		    after traversing the junction MAY continue to view
+		    the old namespace.  They might not discover that
+		    the junction no longer exists (or has been deleted
+		    and replaced with a new junction, possibly
+		    referring to a different FSN).
+
+		    <vspace blankLines="1" />
+
+		    After a junction is deleted, another object with
+		    the same name (another junction, or an ordinary
+		    filesystem object) may be created.
+
+		    <vspace blankLines="1" />
+
+		    The operation of deleting a junction within a
+		    fileset is treated as an update to the fileset,
+		    and therefore obeys the general rules about updates
+		    to replicated filesets.
+
+		</t>
+
+		<t> USING THE FEDERATION INTERFACES, it MUST be
+		    possible to invalidate an FSN.
+
+		    <list style="format %c.">
+
+			<t> If a junction refers to an FSN that is
+			    invalid, attempting to traverse the
+			    junction MUST fail.  </t>
+
+		    </list>
+
+		    An FSN that has been invalidated MAY become valid
+		    again if the FSN is recreated (i.e., as part of a
+		    disaster recovery process).
+
+		    <vspace blankLines="1" />
+
+		    If an FSN is invalidated, clients who are already
+		    viewing the fileset named by the FSN MAY continue to
+		    view the old namespace.  They might not discover that
+		    the FSN is no longer valid until they try to traverse
+		    a junction that refers to it.
+
+		</t>
+
+		<t> USING THE FEDERATION INTERFACES, it MUST be possible
+		    to invalidate an FSL.
+
+		    <list style="format %c.">
+
+			<t> An invalid FSL MUST NOT be returned as the
+			    result of resolving a junction.  </t>
+
+		    </list>
+
+		    An FSL that has been invalidated MAY become valid
+		    again if the FSL is recreated (i.e., as part of a
+		    disaster recovery process).
+
+		    <vspace blankLines="1" />
+
+		    If an FSL is invalidated, clients who are already
+		    viewing the fileset implemented by the FSL MAY
+		    continue to use that FSL.  They might not discover
+		    that the FSL is no longer valid until they try to
+		    traverse a junction that refers to the fileset
+		    implemented by the FSL.
+
+		    <vspace blankLines="1" />
+
+		    Note that invalidating an FSL does not imply that the
+		    underlying export or share (depending on the file
+		    access protocol in use) is changed in any way
+		    -- it only changes the mappings from FSNs to FSLs on
+		    the NSDB.
+
+		</t>
+
+		<t> It MUST be possible for the federation of servers to
+		    provide multiple namespaces.  </t>
+
+		<t> USING THE FEDERATION INTERFACES:
+
+		    <list style="format %c.">
+
+			<t> It MUST be possible to query the fileserver
+			    named in an FSL to discover whether a junction
+			    exists at a given path within that FSL. </t>
+
+			<t> It MAY be possible to query the fileserver named
+			    in an FSL to discover the junctions, if any, in
+			    that FSL. If this feature is implemented, the fileserver
+			    SHOULD report each junction's path within the FSL and the
+			    targeted FSN. </t>
+
+		    </list>
+
+		</t>
+
+		<t anchor="supported-protocols"> The projected namespace (and the objects named by the
+		    namespace) MUST be accessible to clients via at least
+		    one of the following standard filesystem access protocols:
+
+		    <list style="format %c.">
+
+			<t> The namespace SHOULD be accessible to clients
+			    via versions of the CIFS (Common Internet File 
+			    System) protocol as described in
+			    <xref target="MS-SMB"/> <xref target="MS-SMB2"/>
+			    <xref target="MS-CIFS"/>.</t>
+
+			<t> The namespace SHOULD be accessible to clients
+			    via the NFSv4 protocol
+			    as described in <xref target="RFC3530"/>.  </t>
+
+			<t> The namespace SHOULD be accessible to clients
+			    via the NFSv3 protocol
+			    as described in <xref target="RFC1813"/>.  </t>
+
+			<t> The namespace SHOULD be accessible to clients
+			    via the NFSv2 protocol
+			    as described in <xref target="RFC1094"/>.  </t>
+
+		    </list>
+
+		    It must be understood that some of these
+		    protocols, such as NFSv3 and NFSv2, have no innate
+		    ability to access a namespace of this kind.  Where
+		    such protocols have been augmented with other
+		    protocols and mechanisms (such as autofs or amd
+		    for NFSv3) to provide an extended namespace, we
+		    propose that these protocols and mechanisms may be
+		    used, or extended, in order to satisfy the
+		    requirements given in this document, and different
+		    clients may use different mechanisms. 
+
+		</t>
+
+		<t> USING THE FEDERATION INTERFACES, it MUST be possible
+		    to modify the NSDB mapping from an FSN to a set of
+		    FSLs to reflect the migration from one FSL to another. 
+		    </t>
+
+		<t> FSL migration SHOULD have little or no impact on the
+		    clients, but this is not guaranteed across all
+		    federation members.
+
+		    <vspace blankLines="1" />
+
+		    Whether FSL migration is performed transparently
+		    depends on whether the source and destination servers
+		    are able to do so.  It is the responsibility of the
+		    administrator to recognize whether or not the
+		    migration will be transparent, and advise the system
+		    accordingly.  The federation, in turn, MUST advise the
+		    servers to notify their clients, if necessary.
+
+		    <vspace blankLines="1" />
+
+		    For example, on some systems, it may be possible to
+		    migrate a fileset from one system to another with
+		    minimal client impact because all client-visible
+		    metadata (inode numbers, etc.) are preserved during
+		    migration.  On other systems, migration might be quite
+		    disruptive. 
+
+		</t>
+
+		<t> USING THE FEDERATION INTERFACES, it MUST be possible
+		    to modify the NSDB mapping from an FSN to a set of
+		    FSLs to reflect the addition/removal of a replica at a
+		    given FSL.  </t>
+
+		<t> Replication SHOULD have little or no negative impact
+		    on the clients.
+
+		    <vspace blankLines="1" />
+
+		    Whether FSL replication is performed transparently
+		    depends on whether the source and destination servers
+		    are able to do so.  It is the responsibility of the
+		    administrator initiating the replication to recognize
+		    whether or not the replication will be transparent,
+		    and advise the federation accordingly.  The federation
+		    MUST advise the servers to notify their clients, if
+		    necessary.
+
+		    <vspace blankLines="1" />
+
+		    For example, on some systems, it may be possible to
+		    mount any FSL of an FSN read/write, while on other
+		    systems, there may be any number of read-only replicas
+		    but only one FSL that can be mounted as read/write.
+
+		</t>
+
+		<t>  USING THE FEDERATION INTERFACES, it SHOULD be
+		    possible to annotate the objects and relations managed
+		    by the federation protocol with arbitrary name/value
+		    pairs.
+
+		    <vspace blankLines="1" />
+
+		    These annotations are not used by the federation
+		    protocols -- they are intended for use by higher-level
+		    protocols.  For example, an annotation that might be
+		    useful for a system administrator browsing the
+		    federation would be the "owner" of each FSN (i.e.,
+		    "this FSN is for the home directory of Joe Smith"). 
+		    As another example, the annotations may express hints
+		    used by the clients (such as priority information for
+		    NFSv4.1).
+
+		    <vspace blankLines="1" />
+
+		    Both FSNs and FSLs may be annotated.  For example, an
+		    FSN property might be "This is Joe Smith's home
+		    directory", and an FSL property might be "This
+		    instance of the FSN is at the remote backup site".
+
+		    <vspace blankLines="1" />
+
+		    <list style="format %c.">
+
+			<t> USING THE FEDERATION INTERFACES, it MUST be
+			    possible to query the system to find the
+			    annotations for a junction.  </t>
+
+			<t> USING THE FEDERATION INTERFACES, it MUST be
+			    possible to query the system to find the
+			    annotations for an FSN.  </t>
+
+			<t> USING THE FEDERATION INTERFACES, it MUST be
+			    possible to query the system to find the
+			    annotations for an FSL.  </t>
+
+		    </list>
+		</t>
+
+
+		<t>  It MUST be possible for the federation to project a
+		     namespace with a common root.
+
+		    <vspace blankLines="1" />
+
+		    <list style="format %c.">
+
+			<t> It SHOULD be possible to define a root fileset that is
+			    exported by one or more fileservers in the federation
+			    as the top level of a namespace. (Corollary: There is
+			    one root fileset per namespace and it is possible to
+			    support multiple namespaces per federation.) </t>
+
+			<t> It SHOULD be possible for a fileserver to locate an
+			    NSDB that stores the layout of a root fileset. </t>
+
+			<t> It SHOULD be possible to access, store, and update
+			    information related to a root fileset using the
+			    federation protocols. </t>
+
+			<t> It SHOULD be possible to replicate root fileset
+			    information across multiple repositories. </t>
+
+			<t> If a root fileset is defined, it SHOULD be possible
+			    to enable a fileserver to export that root fileset
+			    for client access. </t>
+
+			<t> If a root fileset is defined, it SHOULD be possible
+			    for multiple fileservers to project a common root
+			    with defined consistency semantics. </t>
+
+			<t> If a root fileset is defined, it SHOULD be stored 
+			    using a compact representation that is compatible 
+			    with heterogeneous fileserver implementations. The 
+			    root fileset's internal format SHOULD contain enough 
+			    information to generate any attributes, including 
+			    referrals, required by the standard filesystem access 
+			    protocols in 
+			    R<xref format="counter" target="supported-protocols"/>.</t>
+
+		    </list>
+		</t>
+
+	    </list>
+	</t>
+    </section>
+</section>
+
+<section title="Non-Requirements">
+
+    <t>
+	<list style="format N%d:">
+
+	    <t> It is not necessary for the namespace to be known by
+		any specific fileserver.
+
+		<vspace blankLines="1" />
+
+		In the same manner that clients do not need to have a
+		priori knowledge of the structure of the namespace or
+		its mapping onto federation members, the projected
+		namespace can exist without individual fileservers
+		knowing the entire organizational structure, or,
+		indeed, without knowing exactly where in the projected
+		namespace the filesets they host exist.
+
+		<vspace blankLines="1" />
+
+		Fileservers do need to be able to handle referrals
+		from other fileservers, but they do not need to know
+		what path the client was accessing when the referral
+		was generated.
+
+	    </t>
+
+	    <t> It is not necessary for updates and accesses to the
+		NSDB data to occur in transaction or transaction-like 
+		contexts.
+
+		<vspace blankLines="1" />
+
+		One possible requirement that is omitted from our
+		current list is that updates and accesses to the data
+		stored in the NSDB (or individual NSDB nodes) occur
+		within a transaction context.  We were not able to
+		agree whether the benefits of transactions are worth
+		the complexity they add (both to the specification and
+		its eventual implementation), but this topic is open
+		for discussion.
+
+		<vspace blankLines="1" />
+
+		Below is the draft of a proposed requirement that
+		provides transactional semantics:
+
+		<list style="empty">
+
+		    <t> There MUST be a way to ensure that sequences
+			of operations, including observations of the
+			namespace (including finding the locations
+			corresponding to a set of FSNs) and changes to
+			the namespace or related data stored in the
+			system (including the creation, renaming, or
+			deletion of junctions, and the creation,
+			altering, or deletion of mappings between FSN
+			and filesystem locations), can be performed in
+			a manner that provides predictable semantics
+			for the relationship between the observed
+			values and the effect of the changes. </t>
+
+		    <t> It MUST be possible to protect sequences of
+			operations by transactions with NSDB-wide or
+			server-wide Atomicity, Consistency, Isolation,
+			and Durability (ACID) semantics.
+
+ </t>
+
+		</list>
+	    </t>
+	</list>
+    </t>
+</section>
+
+<section title="Security Considerations">
+
+    <t> Assuming the Internet threat model, the federated resolution
+	mechanism described in this document MUST be implemented in
+	such a way to prevent loss of CONFIDENTIALITY, DATA INTEGRITY,
+	and PEER ENTITY AUTHENTICATION, as described in <xref
+	target="RFC3552"/>. </t>
+
+    <t> CONFIDENTIALITY may be violated if an unauthorized party
+	is able to eavesdrop on the communication between authorized
+	servers and NSDB nodes and thereby learn the locations or
+	other information about FSNs that they would not be authorized
+	to discover via direct queries.  DATA INTEGRITY may be compromised
+	if a third party is able to undetectably alter the contents
+	of the communication between servers and NSDB nodes.  PEER
+	ENTITY AUTHENTICATION is defeated if one server can
+	masquerade as another server without proper authority, or
+	if an arbitrary host can masquerade as a NSDB node. </t>
+
+    <t> Well-established techniques for providing authenticated channels
+	may be used to defeat these attacks, and the protocol MUST
+	support at least one of them. </t>
+	
+    <t> For example, if Lightweight Directory Access Protocol (LDAP) is used to implement the query mechanism
+	<xref target="RFC4510"/>, then Transport Layer Security (TLS) may be used to provide both
+	authentication and integrity <xref target="RFC5246"/> <xref
+	target="RFC4513"/>.  If the query protocol is implemented on
+	top of Open Network Computing / Remote Procedure Call (ONC/RPC), then RPCSEC_GSS may be used to fill the same
+	role <xref target="RFC2203"/> <xref target="RFC2743"/>. </t>
+
+    <t> A federation could contain multiple Public Key Infrastructure (PKI) 
+	trust anchors <xref target="RFC5280"/>.  The federation protocols 
+	SHOULD define a mechanism for managing a fileserver's NSDB trust 
+	anchors <xref target="TA-MGMT-REQS"/>. A general purpose trust anchor 
+	management protocol <xref target="TAMP"/> would be appropriate, though 
+	it might be desirable for the federation protocols to facilitate trust 
+	anchor management by, for example, using trust anchor interchange 
+	formats <xref target="TA-FORMAT"/>. </t>
+
+    <t> It is useful to note that the requirements described in this 
+        document lead naturally to a system with distributed 
+        authorization, which has scalability and manageability
+        benefits. </t>
+
+    <t> FSNs are likely to be long-lived resources. Therefore, 
+        the privilege to create FSNs SHOULD be carefully controlled. 
+        To assist in determining if an FSN is referenced by a junction 
+        somewhere in the federation, the NSDB records SHOULD include 
+        non-authoritative informational annotations recording the 
+        locations of any such junctions. These annotations are 
+        non-authoritative because a junction might be created, deleted, 
+        or modified by an individual that does not have permission to 
+        modify the NSDB records. </t>
+
+</section>
+
+
+</middle>
+
+<back>
+	<references title='Normative References'>
+
+
+
+<reference anchor='RFC2119'>
+
+<front>
+<title abbrev='RFC Key Words'>Key words for use in RFCs to Indicate Requirement Levels</title>
+<author initials='S.' surname='Bradner' fullname='Scott Bradner'>
+<organization>Harvard University</organization>
+<address>
+<postal>
+<street>1350 Mass. Ave.</street>
+<street>Cambridge</street>
+<street>MA 02138</street></postal>
+<phone>- +1 617 495 3864</phone>
+<email>sob@harvard.edu</email></address></author>
+<date year='1997' month='March' />
+<area>General</area>
+<keyword>keyword</keyword>
+<abstract>
+<t>
+   In many standards track documents several words are used to signify
+   the requirements in the specification.  These words are often
+   capitalized.  This document defines these words as they should be
+   interpreted in IETF documents.  Authors who follow these guidelines
+   should incorporate this phrase near the beginning of their document:
+
+<list>
+<t>
+      The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+      NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",  "MAY", and
+      "OPTIONAL" in this document are to be interpreted as described in
+      RFC 2119.
+</t></list></t>
+<t>
+   Note that the force of these words is modified by the requirement
+   level of the document in which they are used.
+</t></abstract></front>
+
+<seriesInfo name='BCP' value='14' />
+<seriesInfo name='RFC' value='2119' />
+</reference>
+
+
+<reference anchor='RFC3530'>
+
+<front>
+<title>Network File System (NFS) version 4 Protocol</title>
+<author initials='S.' surname='Shepler' fullname='S. Shepler'>
+<organization /></author>
+<author initials='B.' surname='Callaghan' fullname='B. Callaghan'>
+<organization /></author>
+<author initials='D.' surname='Robinson' fullname='D. Robinson'>
+<organization /></author>
+<author initials='R.' surname='Thurlow' fullname='R. Thurlow'>
+<organization /></author>
+<author initials='C.' surname='Beame' fullname='C. Beame'>
+<organization /></author>
+<author initials='M.' surname='Eisler' fullname='M. Eisler'>
+<organization /></author>
+<author initials='D.' surname='Noveck' fullname='D. Noveck'>
+<organization /></author>
+<date year='2003' month='April' />
+<abstract>
+<t>The Network File System (NFS) version 4 is a distributed filesystem protocol which owes heritage to NFS protocol version 2, RFC 1094, and version 3, RFC 1813.  Unlike earlier versions, the NFS version 4 protocol supports traditional file access while integrating support for file locking and the mount protocol.  In addition, support for strong security (and its negotiation), compound operations, client caching, and internationalization have been added.  Of course, attention has been applied to making NFS version 4 operate well in an Internet environment.  This document replaces RFC 3010 as the definition of the NFS version 4 protocol. [STANDARDS TRACK]</t></abstract></front>
+
+<seriesInfo name='RFC' value='3530' />
+</reference>
+
+
+<reference anchor='RFC3552'>
+
+<front>
+<title>Guidelines for Writing RFC Text on Security Considerations</title>
+<author initials='E.' surname='Rescorla' fullname='E. Rescorla'>
+<organization /></author>
+<author initials='B.' surname='Korver' fullname='B. Korver'>
+<organization /></author>
+<date year='2003' month='July' />
+<abstract>
+<t>All RFCs are required to have a Security Considerations section.  Historically, such sections have been relatively weak.  This document provides guidelines to RFC authors on how to write a good Security Considerations section.  This document specifies an Internet Best Current Practices for the Internet Community, and requests discussion and suggestions for improvements.</t></abstract></front>
+
+<seriesInfo name='BCP' value='72' />
+<seriesInfo name='RFC' value='3552' />
+</reference>
+
+
+<reference anchor='RFC4122'>
+
+<front>
+<title abbrev='UUID URN'>A Universally Unique IDentifier (UUID) URN Namespace</title>
+<author initials='P.' surname='Leach' fullname='Paul J. Leach'>
+<organization>Microsoft</organization>
+<address>
+<postal>
+<street>1 Microsoft Way</street>
+<city>Redmond</city>
+<region>WA</region>
+<code>98052</code>
+<country>US</country></postal>
+<phone>+1 425-882-8080</phone>
+<email>paulle@microsoft.com</email></address></author>
+<author initials='M.' surname='Mealling' fullname='Michael Mealling'>
+<organization>Refactored Networks, LLC</organization>
+<address>
+<postal>
+<street>1635 Old Hwy 41</street>
+<street>Suite 112, Box 138</street>
+<city>Kennesaw</city>
+<region>GA</region>
+<code>30152</code>
+<country>US</country></postal>
+<phone>+1-678-581-9656</phone>
+<email>michael@refactored-networks.com</email>
+<uri>http://www.refactored-networks.com</uri></address></author>
+<author initials='R.' surname='Salz' fullname='Rich Salz'>
+<organization>DataPower Technology, Inc.</organization>
+<address>
+<postal>
+<street>1 Alewife Center</street>
+<city>Cambridge</city>
+<region>MA</region>
+<code>02142</code>
+<country>US</country></postal>
+<phone>+1 617-864-0455</phone>
+<email>rsalz@datapower.com</email>
+<uri>http://www.datapower.com</uri></address></author>
+<date year='2005' month='July' />
+<keyword>URN, UUID</keyword>
+<abstract>
+<t>This specification defines a Uniform Resource Name namespace for
+      UUIDs (Universally Unique IDentifier), also known as GUIDs (Globally
+      Unique IDentifier). A UUID is 128 bits long, and can
+      guarantee uniqueness across space and time. UUIDs were originally
+      used in the Apollo Network Computing System and later in the Open
+      Software Foundation's (OSF) Distributed Computing Environment (DCE),
+      and then in Microsoft Windows platforms.</t>
+<t>This specification is derived from the DCE specification with the
+      kind permission of the OSF (now known as The Open Group).  Information from earlier versions of the DCE specification have been	
+      incorporated into this document.</t></abstract></front>
+
+<seriesInfo name='RFC' value='4122' />
+</reference>
+
+
+<reference anchor='RFC4510'>
+
+<front>
+<title>Lightweight Directory Access Protocol (LDAP): Technical Specification Road Map</title>
+<author initials='K.' surname='Zeilenga' fullname='K. Zeilenga'>
+<organization /></author>
+<date year='2006' month='June' />
+<abstract>
+<t>The Lightweight Directory Access Protocol (LDAP) is an Internet protocol for accessing distributed directory services that act in accordance with X.500 data and service models.  This document provides a road map of the LDAP Technical Specification. [STANDARDS TRACK]</t></abstract></front>
+
+<seriesInfo name='RFC' value='4510' />
+</reference>
+
+
+<reference anchor='RFC5280'>
+
+<front>
+<title>Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile</title>
+<author initials='D.' surname='Cooper' fullname='D. Cooper'>
+<organization /></author>
+<author initials='S.' surname='Santesson' fullname='S. Santesson'>
+<organization /></author>
+<author initials='S.' surname='Farrell' fullname='S. Farrell'>
+<organization /></author>
+<author initials='S.' surname='Boeyen' fullname='S. Boeyen'>
+<organization /></author>
+<author initials='R.' surname='Housley' fullname='R. Housley'>
+<organization /></author>
+<author initials='W.' surname='Polk' fullname='W. Polk'>
+<organization /></author>
+<date year='2008' month='May' />
+<abstract>
+<t>This memo profiles the X.509 v3 certificate and X.509 v2 certificate revocation list (CRL) for use in the Internet.  An overview of this approach and model is provided as an introduction.  The X.509 v3 certificate format is described in detail, with additional information regarding the format and semantics of Internet name forms.  Standard certificate extensions are described and two Internet-specific extensions are defined.  A set of required certificate extensions is specified.  The X.509 v2 CRL format is described in detail along with standard and Internet-specific extensions.  An algorithm for X.509 certification path validation is described.  An ASN.1 module and examples are provided in the appendices. [STANDARDS TRACK]</t></abstract></front>
+
+<seriesInfo name='RFC' value='5280' />
+</reference>
+
+
+<reference anchor="RFC5661">
+	<front>
+		<title>Network File System Version 4 Minor Version 1</title>
+		<author initials="S." surname="Shepler">
+			<organization />
+		</author>
+		<author initials="M." surname="Eisler">
+			<organization />
+		</author>
+		<author initials="D." surname="Noveck">
+			<organization />
+		</author>
+		<date month="MonthTBD" year="YearTBD" />
+	</front>
+	<seriesInfo name="RFC" value="5661"/>
+</reference>
+
+	</references>
+
+	<references title='Informative References'>
+
+
+
+<reference anchor='RFC1094'>
+
+<front>
+<title abbrev='NFS: Network File System'>NFS: Network File System Protocol specification</title>
+<author initials='B.' surname='Nowicki' fullname='Bill Nowicki'>
+<organization>Sun Microsystems, Inc.</organization>
+<address>
+<postal>
+<street>2550 Garcia Avenue</street>
+<street>Mail Stop 1-40</street>
+<city>Mountain View</city>
+<region>CA</region>
+<code>94043</code>
+<country>US</country></postal>
+<phone>+1 415 336 7278</phone>
+<email>nowicki@SUN.COM</email></address></author>
+<date year='1989' day='1' month='March' /></front>
+
+<seriesInfo name='RFC' value='1094' />
+</reference>
+
+
+<reference anchor='RFC1813'>
+
+<front>
+<title abbrev='NFS Version 3 Protocol'>NFS Version 3 Protocol Specification</title>
+<author initials='B.' surname='Callaghan' fullname='Brent Callaghan'>
+<organization>Sun Microsystems, Inc.</organization>
+<address>
+<postal>
+<street>2550 Garcia Avenue</street>
+<street>Mailstop UMTV05-44</street>
+<city>Mountain View</city>
+<region>CA</region>
+<code>94043-1100</code>
+<country>US</country></postal>
+<phone>+1 415 336 1051</phone>
+<facsimile>+1 415 336 6015</facsimile>
+<email>brent.callaghan@eng.sun.com</email></address></author>
+<author initials='B.' surname='Pawlowski' fullname='Brian Pawlowski'>
+<organization>Network Appliance Corp.</organization>
+<address>
+<postal>
+<street>319 North Bernardo Ave.</street>
+<city>Mountain View</city>
+<region>CA</region>
+<code>94043</code>
+<country>US</country></postal>
+<phone>+1 415 428 5136</phone>
+<facsimile>+1 415 428 5151</facsimile>
+<email>beepy@netapp.com</email></address></author>
+<author initials='P.' surname='Staubach' fullname='Peter Staubach'>
+<organization>Sun Microsystems, Inc.</organization>
+<address>
+<postal>
+<street>2550 Garcia Avenue</street>
+<street>Mailstop UMTV05-44</street>
+<city>Mountain View</city>
+<region>CA</region>
+<code>94043-1100</code>
+<country>US</country></postal>
+<phone>+1 415 336 5615</phone>
+<facsimile>+1 415 336 6015</facsimile>
+<email>peter.staubach@eng.sun.com</email></address></author>
+<date year='1995' month='June' />
+<abstract>
+<t>This paper describes the NFS version 3 protocol.  This paper is provided so that people can write compatible implementations.</t></abstract></front>
+
+<seriesInfo name='RFC' value='1813' />
+</reference>
+
+
+<reference anchor='RFC2203'>
+
+<front>
+<title>RPCSEC_GSS Protocol Specification</title>
+<author initials='M.' surname='Eisler' fullname='Michael Eisler'>
+<organization>Sun Microsystems, Inc.</organization>
+<address>
+<postal>
+<street>M/S UCOS03</street>
+<street>2550 Garcia Avenue</street>
+<street>Mountain View</street>
+<street>CA 94043</street></postal>
+<phone>+1 (719) 599-9026</phone>
+<email>mre@eng.sun.com</email></address></author>
+<author initials='A.' surname='Chiu' fullname='Alex Chiu'>
+<organization>Sun Microsystems, Inc.</organization>
+<address>
+<postal>
+<street>M/S UMPK17-203</street>
+<street>2550 Garcia Avenue</street>
+<street>Mountain View</street>
+<street>CA 94043</street></postal>
+<phone>+1 (415) 786-6465</phone>
+<email>hacker@eng.sun.com</email></address></author>
+<author initials='L.' surname='Ling' fullname='Lin Ling'>
+<organization>Sun Microsystems, Inc.</organization>
+<address>
+<postal>
+<street>M/S UMPK17-201</street>
+<street>2550 Garcia Avenue</street>
+<street>Mountain View</street>
+<street>CA 94043</street></postal>
+<phone>+1 (415) 786-5084</phone>
+<email>lling@eng.sun.com</email></address></author>
+<date year='1997' month='September' />
+<area>Security</area>
+<keyword>generic security service</keyword>
+<keyword>remote procedure call</keyword>
+<keyword>security</keyword>
+<abstract>
+<t>
+   This memo describes an ONC/RPC security flavor that allows RPC
+   protocols to access the Generic Security Services Application
+   Programming Interface (referred to henceforth as GSS-API).
+</t></abstract></front>
+
+<seriesInfo name='RFC' value='2203' />
+</reference>
+
+
+<reference anchor='RFC2743'>
+
+<front>
+<title abbrev='GSS-API'>Generic Security Service Application Program Interface Version 2, Update 1</title>
+<author initials='J.' surname='Linn' fullname='John Linn'>
+<organization>RSA Laboratories</organization>
+<address>
+<postal>
+<street>20 Crosby Drive</street>
+<city>Bedford</city>
+<region>MA</region>
+<code>01730</code>
+<country>US</country></postal>
+<phone>+1 781 687 7817</phone>
+<email>jlinn@rsasecurity.com</email></address></author>
+<date year='2000' month='January' />
+<abstract>
+<t>The Generic Security Service Application Program Interface (GSS-API), Version 2, as defined in, provides security services to callers in a generic fashion, supportable with a range of underlying mechanisms and technologies and hence allowing source-level portability of applications to different environments. This specification defines GSS-API services and primitives at a level independent of underlying mechanism and programming language environment, and is to be complemented by other, related specifications:</t>
+<t>documents defining specific parameter bindings for particular language environments</t>
+<t>documents defining token formats, protocols, and procedures to be implemented in order to realize GSS-API services atop particular security mechanisms</t>
+<t>This memo obsoletesmaking specific, incremental changes in response to implementation experience and liaison requests. It is intended, therefore, that this memo or a successor version thereto will become the basis for subsequent progression of the GSS-API specification on the standards track.</t></abstract></front>
+
+<seriesInfo name='RFC' value='2743' />
+</reference>
+
+
+<reference anchor='RFC4513'>
+
+<front>
+<title>Lightweight Directory Access Protocol (LDAP): Authentication Methods and Security Mechanisms</title>
+<author initials='R.' surname='Harrison' fullname='R. Harrison'>
+<organization /></author>
+<date year='2006' month='June' />
+<abstract>
+<t>This document describes authentication methods and security mechanisms of the Lightweight Directory Access Protocol (LDAP). This document details establishment of Transport Layer Security (TLS) using the StartTLS operation.&lt;/t>&lt;t> This document details the simple Bind authentication method including anonymous, unauthenticated, and name/password mechanisms and the Simple Authentication and Security Layer (SASL) Bind authentication method including the EXTERNAL mechanism.&lt;/t>&lt;t> This document discusses various authentication and authorization states through which a session to an LDAP server may pass and the actions that trigger these state changes.&lt;/t>&lt;t> This document, together with other documents in the LDAP Technical Specification (see Section 1 of the specification's road map), obsoletes RFC 2251, RFC 2829, and RFC 2830. [STANDARDS TRACK]</t></abstract></front>
+
+<seriesInfo name='RFC' value='4513' />
+</reference>
+
+
+<reference anchor='RFC5246'>
+
+<front>
+<title>The Transport Layer Security (TLS) Protocol Version 1.2</title>
+<author initials='T.' surname='Dierks' fullname='T. Dierks'>
+<organization /></author>
+<author initials='E.' surname='Rescorla' fullname='E. Rescorla'>
+<organization /></author>
+<date year='2008' month='August' />
+<abstract>
+<t>This document specifies Version 1.2 of the Transport Layer Security (TLS) protocol.  The TLS protocol provides communications security over the Internet.  The protocol allows client/server applications to communicate in a way that is designed to prevent eavesdropping, tampering, or message forgery. [STANDARDS TRACK]</t></abstract></front>
+
+<seriesInfo name='RFC' value='5246' />
+</reference>
+
+
+<reference anchor="TA-MGMT-REQS">
+	<front>
+		<title>Trust Anchor Management Requirements</title>
+		<author initials="R." surname="Reddy">
+			<organization />
+		</author>
+		<author initials="C." surname="Wallace">
+			<organization />
+		</author>
+		<date month="September" year="2009" />
+	</front>
+	<seriesInfo name="Work in" value="Progress"/>
+</reference>
+
+
+<reference anchor="TAMP">
+	<front>
+		<title>Trust Anchor Management Protocol (TAMP) </title>
+		<author initials="R." surname="Housley">
+			<organization />
+		</author>
+		<author initials="S." surname="Ashmore">
+			<organization />
+		</author>
+		<author initials="C." surname="Wallace">
+			<organization />
+		</author>
+		<date month="October" year="2009" />
+	</front>
+	<seriesInfo name="Work in" value="Progress"/>
+</reference>
+
+
+<reference anchor="TA-FORMAT">
+	<front>
+		<title>Trust Anchor Format</title>
+		<author initials="R." surname="Housley">
+			<organization />
+		</author>
+		<author initials="S." surname="Ashmore">
+			<organization />
+		</author>
+		<author initials="C." surname="Wallace">
+			<organization />
+		</author>
+		<date month="October" year="2009" />
+	</front>
+	<seriesInfo name="Work in" value="Progress"/>
+</reference>
+
+
+<reference anchor="MS-SMB">
+	<front>
+		<title>Server Message Block (SMB) Protocol Specification</title>
+		<author initials="" surname="Microsoft Corporation">
+			<organization />
+		</author>
+		<date month="November" year="2009" />
+	</front>
+	<seriesInfo name="MS-SMB" value="17.0"/>
+</reference>
+
+
+<reference anchor="MS-SMB2">
+	<front>
+		<title>Server Message Block (SMB) Version 2 Protocol Specification</title>
+		<author initials="" surname="Microsoft Corporation">
+			<organization />
+		</author>
+		<date month="November" year="2009" />
+	</front>
+	<seriesInfo name="MS-SMB2" value="19.0"/>
+</reference>
+
+
+<reference anchor="MS-CIFS">
+	<front>
+		<title>Common Internet File System (CIFS) Protocol Specification</title>
+		<author initials="" surname="Microsoft Corporation">
+			<organization />
+		</author>
+		<date month="November" year="2009" />
+	</front>
+	<seriesInfo name="MS-CIFS" value="2.0"/>
+</reference>
+
+
+	</references>
+
+	<section anchor="app-additional" title="Acknowledgments">
+		<t> We would like to thank Robert Thurlow of Sun 
+		    Microsystems for helping to author this document. </t>
+
+		<t> We would also like to thank Peter McCann and
+		    Nicolas Williams for their comments and suggestions. </t>
+	</section>
+</back>
+
+</rfc>

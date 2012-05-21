@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<reference anchor='RFC2578'>
+
+<front>
+<title abbrev='SMIv2'>Structure of Management Information Version 2 (SMIv2)</title>
+<author initials='K.' surname='McCloghrie' fullname='Keith McCloghrie' role='editor'>
+<organization>Cisco Systems, Inc.</organization>
+<address>
+<postal>
+<street>170 West Tasman Drive</street>
+<city>San Jose</city>
+<region>CA</region>
+<code>95134-1706</code>
+<country>US</country></postal>
+<phone>+1 408 526 5260</phone>
+<email>kzm@cisco.com</email></address></author>
+<author initials='D.' surname='Perkins' fullname='David Perkins' role='editor'>
+<organization>SNMPinfo</organization>
+<address>
+<postal>
+<street>3763 Benton Street</street>
+<city>Santa Clara</city>
+<region>CA</region>
+<code>95051</code>
+<country>US</country></postal>
+<phone>+1 408 221 8702</phone>
+<email>dperkins@snmpinfo.com</email></address></author>
+<author initials='J.' surname='Schoenwaelder' fullname='Juergen Schoenwaelder' role='editor'>
+<organization>TU Braunschweig</organization>
+<address>
+<postal>
+<street>Bueltenweg 74/75</street>
+<street>38106 Braunschweig</street>
+<country>DE</country></postal>
+<phone>+49 531 3913283</phone>
+<email>schoenw@ibr.cs.tu-bs.de</email></address></author>
+<date year='1999' month='April' /></front>
+
+<seriesInfo name='STD' value='58' />
+<seriesInfo name='RFC' value='2578' />
+<format type='TXT' octets='89712' target='ftp://ftp.isi.edu/in-notes/rfc2578.txt' />
+</reference>

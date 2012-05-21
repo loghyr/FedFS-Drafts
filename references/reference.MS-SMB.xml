@@ -1,0 +1,14 @@
+<!-- For an example of citing an MS specification, see RFC 5422 -->
+
+<?xml version='1.0' encoding='UTF-8'?>
+
+<reference anchor="MS-SMB">
+	<front>
+		<title>Server Message Block (SMB) Protocol Specification</title>
+		<author initials="" surname="Microsoft Corporation">
+			<organization />
+		</author>
+		<date month="November" year="2009" />
+	</front>
+	<seriesInfo name="MS-SMB" value="17.0"/>
+</reference>

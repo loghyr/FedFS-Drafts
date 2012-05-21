@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<reference anchor="3530bis">
+	<front>
+		<title>NFS Version 4 Protocol</title>
+		<author initials="T." surname="Haynes">
+			<organization />
+		</author>
+		<author initials="D." surname="Noveck">
+			<organization />
+		</author>
+		<date year="2010" />
+	</front>
+	<seriesInfo name="draft-ietf-nfsv4-rfc3530bis" value="(Work In Progress)"/>
+</reference>

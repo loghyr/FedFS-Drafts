@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<reference anchor="TA-MGMT-REQS">
+	<front>
+		<title>Trust Anchor Management Requirements</title>
+		<author initials="R." surname="Reddy">
+			<organization />
+		</author>
+		<author initials="C." surname="Wallace">
+			<organization />
+		</author>
+		<date month="September" year="2009" />
+	</front>
+	<seriesInfo name="draft-ietf-pkix-ta-mgmt-reqs-04" value="(work in progress)"/>
+</reference>

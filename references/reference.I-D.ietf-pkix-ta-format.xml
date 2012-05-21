@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<reference anchor="TA-FORMAT">
+	<front>
+		<title>Trust Anchor Format</title>
+		<author initials="R." surname="Housley">
+			<organization />
+		</author>
+		<author initials="S." surname="Ashmore">
+			<organization />
+		</author>
+		<author initials="C." surname="Wallace">
+			<organization />
+		</author>
+		<date month="October" year="2009" />
+	</front>
+	<seriesInfo name="draft-ietf-pkix-ta-format-04" value="(work in progress)"/>
+</reference>

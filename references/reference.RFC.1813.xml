@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<reference anchor='RFC1813'>
+
+<front>
+<title abbrev='NFS Version 3 Protocol'>NFS Version 3 Protocol Specification</title>
+<author initials='B.' surname='Callaghan' fullname='Brent Callaghan'>
+<organization>Sun Microsystems, Inc.</organization>
+<address>
+<postal>
+<street>2550 Garcia Avenue</street>
+<street>Mailstop UMTV05-44</street>
+<city>Mountain View</city>
+<region>CA</region>
+<code>94043-1100</code>
+<country>US</country></postal>
+<phone>+1 415 336 1051</phone>
+<facsimile>+1 415 336 6015</facsimile>
+<email>brent.callaghan@eng.sun.com</email></address></author>
+<author initials='B.' surname='Pawlowski' fullname='Brian Pawlowski'>
+<organization>Network Appliance Corp.</organization>
+<address>
+<postal>
+<street>319 North Bernardo Ave.</street>
+<city>Mountain View</city>
+<region>CA</region>
+<code>94043</code>
+<country>US</country></postal>
+<phone>+1 415 428 5136</phone>
+<facsimile>+1 415 428 5151</facsimile>
+<email>beepy@netapp.com</email></address></author>
+<author initials='P.' surname='Staubach' fullname='Peter Staubach'>
+<organization>Sun Microsystems, Inc.</organization>
+<address>
+<postal>
+<street>2550 Garcia Avenue</street>
+<street>Mailstop UMTV05-44</street>
+<city>Mountain View</city>
+<region>CA</region>
+<code>94043-1100</code>
+<country>US</country></postal>
+<phone>+1 415 336 5615</phone>
+<facsimile>+1 415 336 6015</facsimile>
+<email>peter.staubach@eng.sun.com</email></address></author>
+<date year='1995' month='June' />
+<abstract>
+<t>This paper describes the NFS version 3 protocol.  This paper is provided so that people can write compatible implementations.</t></abstract></front>
+
+<seriesInfo name='RFC' value='1813' />
+<format type='TXT' octets='229793' target='ftp://ftp.isi.edu/in-notes/rfc1813.txt' />
+</reference>

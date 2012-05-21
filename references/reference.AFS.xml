@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<reference anchor="AFS">
+	<front>
+		<title>An Overview of the Andrew File System</title>
+		<author initials="J. H." surname="Howard">
+			<organization />
+		</author>
+		<date year="1988" />
+	</front>
+	<seriesInfo name="Proceeding of the USENIX Winter Technical Conference" value=""/>
+</reference>

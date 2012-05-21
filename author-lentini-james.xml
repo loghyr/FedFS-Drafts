@@ -1,0 +1,20 @@
+<!-- Copyright (C) The IETF Trust (2008) -->
+<!-- $Id: author-lentini-james.xml,v 1.1 2008/08/07 13:46:58 ellard Exp $ -->
+
+<author initials='J.L' surname="Lentini" fullname='James Lentini'>
+    <organization>
+	NetApp
+    </organization>
+    <address>
+	<postal>
+	    <street> 1601 Trapelo Rd, Suite 16 </street>
+	    <city> Waltham </city>
+	    <region> MA </region>
+	    <code> 02451 </code>
+	    <country> US </country>
+	</postal>
+	<phone> +1 781-768-5359 </phone>
+	<email> jlentini@netapp.com </email>
+    </address>
+</author>
+

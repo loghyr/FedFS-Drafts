@@ -1,0 +1,20 @@
+<!-- Copyright (C) The IETF Trust (2008) -->
+<!-- $Id: author-ellard-daniel.xml,v 1.2 2008/08/07 03:00:11 ellard Exp $ -->
+
+<author initials='D.E' surname="Ellard" fullname='Daniel Ellard'>
+    <organization>
+	Raytheon BBN Technologies
+    </organization>
+    <address>
+	<postal>
+	    <street> 10 Moulton Street </street>
+	    <city> Cambridge </city>
+	    <region> MA </region>
+	    <code> 02138 </code>
+	    <country> US </country>
+	</postal>
+	<phone> +1 617-873-8004 </phone>
+	<email> dellard@bbn.com </email>
+    </address>
+</author>
+

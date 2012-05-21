@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<reference anchor='RFC2203'>
+
+<front>
+<title>RPCSEC_GSS Protocol Specification</title>
+<author initials='M.' surname='Eisler' fullname='Michael Eisler'>
+<organization>Sun Microsystems, Inc.</organization>
+<address>
+<postal>
+<street>M/S UCOS03</street>
+<street>2550 Garcia Avenue</street>
+<street>Mountain View</street>
+<street>CA 94043</street></postal>
+<phone>+1 (719) 599-9026</phone>
+<email>mre@eng.sun.com</email></address></author>
+<author initials='A.' surname='Chiu' fullname='Alex Chiu'>
+<organization>Sun Microsystems, Inc.</organization>
+<address>
+<postal>
+<street>M/S UMPK17-203</street>
+<street>2550 Garcia Avenue</street>
+<street>Mountain View</street>
+<street>CA 94043</street></postal>
+<phone>+1 (415) 786-6465</phone>
+<email>hacker@eng.sun.com</email></address></author>
+<author initials='L.' surname='Ling' fullname='Lin Ling'>
+<organization>Sun Microsystems, Inc.</organization>
+<address>
+<postal>
+<street>M/S UMPK17-201</street>
+<street>2550 Garcia Avenue</street>
+<street>Mountain View</street>
+<street>CA 94043</street></postal>
+<phone>+1 (415) 786-5084</phone>
+<email>lling@eng.sun.com</email></address></author>
+<date year='1997' month='September' />
+<area>Security</area>
+<keyword>generic security service</keyword>
+<keyword>remote procedure call</keyword>
+<keyword>security</keyword>
+<abstract>
+<t>
+   This memo describes an ONC/RPC security flavor that allows RPC
+   protocols to access the Generic Security Services Application
+   Programming Interface (referred to henceforth as GSS-API).
+</t></abstract></front>
+
+<seriesInfo name='RFC' value='2203' />
+<format type='TXT' octets='50937' target='ftp://ftp.isi.edu/in-notes/rfc2203.txt' />
+<format type='HTML' octets='64234' target='http://xml.resource.org/public/rfc/html/rfc2203.html' />
+<format type='XML' octets='50205' target='http://xml.resource.org/public/rfc/xml/rfc2203.xml' />
+</reference>

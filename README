@@ -1,0 +1,31 @@
+########################################################
+#   ____    _____      _      ____    __  __   _____   #
+#  |  _ \  | ____|    / \    |  _ \  |  \/  | | ____|  #
+#  | |_) | |  _|     / _ \   | | | | | |\/| | |  _|    #
+#  |  _ <  | |___   / ___ \  | |_| | | |  | | | |___   #
+#  |_| \_\ |_____| /_/   \_\ |____/  |_|  |_| |_____|  #
+#                                                      #
+#                                                      #
+# Author: James Lentini                                #
+#         jlentini@netapp.com                          #
+#                                                      #
+# Date: 5/15/2009                                      #
+#                                                      #
+########################################################
+
+This is the repository for the FedFS IETF standards.
+
+To compile the XML files into text files:
+
+1. Install xml2rfc 
+   http://xml.resource.org/
+
+   These instructions have been tested with version 1.34pre3
+
+2. Place xml2rfc in your path
+
+   For example, setenv PATH $PATH":/path/to/xml2rfc/"
+
+3. Build
+
+   Type make.

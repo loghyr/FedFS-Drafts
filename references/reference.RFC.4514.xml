@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<reference anchor='RFC4514'>
+
+<front>
+<title>Lightweight Directory Access Protocol (LDAP): String Representation of Distinguished Names</title>
+<author initials='K.' surname='Zeilenga' fullname='K. Zeilenga'>
+<organization /></author>
+<date year='2006' month='June' />
+<abstract>
+<t>The X.500 Directory uses distinguished names (DNs) as primary keys to entries in the directory.  This document defines the string representation used in the Lightweight Directory Access Protocol (LDAP) to transfer distinguished names.  The string representation is designed to give a clean representation of commonly used distinguished names, while being able to represent any distinguished name. [STANDARDS TRACK]</t></abstract></front>
+
+<seriesInfo name='RFC' value='4514' />
+<format type='TXT' octets='31859' target='ftp://ftp.isi.edu/in-notes/rfc4514.txt' />
+</reference>

@@ -1,0 +1,18 @@
+<!-- Copyright (C) The IETF Trust (2008) -->
+<!-- $Id: author-tewari-renu.xml,v 1.2 2008/08/07 03:00:16 ellard Exp $ -->
+
+<author initials='R.T' surname="Tewari" fullname='Renu Tewari'>
+    <organization>
+	IBM Almaden
+    </organization>
+    <address>
+	<postal>
+	    <street> 650 Harry Rd  </street>
+	    <city> San Jose </city>
+	    <region> CA </region>
+	    <code> 95120 </code>
+	    <country> US </country>
+	</postal>
+	<email> tewarir@us.ibm.com </email>
+    </address>
+</author>

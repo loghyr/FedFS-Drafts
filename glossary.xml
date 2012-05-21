@@ -1,0 +1,119 @@
+<!-- Copyright (C) The IETF Trust (2008) -->
+<!-- $Id: glossary.xml,v 1.2 2008/08/07 03:00:20 ellard Exp $ -->
+
+<t>
+<list style="hanging">
+
+<t hangText="Administrator:"> user with the necessary authority to
+    initiate administrative tasks on one or more servers.  </t>
+
+<t hangText="Admin Entity:"> A server or agent that administers a
+    collection of fileservers and persistently stores the namespace
+    information.  </t>
+
+<t hangText="Client:"> Any client that accesses the fileserver data
+    using a supported filesystem access protocol.  </t>
+
+<t hangText="Federation:"> A set of server collections and singleton
+    servers that use a common set of interfaces and protocols in order
+    to provide to their clients a federated namespace accessible
+    through a filesystem access protocol.  </t>
+
+<t hangText="Fileserver:"> A server exporting a filesystem via a
+    network filesystem access protocol.  </t>
+
+<t hangText="Fileset:"> The abstraction of a set of files and the
+    directory tree that contains them. A fileset is the 
+    fundamental unit of data management in the federation.
+
+    <vspace blankLines="1" />
+
+    Note that all files within a fileset are descendants of one
+    directory, and that filesets do not span filesystems.  </t>
+
+<t hangText="Filesystem:"> A self-contained unit of export for a
+    fileserver, and the mechanism used to implement filesets.  The
+    fileset does not need to be rooted at the root of the filesystem,
+    nor at the export point for the filesystem.
+
+    <vspace blankLines="1" />
+
+    A single filesystem MAY implement more than one fileset, if the
+    client protocol and the fileserver permit this. </t>
+
+<t hangText="Filesystem Access Protocol:"> A network filesystem access
+    protocol such as NFSv2 <xref target="RFC1094"/>, NFSv3 <xref
+    target="RFC1813"/>, NFSv4 <xref target="3530bis"/>, or
+    CIFS (Common Internet File System) <xref target="MS-SMB"/> 
+    <xref target="MS-SMB2"/> <xref target="MS-CIFS"/>.  </t>
+
+<t hangText="FSL (Fileset Location):"> The location of the
+    implementation of a fileset at a particular moment in time.  An FSL
+    MUST be something that can be translated into a protocol-specific
+    description of a resource that a client can access directly, such
+    as an fs_location (for NFSv4), or share name (for CIFS).  Note that
+    not all FSLs need to be explicitly exported as long as they are
+    contained within an exported path on the fileserver.  </t>
+
+<t hangText="FSN (Fileset Name):"> A platform-independent and globally
+    unique name for a fileset.  Two FSLs that implement replicas of
+    the same fileset MUST have the same FSN, and if a fileset is
+    migrated from one location to another, the FSN of that fileset
+    MUST remain the same.  </t>
+
+<t hangText="Junction:"> A filesystem object used to link a directory
+    name in the current fileset with an object within another fileset. 
+    The server-side "link" from a leaf node in one fileset to the root
+    of another fileset.  </t>
+
+<t hangText="Namespace:"> A filename/directory tree that a
+    sufficiently authorized client can observe.  </t>
+
+<t hangText="NSDB (Namespace Database) Service:"> A service that maps
+    FSNs to FSLs.  The NSDB may also be used to store other
+    information, such as annotations for these mappings and their
+    components.  </t>
+
+<t hangText="NSDB Node:"> The name or location of a server that
+    implements part of the NSDB service and is responsible for keeping
+    track of the FSLs (and related info) that implement a given
+    partition of the FSNs.  </t>
+
+<t hangText="Referral:"> A server response to a client access that
+    directs the client to evaluate the current object as a reference
+    to an object at a different location (specified by an FSL) in
+    another fileset, and possibly hosted on another fileserver.  The
+    client re-attempts the access to the object at the new location. 
+    </t>
+
+<t hangText="Replica:"> A replica is a redundant implementation of a
+    fileset.  Each replica shares the same FSN, but has a different
+    FSL.
+
+    <vspace blankLines="1" />
+
+    Replicas may be used to increase availability or performance. 
+    Updates to replicas of the same fileset MUST appear to occur in
+    the same order, and therefore each replica is self-consistent at
+    any moment.
+
+    <vspace blankLines="1" />
+
+    We do not assume that updates to each replica occur simultaneously.
+    If a replica is offline or unreachable, the other replicas may be
+    updated.  </t>
+
+<t hangText="Server Collection:"> A set of fileservers administered as
+    a unit.  A server collection may be administered with
+    vendor-specific software.
+
+    <vspace blankLines="1" />
+
+    The namespace provided by a server collection could be part of the
+    federated namespace.  </t>
+
+<t hangText="Singleton Server:">  A server collection containing only one server; a
+    stand-alone fileserver.  </t>
+
+</list>
+</t>

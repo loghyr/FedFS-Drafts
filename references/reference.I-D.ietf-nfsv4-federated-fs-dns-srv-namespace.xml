@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<reference anchor="FEDFS-DNS-SRV">
+	<front>
+		<title>Using DNS SRV to Specify a Global File Name Space with NFS version 4</title>
+		<author initials="C." surname="Everhart">
+			<organization />
+		</author>
+		<author initials="W." surname="Adamson">
+			<organization />
+		</author>
+		<author initials="J." surname="Zhang">
+			<organization />
+		</author>
+		<date year="2010" />
+	</front>
+	<seriesInfo name="draft-ietf-nfsv4-federated-fs-dns-srv-namespace" value="(Work In Progress)"/>
+</reference>
