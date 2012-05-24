@@ -1,0 +1,110 @@
+-------------------------------------------------------------------------------
+FedFs Specification TODO List
+As of May 25, 2012
+-------------------------------------------------------------------------------
+
+In the following, each task has a status and description. A task's status can be
+OPEN or CLOSED: OPEN means that the task is incomplete, CLOSED means that
+the comment was addressed, although further comments on the changes may be
+received. If the task is OPEN, a plan for addressing the comment may be
+specified.
+
+Tasks to complete draft-ietf-nfsv4-federated-fs-admin:
+-------------------------------------------------------------------------------
+
+ADMIN-1
+   Status: OPEN, although some subtasks are closed
+   Task: Address AD comments from David Harrington
+
+ADMIN-1.1
+    Status: CLOSED
+    Description: in 3, what does this following sentence mean? Please include a better
+    explanation of the literal codes in the document.
+    "Many of the error status names and meanings (and the prose for their descriptions)
+     are taken from the specification for NFSv4 [3530bis]. Note, however, that the literal
+     values for the status codes are different. "
+
+ADMIN-1.2
+    Status: OPEN
+    Description: FedFsNsdbName: "The port is the NSDB transport port." Different
+    transport protocols might have different ports, so it might be important
+    to identify the transport protocol, not just the port. There is also no
+    discussion of the fact that LDAP is assumed.
+    Plan: State that NSDB protocol must be LDAP and identify the transport
+
+ADMIN-1.3
+    Status: CLOSED
+    Description: FedFsPath: there is an incomplete sentence in this description.
+
+ADMIN-1.4
+   Status: CLOSED
+   Description: FEDFS_CREATE_JUNCTION: "If the fileset is read-only, then this operation
+   SHOULD indicate this with a status of FEDFS_ERR_ROFS." why is this only a SHOULD?
+
+ADMIN-1.5
+    Status: CLOSED
+    Description: lower case "may" and "must" - if these are RFC2119 keywords, please
+    use capitals. If not, then please use different words top avoid any ambiguity.
+    I suggest "might" for "may".
+
+ADMIN-1.6
+    Status: CLOSED
+    Description: "Note that" is usually superfluous.
+
+ADMIN-1.7
+    Status: OPEN
+    Description: Security Considerations is too limited. At a minimum, the discussion
+    about FEDFS_GET_LIMITED_NSDB_PARAMS should be referenced in the security considerations.
+    Plan: Cite FEDFS_GET_LIMITED_NSDB_PARAMS in Security Considerations.
+
+ADMIN-1.8
+    Status: OPEN
+    Description: IESG often pushes for expanding acronyms on first use. Having the
+    glossary at the end might cause problems. It would be wiser to move it forward (maybe
+    put "requirements language" as section 1.1, and the glossary as section 1.2).
+    Plan: Move glossary to the start of the document.
+
+Tasks to complete draft-ietf-nfsv4-federated-fs-protocol:
+-------------------------------------------------------------------------------
+
+NSDB-1
+    Status: Open
+    Description: Address transport area director (TSV-DIR) review comment from David Black
+
+    "NFSv4 replica mechanism is not simple, especially in its full
+    NFSv4.1 (RFC 5661) form - section 4.2.2.4 of this draft lists nearly 20 attributes
+    that have to be specified in an LDAP entry in order to characterize a replica (a
+    File Set Location in NFSv4 parlance). The details of how replica selection works
+    are in RFC 5661, and require some careful reading to understand.  For replica
+    selection and usage, Section 2.8.1 of this draft bothers me - despite being about
+    consistency, it clearly states that replicas do not need to be read-write
+    consistent, and that clients may switch among replicas transparently ... and this
+    should all be ok because "it is the responsibility of administrators to guarantee
+    the functional equivalence of the data" among replicas.
+
+    That current text reminds me of the Forrest Gump quote: "Life was like a box of
+    chocolates. You never know what you're gonna get."  Needless to say, "You never
+    know what you're gonna get" is not a good network filesystem behavior, and the
+    expectation is that administrators will configure the use of replicas to do
+    considerably better than that.  Towards this end, I'd like to see some guidance
+    to administrators in this draft for how to stay out of trouble; some of that
+    guidance could be provided by reference to the longer explanation of the replica
+    mechanism that's already in RFC 5661."
+
+NSDB-2
+    Status: Open
+    Description: Address issue raised by Chuck Lever in "FedFS: Comment about fedfsFslPort"
+                 http://www.ietf.org/mail-archive/web/nfsv4/current/msg10305.html
+
+NSDB-3
+    Status: Open
+    Description: Address issue raised by Chuck Lever in "FedFS: Question regarding
+                 fedfsNfsMajorVer and fedfsNfsMinorVer"
+                 http://www.ietf.org/mail-archive/web/nfsv4/current/msg10413.html
+
+NSDB-4
+    Status: Open
+    Description: Address issue raised by Chuck Lever in "FedFS: security concern
+                 regarding the use of time-variant UUIDs"
+                 http://www.ietf.org/mail-archive/web/nfsv4/current/msg10421.html
+
