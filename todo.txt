@@ -108,3 +108,7 @@ NSDB-4
                  regarding the use of time-variant UUIDs"
                  http://www.ietf.org/mail-archive/web/nfsv4/current/msg10421.html
 
+NSDB-5
+    Status: Open
+    Description: Address issue raised by Chuck Lever in "Fwd: (ITS#7246) Addition of FedFS schema LDIF"
+    http://www.ietf.org/mail-archive/web/nfsv4/current/msg10851.html
