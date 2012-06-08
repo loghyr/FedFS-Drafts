@@ -91,6 +91,10 @@
 	<t> This document describes the protocol used by administrators
 	to configure the fileservers and construct the namespace. </t>
 
+      <section title="Definitions">
+        <?rfc include="glossary.xml"?>
+      </section>
+
     </section>
 
     <section title="Protocol" anchor="protocol">
@@ -497,7 +501,7 @@
 
 	    <t hangText="FEDFS_ERR_NSDB_RESPONSE:"> The fileserver received 
 	        a malformed response from the NSDB. This includes situations
-	        when an NSDB entry (e.g. FSN or FSL) is missing a required
+	        when an NSDB entry (e.g., FSN or FSL) is missing a required
 	        attribute. </t>
 
 	    <t hangText="FEDFS_ERR_NSDB_FAULT:"> An unanticipated error 
@@ -575,7 +579,7 @@
 		    defined in Chapter 12 "Internationalization" of 
 		    <xref target="3530bis"/>. The DNS name MUST be 
 		    represented using a fully qualified domain name. A
-		    system (i.e. fileserver or administrative host) SHOULD
+		    system (i.e., fileserver or administrative host) SHOULD
 		    resolve the fully qualified domain name to a network
 		    address using the system's standard resolution mechanisms.
 
@@ -1733,10 +1737,6 @@
 	<t> This document describes version 1 of the ONC RPC program 100418
 	with short name "fedfs_admin". </t>
 
-    </section>
-
-    <section title="Glossary">
-        <?rfc include="glossary.xml"?>
     </section>
 
 </middle>

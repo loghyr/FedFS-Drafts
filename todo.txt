@@ -58,7 +58,7 @@ ADMIN-1.7
     Plan: Cite FEDFS_GET_LIMITED_NSDB_PARAMS in Security Considerations.
 
 ADMIN-1.8
-    Status: OPEN
+    Status: CLOSED
     Description: IESG often pushes for expanding acronyms on first use. Having the
     glossary at the end might cause problems. It would be wiser to move it forward (maybe
     put "requirements language" as section 1.1, and the glossary as section 1.2).

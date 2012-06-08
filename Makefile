@@ -3,8 +3,8 @@
 
 XML2RFC		= xml2rfc.tcl
 
-ADMIN_VERS=09
-PROT_VERS=11
+ADMIN_VERS=11
+PROT_VERS=13
 
 DRAFTS	= \
 	draft-ietf-nfsv4-federated-fs-admin-${ADMIN_VERS}.txt \
