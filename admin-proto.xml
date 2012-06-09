@@ -11,1786 +11,1983 @@
 <?rfc subcompact="no" ?>
 
 <rfc category="std" docName="draft-ietf-nfsv4-federated-fs-admin-VERSIONVAR" ipr="pre5378Trust200902">
-
-<front>
+  <front>
     <title abbrev="Admin Protocol for Federated Filesystems">
-	Administration Protocol for Federated Filesystems
+      Administration Protocol for Federated Filesystems
     </title>
-
+  
     <?rfc include="author-lentini-james.xml"?>
     <?rfc include="author-everhart-craig.xml"?>
     <?rfc include="author-ellard-daniel.xml"?>
     <?rfc include="author-tewari-renu.xml"?>
     <?rfc include="author-naik-manoj.xml"?>
-
+  
     <date/>
-
+  
     <area> Internet </area>
     <workgroup> NFSv4 Working Group </workgroup>
     <keyword> Federated File Systems </keyword>
-
+  
     <abstract>
-
-	<t> This document describes the administration protocol for a
-	federated file system that enables file access and namespace
-	traversal across collections of independently administered
-	fileservers.  The protocol specifies a set of interfaces by
-	which fileservers with different administrators can form a 
-	fileserver federation that provides a namespace composed of 
-	the filesystems physically hosted on and exported by the 
-	constituent fileservers.  </t>
-
+      <t>
+        This document describes the administration protocol for a
+        federated file system that enables file access and namespace
+        traversal across collections of independently administered
+        fileservers.  The protocol specifies a set of interfaces
+        by which fileservers with different administrators can form
+        a fileserver federation that provides a namespace composed
+        of the filesystems physically hosted on and exported by the
+        constituent fileservers.
+      </t>
     </abstract>
-
+  
     <note title="Requirements Language">
-
-	<t> The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
-	    "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",
-	    "MAY", and "OPTIONAL" in this document are to be
-	    interpreted as described in <xref target="RFC2119"/>. 
-	    </t>
-
+      <t>
+          The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
+          "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",
+          "MAY", and "OPTIONAL" in this document are to be
+          interpreted as described in <xref target="RFC2119"/>.
+      </t>
     </note>
-
-</front>
-
-<middle>
-
+  </front>
+  
+  <middle>
     <section title="Introduction">
-
-	<t> A federated filesystem enables file access and namespace
-	traversal in a uniform, secure and consistent manner across
-	multiple independent fileservers within an enterprise (and
-	possibly across multiple enterprises) with reasonably good
-	performance. </t>
-
-	<t> Traditionally, building a namespace that spans 
-	multiple fileservers has been difficult for two reasons. 
-	First, the fileservers that export pieces of the namespace 
-	are often not in the same administrative domain. Second, there 
-	is no standard mechanism for the fileservers to cooperatively 
-	present the namespace. Fileservers might provide proprietary 
-	management tools and in some cases an administrator might be
-	able to use the proprietary tools to build a shared
-	namespace out of the exported filesystems.  Relying on
-	vendor-proprietary tools does not work in larger enterprises
-	or when collaborating across enterprises because it is
-	likely that the system will contain fileservers running
-	different software, each with their own protocols, with no
-	common protocol to manage the namespace or exchange
-	namespace information. </t>
-
-	<t> The requirements for federated namespaces are described
-	in <xref target="RFC5716"/>. </t>
-
-	<t> The filesystem federation protocol described in 
-	<xref target="FEDFS-NSDB"/> allows fileservers from different 
-	vendors and/or with different administrators to cooperatively 
-	build a namespace. </t>
-
-	<t> This document describes the protocol used by administrators
-	to configure the fileservers and construct the namespace. </t>
-
+      <t>
+        A federated filesystem enables file access and namespace
+        traversal in a uniform, secure and consistent manner across
+        multiple independent fileservers within an enterprise (and
+        possibly across multiple enterprises) with reasonably good
+        performance.
+      </t>
+  
+      <t>
+        Traditionally, building a namespace that spans
+        multiple fileservers has been difficult for two reasons.
+        First, the fileservers that export pieces of the namespace
+        are often not in the same administrative domain. Second, there
+        is no standard mechanism for the fileservers to cooperatively
+        present the namespace. Fileservers might provide proprietary
+        management tools and in some cases an administrator might be
+        able to use the proprietary tools to build a shared
+        namespace out of the exported filesystems.  Relying on
+        vendor-proprietary tools does not work in larger enterprises
+        or when collaborating across enterprises because it is
+        likely that the system will contain fileservers running
+        different software, each with their own protocols, with no
+        common protocol to manage the namespace or exchange
+        namespace information.
+      </t>
+  
+      <t>
+        The requirements for federated namespaces are described
+        in <xref target="RFC5716"/>.
+      </t>
+  
+      <t>
+        The filesystem federation protocol described in
+        <xref target="FEDFS-NSDB"/> allows fileservers from different
+        vendors and/or with different administrators to cooperatively
+        build a namespace.
+      </t>
+  
+      <t>
+        This document describes the protocol used by administrators
+        to configure the fileservers and construct the namespace.
+      </t>
+  
       <section title="Definitions">
         <?rfc include="glossary.xml"?>
       </section>
-
     </section>
-
+  
     <section title="Protocol" anchor="protocol">
-
-	<t> The RPC protocol used by the administration operations is
-	    ONC RPC <xref target="RFC5531"/>.  The data structures used
-	    for the parameters and return values of these procedures are
-	    expressed in this document in XDR <xref target="RFC4506"/>. </t>
-
-	<t> The XDR definitions below are formatted to allow the 
-	    reader to easily extract them from the document. The 
-	    reader can use the following shell script to extract 
-	    the definitions: </t>
-
-	<figure><artwork><![CDATA[
-
-        <CODE BEGINS>
-
-        #!/bin/sh
-        grep '^ *///' | sed 's?^ */// ??' | sed 's?^ *///$??'
-
-        <CODE ENDS>
-
-	]]></artwork></figure>
-
-	<t> If the above script is stored in a file called "extract.sh", and
-	    this document is in a file called "spec.txt", then the reader can do: </t>
-
-	<figure><artwork><![CDATA[
-
-        <CODE BEGINS>
-
-        sh extract.sh < spec.txt > admin1.xdr
-
-        <CODE ENDS>
-
-	]]></artwork></figure>
-
-	<t> The effect of the script is to remove leading white space from each
-            line, plus a sentinel sequence of "///". </t>
-
-        <t> The protocol definition in XDR notation is shown below. We begin 
-            by defining basic constants and structures used by the protocol. 
-            We then present the procedures defined by the protocol. </t>
-
-	<t> &lt;CODE BEGINS> </t>
-
-	<t><cref>
-	RFC Editor: please replace [draft-ietf-nfsv4-federated-fs-admin-xx.txt]
-	with this specifications RFC number.
-	</cref></t>
-
-	<figure><artwork><![CDATA[
-  /// /*
-  ///  * Copyright (c) 2010 IETF Trust and the persons identified
-  ///  * as authors of the code.  All rights reserved.
-  ///  *
-  ///  * The authors of the code are the authors of 
-  ///  * [draft-ietf-nfsv4-federated-fs-admin-xx.txt]: J. Lentini, 
-  ///  * C. Everhart, D. Ellard, R. Tewari, and M. Naik.
-  ///  *
-  ///  * Redistribution and use in source and binary forms, with
-  ///  * or without modification, are permitted provided that the
-  ///  * following conditions are met:
-  ///  *
-  ///  * - Redistributions of source code must retain the above
-  ///  *   copyright notice, this list of conditions and the
-  ///  *   following disclaimer.
-  ///  *
-  ///  * - Redistributions in binary form must reproduce the above
-  ///  *   copyright notice, this list of conditions and the
-  ///  *   following disclaimer in the documentation and/or other
-  ///  *   materials provided with the distribution.
-  ///  *
-  ///  * - Neither the name of Internet Society, IETF or IETF
-  ///  *   Trust, nor the names of specific contributors, may be
-  ///  *   used to endorse or promote products derived from this
-  ///  *   software without specific prior written permission.
-  ///  *
-  ///  *   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS
-  ///  *   AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
-  ///  *   WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  ///  *   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-  ///  *   FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
-  ///  *   EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-  ///  *   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-  ///  *   EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-  ///  *   NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  ///  *   SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-  ///  *   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-  ///  *   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  ///  *   OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
-  ///  *   IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-  ///  *   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  ///  */
-  ///
-  /// enum FedFsStatus {
-  ///  FEDFS_OK                                 = 0,
-  ///  FEDFS_ERR_ACCESS                         = 1,
-  ///  FEDFS_ERR_BADCHAR                        = 2,
-  ///  FEDFS_ERR_BADNAME                        = 3,
-  ///  FEDFS_ERR_NAMETOOLONG                    = 4,
-  ///  FEDFS_ERR_LOOP                           = 5,
-  ///  FEDFS_ERR_BADXDR                         = 6,
-  ///  FEDFS_ERR_EXIST                          = 7,
-  ///  FEDFS_ERR_INVAL                          = 8,
-  ///  FEDFS_ERR_IO                             = 9,
-  ///  FEDFS_ERR_NOSPC                          = 10,
-  ///  FEDFS_ERR_NOTJUNCT                       = 11,
-  ///  FEDFS_ERR_NOTLOCAL                       = 12,
-  ///  FEDFS_ERR_PERM                           = 13,
-  ///  FEDFS_ERR_ROFS                           = 14,
-  ///  FEDFS_ERR_SVRFAULT                       = 15,
-  ///  FEDFS_ERR_NOTSUPP                        = 16,
-  ///  FEDFS_ERR_NSDB_ROUTE                     = 17,
-  ///  FEDFS_ERR_NSDB_DOWN                      = 18,
-  ///  FEDFS_ERR_NSDB_CONN                      = 19,
-  ///  FEDFS_ERR_NSDB_AUTH                      = 20,
-  ///  FEDFS_ERR_NSDB_LDAP                      = 21,
-  ///  FEDFS_ERR_NSDB_LDAP_VAL                  = 22,
-  ///  FEDFS_ERR_NSDB_NONCE                     = 23,
-  ///  FEDFS_ERR_NSDB_NOFSN                     = 24,
-  ///  FEDFS_ERR_NSDB_NOFSL                     = 25,
-  ///  FEDFS_ERR_NSDB_RESPONSE                  = 26,
-  ///  FEDFS_ERR_NSDB_FAULT                     = 27,
-  ///  FEDFS_ERR_NSDB_PARAMS                    = 28,
-  ///  FEDFS_ERR_NSDB_LDAP_REFERRAL             = 29,
-  ///  FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL         = 30,
-  ///  FEDFS_ERR_NSDB_LDAP_REFERRAL_NOTFOLLOWED = 31,
-  ///  FEDFS_ERR_NSDB_PARAMS_LDAP_REFERRAL      = 32,
-  ///  FEDFS_ERR_PATH_TYPE_UNSUPP               = 33,
-  ///  FEDFS_ERR_DELAY                          = 34,
-  ///  FEDFS_ERR_NO_CACHE                       = 35,
-  ///  FEDFS_ERR_UNKNOWN_CACHE                   = 36,
-  ///  FEDFS_ERR_NO_CACHE_UPDATE                = 37
-  /// };
-  ///
-  /// typedef opaque                 utf8string<>;
-  /// typedef utf8string             utf8str_cs;
-  /// typedef utf8string             utf8str_cis;
-  ///
-  /// typedef opaque FedFsUuid[16];
-  ///
-  /// struct FedFsNsdbName {
-  ///         unsigned int           port;
-  ///         utf8str_cis            hostname;
-  /// };
-  ///
-  /// typedef utf8str_cs FedFsPathComponent;
-  /// typedef FedFsPathComponent FedFsPathName<>;
-  ///
-  /// struct FedFsFsn {
-  ///         FedFsUuid              fsnUuid;
-  ///         FedFsNsdbName          nsdbName;
-  /// };
-  ///
-  /// enum FedFsFslType {
-  ///  FEDFS_NFS_FSL = 0
-  ///  /* other types TBD */
-  /// };
-  ///
-  /// struct FedFsNfsFsl {
-  ///         FedFsUuid              fslUuid;
-  ///         unsigned int           port;
-  ///         utf8str_cis            hostname;
-  ///         FedFsPathName          path;
-  /// };
-  ///
-  /// union FedFsFsl switch(FedFsFslType type) {
-  ///  case FEDFS_NFS_FSL:
-  ///         FedFsNfsFsl            nfsFsl;
-  /// };
-  ///
-  /// enum FedFsPathType {
-  ///  FEDFS_PATH_SYS = 0,
-  ///  FEDFS_PATH_NFS = 1 
-  ///  /* other types TBD */
-  /// };
-  ///
-  /// union FedFsPath switch(FedFsPathType type) {
-  ///  case FEDFS_PATH_SYS: /* administrative path */
-  ///         FedFsPathName          adminPath;
-  ///  case FEDFS_PATH_NFS: /* NFS namespace path */
-  ///         FedFsPathName          nfsPath;
-  /// };
-  ///
-  /// struct FedFsCreateArgs {
-  ///         FedFsPath              path;
-  ///         FedFsFsn               fsn;
-  /// };
-  ///
-  /// enum FedFsResolveType {
-  ///  FEDFS_RESOLVE_NONE  = 0,
-  ///  FEDFS_RESOLVE_CACHE = 1,
-  ///  FEDFS_RESOLVE_NSDB  = 2
-  /// };
-  ///
-  /// struct FedFsLookupArgs {
-  ///         FedFsPath              path;
-  ///         FedFsResolveType       resolve;
-  /// };
-  ///
-  /// struct FedFsLookupResOk {
-  ///         FedFsFsn               fsn;
-  ///         FedFsFsl               fsl<>;
-  /// };
-  ///
-  /// struct FedFsLookupResReferralVal {
-  ///         FedFsNsdbName          targetNsdb;
-  ///         unsigned int           ldapResultCode;
-  /// };
-  ///
-  /// union FedFsLookupRes switch (FedFsStatus status) {
-  ///  case FEDFS_OK:
-  ///  case FEDFS_ERR_NO_CACHE_UPDATE:
-  ///         FedFsLookupResOk           resok;
-  ///  case FEDFS_ERR_NSDB_LDAP_VAL:
-  ///         unsigned int               ldapResultCode;
-  ///  case FEDFS_ERR_NSDB_LDAP_REFERRAL:
-  ///  case FEDFS_ERR_NSDB_PARAMS_LDAP_REFERRAL:
-  ///         FedFsNsdbName              targetNsdb;
-  ///  case FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL:
-  ///         FedFsLookupResReferralVal  resReferralVal;
-  ///  default:
-  ///         void;
-  /// };
-  ///
-  /// enum FedFsConnectionSec {
-  ///  FEDFS_SEC_NONE = 0,
-  ///  FEDFS_SEC_TLS = 1 /* StartTLS mechanism; RFC4513, Section 3 */
-  ///  /* other mechanisms TBD */
-  /// };
-  ///
-  /// union FedFsNsdbParams switch (FedFsConnectionSec secType) {
-  ///  case FEDFS_SEC_TLS:
-  ///         opaque                   secData<>;
-  ///  default:
-  ///         void;
-  /// };
-  ///
-  /// struct FedFsSetNsdbParamsArgs {
-  ///         FedFsNsdbName            nsdbName;
-  ///         FedFsNsdbParams          params;
-  /// };
-  ///
-  /// union FedFsGetNsdbParamsRes switch (FedFsStatus status) {
-  ///  case FEDFS_OK:
-  ///         FedFsNsdbParams          params;
-  ///  default:
-  ///         void;
-  /// };
-  ///
-  /// union FedFsGetLimitedNsdbParamsRes switch (FedFsStatus status) {
-  ///  case FEDFS_OK:
-  ///         FedFsConnectionSec       secType;
-  ///  default:
-  ///         void;
-  /// };
-  ///
-  /// program FEDFS_PROG {
-  ///  version FEDFS_V1 {
-  ///      void FEDFS_NULL(void) = 0;
-  ///      FedFsStatus FEDFS_CREATE_JUNCTION(
-  ///                   FedFsCreateArgs) = 1;
-  ///      FedFsStatus FEDFS_DELETE_JUNCTION(
-  ///                   FedFsPath) = 2;
-  ///      FedFsLookupRes FEDFS_LOOKUP_JUNCTION(
-  ///                   FedFsLookupArgs) = 3;
-  ///      FedFsStatus FEDFS_CREATE_REPLICATION(
-  ///                   FedFsCreateArgs) = 7;
-  ///      FedFsStatus FEDFS_DELETE_REPLICATION(
-  ///                   FedFsPath) = 8;
-  ///      FedFsLookupRes FEDFS_LOOKUP_REPLICATION(
-  ///                   FedFsLookupArgs) = 9;
-  ///      FedFsStatus FEDFS_SET_NSDB_PARAMS(
-  ///                   FedFsSetNsdbParamsArgs) = 4;
-  ///      FedFsGetNsdbParamsRes FEDFS_GET_NSDB_PARAMS(
-  ///                   FedFsNsdbName) = 5;
-  ///      FedFsGetLimitedNsdbParamsRes FEDFS_GET_LIMITED_NSDB_PARAMS(
-  ///                   FedFsNsdbName) = 6;
-  ///  } = 1;
-  /// } = 100418;
-	]]></artwork></figure>
-
-	<t> &lt;CODE ENDS> </t>
-
+      <t>
+        The RPC protocol used by the administration operations is
+        ONC RPC <xref target="RFC5531"/>.  The data structures used
+        for the parameters and return values of these procedures are
+        expressed in this document in XDR <xref target="RFC4506"/>.
+      </t>
+  
+      <t>
+        The XDR definitions below are formatted to allow the
+        reader to easily extract them from the document. The
+        reader can use the following shell script to extract
+        the definitions:
+      </t>
+  
+      <figure><artwork><![CDATA[
+  
+          <CODE BEGINS>
+  
+          #!/bin/sh
+          grep '^ *///' | sed 's?^ */// ??' | sed 's?^ *///$??'
+  
+          <CODE ENDS>
+  
+      ]]></artwork></figure>
+  
+      <t>
+        If the above script is stored in a file called "extract.sh", and
+        this document is in a file called "spec.txt", then the reader can do:
+      </t>
+  
+      <figure><artwork><![CDATA[
+  
+          <CODE BEGINS>
+  
+          sh extract.sh < spec.txt > admin1.xdr
+  
+          <CODE ENDS>
+  
+      ]]></artwork></figure>
+  
+      <t>
+        The effect of the script is to remove leading white space from each
+        line, plus a sentinel sequence of "///".
+      </t>
+  
+      <t>
+        The protocol definition in XDR notation is shown below. We begin
+        by defining basic constants and structures used by the protocol.
+        We then present the procedures defined by the protocol.
+      </t>
+  
+      <t>
+        &lt;CODE BEGINS&gt;
+      </t>
+  
+      <t>
+        <cref>
+          RFC Editor: please replace [draft-ietf-nfsv4-federated-fs-admin-xx.txt]
+          with this specifications RFC number.
+        </cref>
+      </t>
+  
+      <figure><artwork><![CDATA[
+    /// /*
+    ///  * Copyright (c) 2010 IETF Trust and the persons identified
+    ///  * as authors of the code.  All rights reserved.
+    ///  *
+    ///  * The authors of the code are the authors of
+    ///  * [draft-ietf-nfsv4-federated-fs-admin-xx.txt]: J. Lentini,
+    ///  * C. Everhart, D. Ellard, R. Tewari, and M. Naik.
+    ///  *
+    ///  * Redistribution and use in source and binary forms, with
+    ///  * or without modification, are permitted provided that the
+    ///  * following conditions are met:
+    ///  *
+    ///  * - Redistributions of source code must retain the above
+    ///  *   copyright notice, this list of conditions and the
+    ///  *   following disclaimer.
+    ///  *
+    ///  * - Redistributions in binary form must reproduce the above
+    ///  *   copyright notice, this list of conditions and the
+    ///  *   following disclaimer in the documentation and/or other
+    ///  *   materials provided with the distribution.
+    ///  *
+    ///  * - Neither the name of Internet Society, IETF or IETF
+    ///  *   Trust, nor the names of specific contributors, may be
+    ///  *   used to endorse or promote products derived from this
+    ///  *   software without specific prior written permission.
+    ///  *
+    ///  *   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS
+    ///  *   AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+    ///  *   WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    ///  *   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    ///  *   FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
+    ///  *   EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+    ///  *   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+    ///  *   EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+    ///  *   NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+    ///  *   SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    ///  *   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+    ///  *   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+    ///  *   OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+    ///  *   IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+    ///  *   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    ///  */
+    ///
+    /// enum FedFsStatus {
+    ///  FEDFS_OK                                 = 0,
+    ///  FEDFS_ERR_ACCESS                         = 1,
+    ///  FEDFS_ERR_BADCHAR                        = 2,
+    ///  FEDFS_ERR_BADNAME                        = 3,
+    ///  FEDFS_ERR_NAMETOOLONG                    = 4,
+    ///  FEDFS_ERR_LOOP                           = 5,
+    ///  FEDFS_ERR_BADXDR                         = 6,
+    ///  FEDFS_ERR_EXIST                          = 7,
+    ///  FEDFS_ERR_INVAL                          = 8,
+    ///  FEDFS_ERR_IO                             = 9,
+    ///  FEDFS_ERR_NOSPC                          = 10,
+    ///  FEDFS_ERR_NOTJUNCT                       = 11,
+    ///  FEDFS_ERR_NOTLOCAL                       = 12,
+    ///  FEDFS_ERR_PERM                           = 13,
+    ///  FEDFS_ERR_ROFS                           = 14,
+    ///  FEDFS_ERR_SVRFAULT                       = 15,
+    ///  FEDFS_ERR_NOTSUPP                        = 16,
+    ///  FEDFS_ERR_NSDB_ROUTE                     = 17,
+    ///  FEDFS_ERR_NSDB_DOWN                      = 18,
+    ///  FEDFS_ERR_NSDB_CONN                      = 19,
+    ///  FEDFS_ERR_NSDB_AUTH                      = 20,
+    ///  FEDFS_ERR_NSDB_LDAP                      = 21,
+    ///  FEDFS_ERR_NSDB_LDAP_VAL                  = 22,
+    ///  FEDFS_ERR_NSDB_NONCE                     = 23,
+    ///  FEDFS_ERR_NSDB_NOFSN                     = 24,
+    ///  FEDFS_ERR_NSDB_NOFSL                     = 25,
+    ///  FEDFS_ERR_NSDB_RESPONSE                  = 26,
+    ///  FEDFS_ERR_NSDB_FAULT                     = 27,
+    ///  FEDFS_ERR_NSDB_PARAMS                    = 28,
+    ///  FEDFS_ERR_NSDB_LDAP_REFERRAL             = 29,
+    ///  FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL         = 30,
+    ///  FEDFS_ERR_NSDB_LDAP_REFERRAL_NOTFOLLOWED = 31,
+    ///  FEDFS_ERR_NSDB_PARAMS_LDAP_REFERRAL      = 32,
+    ///  FEDFS_ERR_PATH_TYPE_UNSUPP               = 33,
+    ///  FEDFS_ERR_DELAY                          = 34,
+    ///  FEDFS_ERR_NO_CACHE                       = 35,
+    ///  FEDFS_ERR_UNKNOWN_CACHE                   = 36,
+    ///  FEDFS_ERR_NO_CACHE_UPDATE                = 37
+    /// };
+    ///
+    /// typedef opaque                 utf8string<>;
+    /// typedef utf8string             utf8str_cs;
+    /// typedef utf8string             utf8str_cis;
+    ///
+    /// typedef opaque FedFsUuid[16];
+    ///
+    /// struct FedFsNsdbName {
+    ///         unsigned int           port;
+    ///         utf8str_cis            hostname;
+    /// };
+    ///
+    /// typedef utf8str_cs FedFsPathComponent;
+    /// typedef FedFsPathComponent FedFsPathName<>;
+    ///
+    /// struct FedFsFsn {
+    ///         FedFsUuid              fsnUuid;
+    ///         FedFsNsdbName          nsdbName;
+    /// };
+    ///
+    /// enum FedFsFslType {
+    ///  FEDFS_NFS_FSL = 0
+    ///  /* other types TBD */
+    /// };
+    ///
+    /// struct FedFsNfsFsl {
+    ///         FedFsUuid              fslUuid;
+    ///         unsigned int           port;
+    ///         utf8str_cis            hostname;
+    ///         FedFsPathName          path;
+    /// };
+    ///
+    /// union FedFsFsl switch(FedFsFslType type) {
+    ///  case FEDFS_NFS_FSL:
+    ///         FedFsNfsFsl            nfsFsl;
+    /// };
+    ///
+    /// enum FedFsPathType {
+    ///  FEDFS_PATH_SYS = 0,
+    ///  FEDFS_PATH_NFS = 1
+    ///  /* other types TBD */
+    /// };
+    ///
+    /// union FedFsPath switch(FedFsPathType type) {
+    ///  case FEDFS_PATH_SYS: /* administrative path */
+    ///         FedFsPathName          adminPath;
+    ///  case FEDFS_PATH_NFS: /* NFS namespace path */
+    ///         FedFsPathName          nfsPath;
+    /// };
+    ///
+    /// struct FedFsCreateArgs {
+    ///         FedFsPath              path;
+    ///         FedFsFsn               fsn;
+    /// };
+    ///
+    /// enum FedFsResolveType {
+    ///  FEDFS_RESOLVE_NONE  = 0,
+    ///  FEDFS_RESOLVE_CACHE = 1,
+    ///  FEDFS_RESOLVE_NSDB  = 2
+    /// };
+    ///
+    /// struct FedFsLookupArgs {
+    ///         FedFsPath              path;
+    ///         FedFsResolveType       resolve;
+    /// };
+    ///
+    /// struct FedFsLookupResOk {
+    ///         FedFsFsn               fsn;
+    ///         FedFsFsl               fsl<>;
+    /// };
+    ///
+    /// struct FedFsLookupResReferralVal {
+    ///         FedFsNsdbName          targetNsdb;
+    ///         unsigned int           ldapResultCode;
+    /// };
+    ///
+    /// union FedFsLookupRes switch (FedFsStatus status) {
+    ///  case FEDFS_OK:
+    ///  case FEDFS_ERR_NO_CACHE_UPDATE:
+    ///         FedFsLookupResOk           resok;
+    ///  case FEDFS_ERR_NSDB_LDAP_VAL:
+    ///         unsigned int               ldapResultCode;
+    ///  case FEDFS_ERR_NSDB_LDAP_REFERRAL:
+    ///  case FEDFS_ERR_NSDB_PARAMS_LDAP_REFERRAL:
+    ///         FedFsNsdbName              targetNsdb;
+    ///  case FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL:
+    ///         FedFsLookupResReferralVal  resReferralVal;
+    ///  default:
+    ///         void;
+    /// };
+    ///
+    /// enum FedFsConnectionSec {
+    ///  FEDFS_SEC_NONE = 0,
+    ///  FEDFS_SEC_TLS = 1 /* StartTLS mechanism; RFC4513, Section 3 */
+    ///  /* other mechanisms TBD */
+    /// };
+    ///
+    /// union FedFsNsdbParams switch (FedFsConnectionSec secType) {
+    ///  case FEDFS_SEC_TLS:
+    ///         opaque                   secData<>;
+    ///  default:
+    ///         void;
+    /// };
+    ///
+    /// struct FedFsSetNsdbParamsArgs {
+    ///         FedFsNsdbName            nsdbName;
+    ///         FedFsNsdbParams          params;
+    /// };
+    ///
+    /// union FedFsGetNsdbParamsRes switch (FedFsStatus status) {
+    ///  case FEDFS_OK:
+    ///         FedFsNsdbParams          params;
+    ///  default:
+    ///         void;
+    /// };
+    ///
+    /// union FedFsGetLimitedNsdbParamsRes switch (FedFsStatus status) {
+    ///  case FEDFS_OK:
+    ///         FedFsConnectionSec       secType;
+    ///  default:
+    ///         void;
+    /// };
+    ///
+    /// program FEDFS_PROG {
+    ///  version FEDFS_V1 {
+    ///      void FEDFS_NULL(void) = 0;
+    ///      FedFsStatus FEDFS_CREATE_JUNCTION(
+    ///                   FedFsCreateArgs) = 1;
+    ///      FedFsStatus FEDFS_DELETE_JUNCTION(
+    ///                   FedFsPath) = 2;
+    ///      FedFsLookupRes FEDFS_LOOKUP_JUNCTION(
+    ///                   FedFsLookupArgs) = 3;
+    ///      FedFsStatus FEDFS_CREATE_REPLICATION(
+    ///                   FedFsCreateArgs) = 7;
+    ///      FedFsStatus FEDFS_DELETE_REPLICATION(
+    ///                   FedFsPath) = 8;
+    ///      FedFsLookupRes FEDFS_LOOKUP_REPLICATION(
+    ///                   FedFsLookupArgs) = 9;
+    ///      FedFsStatus FEDFS_SET_NSDB_PARAMS(
+    ///                   FedFsSetNsdbParamsArgs) = 4;
+    ///      FedFsGetNsdbParamsRes FEDFS_GET_NSDB_PARAMS(
+    ///                   FedFsNsdbName) = 5;
+    ///      FedFsGetLimitedNsdbParamsRes FEDFS_GET_LIMITED_NSDB_PARAMS(
+    ///                   FedFsNsdbName) = 6;
+    ///  } = 1;
+    /// } = 100418;
+      ]]></artwork></figure>
+  
+      <t>
+        &lt;CODE ENDS&gt;
+      </t>
     </section>
-
+  
     <section title="Error Values">
-
-	<t> The results of successful operations will consist of a
-	    status of FEDFS_OK.  The results of unsuccessful
-	    operations will begin with a status, other than FEDFS_OK,
-	    that indicates the reason why the operation failed.  </t>
-
-	<t> Many of the error status names and meanings (and the prose
-	    for their descriptions) are taken from the specification
-	    for NFSv4 <xref target="3530bis"/>.  Note, however, that
-	    the numeric values for the status codes are different. For 
-	    example, the name and meaning of FEDFS_ERR_ACCESS was 
-	    inspired by NFSv4's NFS4ERR_ACCESS, but their numeric values 
-	    are different.
-	</t>
-
-	<t> The status of an unsuccessful operation will generally only 
-	    indicate the first error encountered during the attempt to 
-	    execute the operation.  </t>
-
-	<t>
-
-	    <list style="hanging">
-
-	    <t hangText="FEDFS_OK:"> No errors were encountered.
-		The operation was a success. </t>
-
-	    <t hangText="FEDFS_ERR_ACCESS:"> Permission denied.
-		The caller does not have the correct permission
-		to perform the requested operation. </t>
-
-	    <t hangText="FEDFS_ERR_BADCHAR:"> A UTF-8 string contains a
-		character which is not supported by the server in the
-		context in which it being used. </t>
-
-	    <t hangText="FEDFS_ERR_BADNAME:"> A name string in a 
-		request consisted of valid UTF-8 characters supported 
-		by the server, but the name is not supported by the 
-		server as a valid name for the current operation. </t>
-
-	    <t hangText="FEDFS_ERR_NAMETOOLONG:"> Returned when the 
-		pathname in an operation exceeds the server's 
-		implementation limit. </t>
-
-	    <t hangText="FEDFS_ERR_LOOP:"> Returned when too 
-		many symbolic links were encountered in resolving 
-		pathname. </t>
-
-	    <t hangText="FEDFS_ERR_BADXDR:"> The server encountered
-		an XDR decoding error while processing an operation. </t>
-
-	    <t hangText="FEDFS_ERR_EXIST:"> The junction specified already
-		exists. </t>
-
-	    <t hangText="FEDFS_ERR_INVAL:"> Invalid argument for an
-		operation. </t>
-
-	    <t hangText="FEDFS_ERR_IO:"> A hard error occurred while
-		processing the requested operation. </t>
-
-	    <t hangText="FEDFS_ERR_NOSPC:"> The requested operation would
-		have caused the server's filesystem to exceed some
-		limit (for example, if there is a fixed number of
-		junctions per fileset or per server). </t>
-
-	    <t hangText="FEDFS_ERR_NOTJUNCT:"> The caller specified a
-		path that does not end in a junction as the operand
-		for an operation that requires the last component of
-		the path to be a junction.  </t>
-
-	    <t hangText="FEDFS_ERR_NOTLOCAL:"> The caller specified a
-		path that contains a junction in any position other
-		than the last component. </t>
-
-	    <t hangText="FEDFS_ERR_PERM:"> The operation was not
-		allowed because the caller is either not a privileged
-		user or not the owner of an object that would be
-		modified by the operation. </t>
-
-	    <t hangText="FEDFS_ERR_ROFS:"> A modifying operation
-		was attempted on a read-only filesystem. </t>
-
-	    <t hangText="FEDFS_ERR_SVRFAULT:"> An unanticipated
-		non-protocol error occurred on the server. </t>
-
-	    <t hangText="FEDFS_ERR_NSDB_ROUTE:"> The fileserver was unable to 
-		find a route to the NSDB. </t>
-
-	    <t hangText="FEDFS_ERR_NSDB_DOWN:"> The fileserver determined that 
-	        the NSDB was down. </t>
-
-	    <t hangText="FEDFS_ERR_NSDB_CONN:"> The fileserver was unable to 
-		establish a connection with the NSDB. </t>
-
-	    <t hangText="FEDFS_ERR_NSDB_AUTH:"> The fileserver was unable 
-		to authenticate and establish a secure connection with the 
-		NSDB. </t>
-
-	    <t hangText="FEDFS_ERR_NSDB_LDAP:"> An LDAP error occurred on
-	        the connection between the fileserver and NSDB. </t>
-
-	    <t hangText="FEDFS_ERR_NSDB_LDAP_VAL:"> Indicates the 
-	        same error as FEDFS_ERR_NSDB_LDAP, and allows the
-	        LDAP protocol error value to be returned back to the 
-	        client. </t>
-
-	    <t hangText="FEDFS_ERR_NSDB_NONCE:"> The fileserver was unable 
-		to locate the NCE in the appropriate NSDB. </t>
-
-	    <t hangText="FEDFS_ERR_NSDB_NOFSN:"> The fileserver was unable 
-		to locate the given FSN in the appropriate NSDB. </t>
-
-	    <t hangText="FEDFS_ERR_NSDB_NOFSL:"> The fileserver was unable 
-		to locate any FSLs for the given FSN in the appropriate 
-		NSDB. </t>
-
-	    <t hangText="FEDFS_ERR_NSDB_RESPONSE:"> The fileserver received 
-	        a malformed response from the NSDB. This includes situations
-	        when an NSDB entry (e.g., FSN or FSL) is missing a required
-	        attribute. </t>
-
-	    <t hangText="FEDFS_ERR_NSDB_FAULT:"> An unanticipated error 
-	        related to the NSDB occurred. </t>
-
-	    <t hangText="FEDFS_ERR_NSDB_PARAMS:"> The fileserver does not 
-	        have any connection parameters on record for the specified 
-	        NSDB. </t>
-
-	    <t hangText="FEDFS_ERR_NSDB_LDAP_REFERRAL:"> The fileserver received 
-	        an LDAP referral that it was unable to follow. </t>
-
-	    <t hangText="FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL:">  Indicates the 
-	        same error as FEDFS_ERR_NSDB_LDAP_REFERRAL, and allows the
-	        LDAP protocol error value to be returned back to the 
-	        client. </t>
-
-	    <t hangText="FEDFS_ERR_NSDB_LDAP_REFERRAL_NOTFOLLOWED:"> The fileserver
-	        received an LDAP referral that it chose not to follow, either 
-	        because the fileserver does not support following LDAP referrals 
-	        or LDAP referral following is disabled. </t>
-
-	    <t hangText="FEDFS_ERR_NSDB_PARAMS_LDAP_REFERRAL:"> The fileserver
-	        received an LDAP referral that it chose not to follow because
-	        the fileserver had no NSDB parameters for the NSDB targeted by 
-	        the LDAP referral. </t>
-
-	    <t hangText="FEDFS_ERR_PATH_TYPE_UNSUPP:"> The fileserver does not 
-	        support the specified FedFsPathType value. </t>
-
-	    <t hangText="FEDFS_ERR_NOTSUPP:"> The fileserver does not 
-	        support the specified procedure. </t>
-
-	    <t hangText="FEDFS_ERR_DELAY:"> The fileserver initiated the 
-	        request, but was not able to complete it in a timely fashion. 
-	        The client should wait and then try the request with a new 
-	        RPC transaction ID. </t>
-
-	    <t hangText="FEDFS_ERR_NO_CACHE:"> The fileserver does not 
-	        implement an FSN-to-FSL cache. </t>
-
-	    <t hangText="FEDFS_ERR_UNKNOWN_CACHE:"> The software receiving 
-	       the ONC RPC request is unaware if the fileserver implements
-	       an FSN-to-FSL cache or unable to communicate with the 
-	       FSN-to-FSL cache if it exists. </t>
-
-	    <t hangText="FEDFS_ERR_NO_CACHE_UPDATE:"> The fileserver 
-	       was unable to update its FSN-to-FSL cache. </t>
-
-	    </list>
-
-	</t>
-
+      <t>
+        The results of successful operations will consist of a
+        status of FEDFS_OK.  The results of unsuccessful
+        operations will begin with a status, other than FEDFS_OK,
+        that indicates the reason why the operation failed.
+      </t>
+  
+      <t>
+        Many of the error status names and meanings (and the prose
+        for their descriptions) are taken from the specification
+        for NFSv4 <xref target="3530bis"/>.  Note, however, that
+        the numeric values for the status codes are different. For
+        example, the name and meaning of FEDFS_ERR_ACCESS was
+        inspired by NFSv4's NFS4ERR_ACCESS, but their numeric values
+        are different.
+      </t>
+  
+      <t>
+        The status of an unsuccessful operation will generally only
+        indicate the first error encountered during the attempt to
+        execute the operation.
+      </t>
+  
+      <t>
+        <list style="hanging">
+          <t hangText="FEDFS_OK:">
+            No errors were encountered.  The operation was a success.
+          </t>
+  
+          <t hangText="FEDFS_ERR_ACCESS:">
+            Permission denied.  The caller does not have the correct permission
+            to perform the requested operation.
+          </t>
+  
+          <t hangText="FEDFS_ERR_BADCHAR:">
+            A UTF-8 string contains a character which is not supported by the
+            server in the context in which it being used.
+          </t>
+  
+          <t hangText="FEDFS_ERR_BADNAME:">
+            A name string in a request consisted of valid UTF-8 characters
+            supported by the server, but the name is not supported by the
+            server as a valid name for the current operation.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NAMETOOLONG:">
+            Returned when the pathname in an operation exceeds the
+            server's implementation limit.
+          </t>
+  
+          <t hangText="FEDFS_ERR_LOOP:">
+            Returned when too many symbolic links were encountered
+            in resolving pathname.
+          </t>
+  
+          <t hangText="FEDFS_ERR_BADXDR:">
+            The server encountered an XDR decoding error while processing
+            an operation.
+          </t>
+  
+          <t hangText="FEDFS_ERR_EXIST:">
+            The junction specified already exists.
+          </t>
+  
+          <t hangText="FEDFS_ERR_INVAL:">
+            Invalid argument for an operation.
+          </t>
+  
+          <t hangText="FEDFS_ERR_IO:">
+            A hard error occurred while processing the requested operation.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NOSPC:">
+            The requested operation would have caused the server's filesystem
+            to exceed some limit (for example, if there is a fixed number of
+            junctions per fileset or per server).
+          </t>
+  
+          <t hangText="FEDFS_ERR_NOTJUNCT:">
+            The caller specified a path that does not end in a junction as
+            the operand for an operation that requires the last component
+            of the path to be a junction.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NOTLOCAL:">
+            The caller specified a path that contains a junction in any
+            position other than the last component.
+          </t>
+  
+          <t hangText="FEDFS_ERR_PERM:">
+            The operation was not allowed because the caller is either
+            not a privileged user or not the owner of an object that
+            would be modified by the operation.
+          </t>
+  
+          <t hangText="FEDFS_ERR_ROFS:">
+            A modifying operation was attempted on a read-only filesystem.
+          </t>
+  
+          <t hangText="FEDFS_ERR_SVRFAULT:">
+            An unanticipated non-protocol error occurred on the server.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NSDB_ROUTE:">
+            The fileserver was unable to find a route to the NSDB.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NSDB_DOWN:">
+            The fileserver determined that the NSDB was down.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NSDB_CONN:">
+            The fileserver was unable to establish a connection with the NSDB.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NSDB_AUTH:">
+            The fileserver was unable to authenticate and establish
+            a secure connection with the NSDB.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NSDB_LDAP:">
+            An LDAP error occurred on the connection between the
+            fileserver and NSDB.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NSDB_LDAP_VAL:">
+            Indicates the same error as FEDFS_ERR_NSDB_LDAP, and
+            allows the LDAP protocol error value to be returned back to the client.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NSDB_NONCE:">
+            The fileserver was unable to locate the NCE in
+            the appropriate NSDB.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NSDB_NOFSN:">
+            The fileserver was unable to locate the given FSN
+            in the appropriate NSDB.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NSDB_NOFSL:">
+            The fileserver was unable to locate any FSLs for
+            the given FSN in the appropriate NSDB.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NSDB_RESPONSE:">
+            The fileserver received a malformed response from
+            the NSDB. This includes situations when an NSDB
+            entry (e.g., FSN or FSL) is missing a required attribute.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NSDB_FAULT:">
+            An unanticipated error related to the NSDB occurred.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NSDB_PARAMS:">
+            The fileserver does not have any connection parameters
+            on record for the specified NSDB.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NSDB_LDAP_REFERRAL:">
+            The fileserver received an LDAP referral
+            that it was unable to follow.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL:">
+            Indicates the same error as FEDFS_ERR_NSDB_LDAP_REFERRAL,
+            and allows the LDAP protocol error value to be returned
+            back to the client.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NSDB_LDAP_REFERRAL_NOTFOLLOWED:">
+            The fileserver received an LDAP referral that it chose
+            not to follow, either because the fileserver does not
+            support following LDAP referrals or LDAP referral
+            following is disabled.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NSDB_PARAMS_LDAP_REFERRAL:">
+            The fileserver received an LDAP referral that it chose
+            not to follow because the fileserver had no NSDB
+            parameters for the NSDB targeted by the LDAP referral.
+          </t>
+  
+          <t hangText="FEDFS_ERR_PATH_TYPE_UNSUPP:">
+            The fileserver does not support the specified FedFsPathType
+            value.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NOTSUPP:">
+            The fileserver does not support the specified procedure.
+          </t>
+  
+          <t hangText="FEDFS_ERR_DELAY:">
+            The fileserver initiated the request, but was not able to
+            complete it in a timely fashion.  The client should wait
+            and then try the request with a new RPC transaction ID.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NO_CACHE:">
+            The fileserver does not implement an FSN-to-FSL cache.
+          </t>
+  
+          <t hangText="FEDFS_ERR_UNKNOWN_CACHE:">
+            The software receiving the ONC RPC request is unaware
+            if the fileserver implements an FSN-to-FSL cache or unable
+            to communicate with the FSN-to-FSL cache if it exists.
+          </t>
+  
+          <t hangText="FEDFS_ERR_NO_CACHE_UPDATE:">
+            The fileserver was unable to update its FSN-to-FSL cache.
+          </t>
+        </list>
+      </t>
     </section>
-
+  
     <section title="Data Types">
-
-    	<t> The basic data types defined above MUST be formatted as follows: </t>
-
-	<t>
-	    <list style="hanging">
-
-		<t hangText="FedFsUuid:"> A universally unique identifier (UUID)
-		    as described in <xref target="RFC4122"/> as a version 1 UUID.  
-		    The UUID should be formatted in network byte order. </t>
-
-		<t hangText="FedFsNsdbName:">
-		    A (hostname, port) pair. 
-
-		    <vspace blankLines="1"/>
-
-		    The hostname is a variable length UTF-8 string that 
-		    represents an NSDB's network location in DNS name 
-		    notation. It SHOULD be prepared using the server4 rules 
-		    defined in Chapter 12 "Internationalization" of 
-		    <xref target="3530bis"/>. The DNS name MUST be 
-		    represented using a fully qualified domain name. A
-		    system (i.e., fileserver or administrative host) SHOULD
-		    resolve the fully qualified domain name to a network
-		    address using the system's standard resolution mechanisms.
-
-		    <vspace blankLines="1"/>
-
-		    The port is the NSDB transport port. The port value 
-		    MUST be in the range 0 (zero) to 65535. A value of 
-		    0 (zero) indicates that the standard LDAP port 
-		    number, 389, SHOULD be assumed.
-
-		    <vspace blankLines="1"/>
-
-		    FSNs are immutable and invariant. The attributes of an 
-		    FSN, including the fedfsNsdbName, are expected to remain 
-		    constant. Therefore, a FedFsNsdbName SHOULD NOT contain a 
-		    network address, such as an IPv4 or IPv6 address, as 
-		    this would indefinitely assign the network address. </t>
-
-		<t hangText="FedFsPathComponent:"> A case sensitive UTF-8
-		    string containing a filesystem path component.
-		    It SHOULD be prepared using the component4 rules defined 
-		    in Chapter 12 "Internationalization" of 
-		    <xref target="3530bis"/>. </t>
-
-		<t hangText="FedFsPathName:"> A variable length array of 
-		    FedFsPathComponent values representing a filesystem path. 
-		    The path's first component is stored at the first position 
-		    of the array, the second component is stored at the second 
-		    position of the array, and so on. 
-
-		    <vspace blankLines="1"/>
-
-		    The path "/" MUST be encoded as an array with zero 
-		    components.
-
-		    <vspace blankLines="1"/>
-
-		    A FedFsPathName MUST NOT contain any zero-length 
-		    components.
-
-		    </t>
-
-		<t hangText="FedFsPath:"> A pathname container. The format 
-		    and semantics of the pathname are defined by the 
-		    FedFsPathType value. </t>
-
-		<t hangText="FedFsPathType:"> The type specific description of a 
-		    pathname.
-
-		    <vspace blankLines="1"/>
-
-		    A FEDFS_PATH_SYS is an implementation dependent 
-		    administrative pathname. For example, it could be a 
-		    local file system path.
-
-		    <vspace blankLines="1"/>
-
-		    A FEDFS_PATH_NFS is a pathname in the NFSv4 
-		    server's single-server namespace. </t>
-
-		<t hangText="FedFsNsdbParams:"> A set of parameters for 
-		    connecting to an NSDB. Conceptually the fileserver 
-		    contains a data structure that maps an NSDB name (DNS 
-		    name and port value) to these LDAP connection parameters.
-
-		    <vspace blankLines="1"/>
-
-		    The secType field indicates the security mechanism 
-		    that MUST be used to protect all connections to 
-		    the NSDB with the connection parameters.
-
-		    <vspace blankLines="1"/>
-
-		    A value of FEDFS_SEC_NONE indicates that no security 
-		    mechanism is necessary. In this case, the secData array 
-		    will have 0 (zero) length.
-
-		    <vspace blankLines="1"/>
-
-		    A value of FEDFS_SEC_TLS indicates that the StartTLS 
-		    security mechanism <xref target="RFC4513"/> MUST 
-		    be used to protect all connections to the NSDB.
-		    In this case, the secData array will contain an 
-		    X.509v3 certificate in binary DER format 
-		    <xref target="RFC5280"/>. The certificate SHOULD be 
-		    used by the fileserver to authenticate the identity 
-		    of the NSDB. In particular, this certificate 
-		    SHOULD be used to validate the NSDB's TLS certificate 
-		    list chain (see 7.4.2 of <xref target="RFC5246"/>). 
-		    The certificate could be that of a certificate authority 
-		    or a self-signed certificate. </t>
-
-	    </list>
-
-	</t>
-
-	<section title="FedFsNsdbName Equality" anchor="nsdb-equality">
-
-	    <t> Two FedFsNsdbNames are considered equal if both 
-		their DNS name and port values are the same. 
-		As described above, the standard LDAP port 
-		number, 389, SHOULD be assumed if a port 
-		number of 0 (zero) is specified. Therefore, the
-		FedFsNsdbName "(nsdb.example.com, 0)" is considered 
-		equal to "(nsdb.example.com, 389)" but not equal 
-		to "(nsdb.example.com, 1066)" since the port number 
-		is different or "(nsdb.foo.example.com, 389)" since 
-		the DNS name is different. </t>
-
-	</section>
-
+      <t>
+        The basic data types defined above MUST be formatted as follows:
+      </t>
+  
+      <t>
+        <list style="hanging">
+  
+          <t hangText="FedFsUuid:">
+            A universally unique identifier (UUID) as described in
+            <xref target="RFC4122"/> as a version 1 UUID.  The UUID
+            should be formatted in network byte order.
+          </t>
+  
+          <t hangText="FedFsNsdbName:">
+            A (hostname, port) pair.
+  
+            <vspace blankLines="1"/>
+  
+            The hostname is a variable length UTF-8 string that
+            represents an NSDB's network location in DNS name
+            notation. It SHOULD be prepared using the server4 rules
+            defined in Chapter 12 "Internationalization" of
+            <xref target="3530bis"/>. The DNS name MUST be
+            represented using a fully qualified domain name. A
+            system (i.e., fileserver or administrative host) SHOULD
+            resolve the fully qualified domain name to a network
+            address using the system's standard resolution mechanisms.
+  
+            <vspace blankLines="1"/>
+  
+            The port is the NSDB transport port. The port value
+            MUST be in the range 0 (zero) to 65535. A value of
+            0 (zero) indicates that the standard LDAP port
+            number, 389, SHOULD be assumed.
+  
+            <vspace blankLines="1"/>
+  
+            FSNs are immutable and invariant. The attributes of an
+            FSN, including the fedfsNsdbName, are expected to remain
+            constant. Therefore, a FedFsNsdbName SHOULD NOT contain a
+            network address, such as an IPv4 or IPv6 address, as
+            this would indefinitely assign the network address.
+          </t>
+  
+          <t hangText="FedFsPathComponent:">
+            A case sensitive UTF-8
+            string containing a filesystem path component.
+            It SHOULD be prepared using the component4 rules defined
+            in Chapter 12 "Internationalization" of
+            <xref target="3530bis"/>.
+          </t>
+  
+          <t hangText="FedFsPathName:">
+            A variable length array of
+            FedFsPathComponent values representing a filesystem path.
+            The path's first component is stored at the first position
+            of the array, the second component is stored at the second
+            position of the array, and so on.
+  
+            <vspace blankLines="1"/>
+  
+            The path "/" MUST be encoded as an array with zero
+            components.
+  
+            <vspace blankLines="1"/>
+  
+            A FedFsPathName MUST NOT contain any zero-length
+            components.
+          </t>
+  
+          <t hangText="FedFsPath:">
+            A pathname container. The format
+            and semantics of the pathname are defined by the
+            FedFsPathType value.
+          </t>
+  
+          <t hangText="FedFsPathType:">
+            The type specific description of a
+            pathname.
+  
+            <vspace blankLines="1"/>
+  
+            A FEDFS_PATH_SYS is an implementation dependent
+            administrative pathname. For example, it could be a
+            local file system path.
+  
+            <vspace blankLines="1"/>
+  
+            A FEDFS_PATH_NFS is a pathname in the NFSv4
+            server's single-server namespace.
+          </t>
+  
+          <t hangText="FedFsNsdbParams:">
+            A set of parameters for
+            connecting to an NSDB. Conceptually the fileserver
+            contains a data structure that maps an NSDB name (DNS
+            name and port value) to these LDAP connection parameters.
+  
+            <vspace blankLines="1"/>
+  
+            The secType field indicates the security mechanism
+            that MUST be used to protect all connections to
+            the NSDB with the connection parameters.
+  
+            <vspace blankLines="1"/>
+  
+            A value of FEDFS_SEC_NONE indicates that no security
+            mechanism is necessary. In this case, the secData array
+            will have 0 (zero) length.
+  
+            <vspace blankLines="1"/>
+  
+            A value of FEDFS_SEC_TLS indicates that the StartTLS
+            security mechanism <xref target="RFC4513"/> MUST
+            be used to protect all connections to the NSDB.
+            In this case, the secData array will contain an
+            X.509v3 certificate in binary DER format
+            <xref target="RFC5280"/>. The certificate SHOULD be
+            used by the fileserver to authenticate the identity
+            of the NSDB. In particular, this certificate
+            SHOULD be used to validate the NSDB's TLS certificate
+            list chain (see 7.4.2 of <xref target="RFC5246"/>).
+            The certificate could be that of a certificate authority
+            or a self-signed certificate.
+          </t>
+        </list>
+      </t>
+  
+      <section title="FedFsNsdbName Equality" anchor="nsdb-equality">
+        <t>
+          Two FedFsNsdbNames are considered equal if both
+          their DNS name and port values are the same.
+          As described above, the standard LDAP port
+          number, 389, SHOULD be assumed if a port
+          number of 0 (zero) is specified. Therefore, the
+          FedFsNsdbName "(nsdb.example.com, 0)" is considered
+          equal to "(nsdb.example.com, 389)" but not equal
+          to "(nsdb.example.com, 1066)" since the port number
+          is different or "(nsdb.foo.example.com, 389)" since
+          the DNS name is different.
+        </t>
+      </section>
     </section>
-
+  
     <section title="Procedures">
-
-	<t> The procedures defined in <xref target="protocol"/> are described
-	    in detail in the following sections.  </t>
-
-	<t> Fileservers that participate as "internal" nodes in the 
-	    federated namespace MUST implement the following procedures: </t>
-
-<?rfc subcompact="yes" ?>
-	<t>
-	    <list style="empty">
-		<t> FEDFS_NULL </t>
-		<t> FEDFS_CREATE_JUNCTION </t>
-		<t> FEDFS_DELETE_JUNCTION </t>
-		<t> FEDFS_LOOKUP_JUNCTION </t>
-		<t> FEDFS_SET_NSDB_PARAMS </t>
-		<t> FEDFS_GET_NSDB_PARAMS </t>
-		<t> FEDFS_GET_LIMITED_NSDB_PARAMS </t>
-	    </list>
-	</t>
-<?rfc subcompact="no" ?>
-
-	<t> and SHOULD implement the following procedures: </t>
-
-<?rfc subcompact="yes" ?>
-	<t>
-	    <list style="empty">
-		<t> FEDFS_CREATE_REPLICATION </t>
-		<t> FEDFS_DELETE_REPLICATION </t> 
-		<t> FEDFS_LOOKUP_REPLICATION </t> 
-	    </list>
-	</t>
-<?rfc subcompact="no" ?>
-
-	<t> Fileservers that participate as "leaf" nodes in the namespace
-	    (i.e., fileservers that host filesets that are the target of
-	    junctions, but that do not contain any junctions) are not 
-	    required to implement any of these operations. </t>
-
-	<t> Operations that modify the state of a
-	    replicated fileset MUST result in the update of all of the
-	    replicas in a consistent manner.  Ideally all of the
-	    replicas SHOULD be updated before any operation returns. 
-	    If one or more of the replicas are unavailable, the
-	    operation MAY succeed, but the changes MUST be applied
-	    before the unavailable replicas are brought back online. 
-	    We assume that replicas are updated via some protocol that
-	    permits state changes to be reflected consistently across
-	    the set of replicas in such a manner that the replicas
-	    will converge to a consistent state within a bounded
-	    number of successful message exchanges between the servers
-	    hosting the replicas.  </t>
-
-	    <section title="FEDFS_NULL">
-
-	    	<section title="Synopsis">
-		<t>
-		The standard NULL procedure.
-		</t>
-	    	</section>
-
-	    	<section title="Description">
-
-		<t> The null RPC, which is included, by convention, in every
-		ONC RPC protocol. This procedure does not take any arguments 
-		and does not produce a result.  </t>
-
-	    	</section>
-
-	    	<section title="Errors">
-
-<?rfc subcompact="yes" ?>
-	    		<t><list style="empty">
-			<t> None. </t>
-  			</list></t>
-<?rfc subcompact="no" ?>
-
-	    	</section>
-
-	    </section>
-
-
-	    <section title="FEDFS_CREATE_JUNCTION">
-
-	    	<section title="Synopsis">
-		<t>
-		Create a new junction from some location on the 
-		server (defined as a pathname) to an FSN.
-		</t>
-		</section>
-
-	    	<section title="Description">
-
-		<t> This operation creates a junction from a
-		    server-relative path to a (potentially) remote
-		    fileset named by the given FSN.  </t>
-
-		<t> The junction directory on the server is identified by 
-		    a pathname in the form of an array of one or more 
-		    UTF-8 path component strings. It is not required that 
-		    this path be accessible in any other manner (e.g., 
-		    to a client).  This path does not appear in the federated 
-		    namespace, except by coincidence; there is no requirement 
-		    that the global namespace parallel the server namespace, nor 
-		    is it required that this path be relative to the server
-		    pseudo-root.  It does not need to be a path that
-		    is accessible via NFS (although the junction will
-		    be of limited utility if the directory specified
-		    by the path is not also accessible via NFS).  </t>
-
-		<t> If the fileset is read-only, then this operation
-		    MUST indicate this with a status of
-		    FEDFS_ERR_ROFS.  </t>
-
-		<t> If the path contains an invalid UTF-8 character, 
-		    then status FEDFS_ERR_BADCHAR MUST be returned. </t>
-
-		<t> The path is REQUIRED to exist and be completely
-		    local to the server.  It MUST NOT contain a
-		    junction.  If the last component of the path is a
-		    junction (i.e., this operation is attempting to
-		    create a junction where one already exists), then
-		    this operation MUST return the error FEDFS_ERR_EXIST (even
-		    if the requested junction is identical to the
-		    current junction).  If any other component of the
-		    path is a junction, then this operation MUST fail
-		    with status FEDFS_ERR_NOTLOCAL.  The path might contain a
-		    symbolic link (if supported by the local server),
-		    but the traversal of the path MUST remain within
-		    the server-local namespace. </t>
-
-		<t> If any component of the path does not exist, then 
-		    the operation fails with status FEDFS_ERR_INVAL.  </t>
-
-		<t> The server MAY enforce the local permissions on
-		    the path, including the final component.  If the
-		    path cannot be traversed because of insufficient
-		    permissions, or the final component is an
-		    unexecutable or unwritable directory, then the
-		    operation MAY fail with status FEDFS_ERR_ACCESS. </t>
-
-		<t> The operation SHOULD fail with status FEDFS_ERR_NSDB_PARAMS 
-		    if the fileserver does not have any connection parameters 
-		    on record for the specified NSDB.  </t>
-
-		<t> The association between the path and the FSN MUST
-		    be durable before the operation returns
-		    successfully.  If the operation return codes
-		    indicates success, then the junction was successfully 
-		    created and is immediately accessible.  </t>
-
-		<t> If successful, subsequent references via NFSv4 
-		    <xref target="3530bis"/> or NFSv4.1 <xref target="RFC5661"/> 
-		    clients to the directory that has been replaced by 
-		    the junction will result in a referral to a current
-		    location of the target fileset 
-		    <xref target="FEDFS-NSDB"/>. </t>
-
-		<t> The effective permissions of the
-		    directory that is converted, by this operation,
-		    into a junction are the permissions of the root
-		    directory of the target fileset.  The original
-		    permissions of the directory (and any other
-		    attributes it might have) are subsumed by the
-		    junction.  </t>
-
-		<t> This operation does not create a
-		    fileset at the location targeted by the junction.
-		    If the target fileset does not exist, the 
-		    junction will still be created. An NFS client 
-		    will discover the missing fileset when it 
-		    traverses the junction.  </t>
-
-	    	</section>
-
-	    	<section title="Errors">
-
-<?rfc subcompact="yes" ?>
-	    		<t><list style="empty">
-			<t> FEDFS_ERR_ACCESS </t>
-			<t> FEDFS_ERR_BADCHAR </t>
-			<t> FEDFS_ERR_BADNAME </t>
-			<t> FEDFS_ERR_NAMETOOLONG </t>
-			<t> FEDFS_ERR_LOOP </t>
-			<t> FEDFS_ERR_BADXDR </t>
-			<t> FEDFS_ERR_EXIST </t>
-			<t> FEDFS_ERR_INVAL </t>
-			<t> FEDFS_ERR_IO </t>
-			<t> FEDFS_ERR_NOSPC </t>
-			<t> FEDFS_ERR_NOTLOCAL </t>
-			<t> FEDFS_ERR_PERM </t>
-			<t> FEDFS_ERR_ROFS </t>
-			<t> FEDFS_ERR_SVRFAULT </t>
-			<t> FEDFS_ERR_PATH_TYPE_UNSUPP </t>
-			<t> FEDFS_ERR_NOTSUPP </t>
-			<t> FEDFS_ERR_DELAY </t>
-  			</list></t>
-<?rfc subcompact="no" ?>
-
-	    	</section>
-
-	    </section>
-
-	    <section title="FEDFS_DELETE_JUNCTION">
-
-	    	<section title="Synopsis">
-		<t>
-		Delete an existing junction from some location on the
-		server (defined as a pathname).
-		</t>
-	    	</section>
-
-	    	<section title="Description">
-
-		<t> This operation removes a junction specified by a
-		    server-relative path.  </t>
-
-		<t> As with FEDFS_CREATE_JUNCTION, the junction on the server 
-		    is identified by a pathname in the form of an array of one 
-		    or more UTF-8 path component strings. It is not required 
-		    that this path be accessible in any other manner (e.g., 
-		    to a client).  This path does not appear in the federated 
-		    namespace, except by coincidence; there is no requirement 
-		    that the global namespace reflect the server namespace,
-		    nor is it required that this path be relative to
-		    the server pseudo-root.  It does not need to be a
-		    path that is accessible via NFS.  </t>
-
-		<t> If the fileset is read-only, then this operation
-		    SHOULD indicate this with a status of
-		    FEDFS_ERR_ROFS.  </t>
-
-		<t> If the path contains an invalid UTF-8 character, 
-		    then status FEDFS_ERR_BADCHAR MUST be returned. </t>
-
-		<t> The path used to delete a junction might not be the 
-		    same path that was used to create the junction.  
-		    If the namespace on the server has changed, then 
-		    the junction might now appear at a different path 
-		    than where it was created.  If there is more than 
-		    one valid path to the junction, any of them can
-		    be used.  </t>
-
-		<t> The path is REQUIRED to exist and be completely
-		    local to the server.  It MUST NOT contain a
-		    junction, except as the final component, which
-		    MUST be a junction.  If any other component of the
-		    path is a junction, then this operation MUST fail
-		    with status FEDFS_ERR_NOTLOCAL.  If the last
-		    component of the path is not a junction then this
-		    operation MUST return status FEDFS_ERR_NOTJUNCT.  The
-		    path might contain a symbolic link (if supported by
-		    the local server), but the traversal of the path
-		    MUST remain within the server-local namespace. 
-		    </t>
-
-		<t> The server MAY enforce the local permissions on
-		    the path, including the final component.  If the
-		    path cannot be traversed because of insufficient
-		    permissions, or the parent directory of the
-		    junction is an unexecutable or unwritable directory,
-		    then the operation MAY fail with status
-		    FEDFS_ERR_ACCESS.  </t>
-
-		<t> The removal of the association between the path
-		    and the FSN MUST be durable before the operation
-		    returns successfully.  If the operation return
-		    codes indicates success, then the the junction 
-		    was successfully destroyed.  </t>
-
-		<t> The effective permissions and other attributes of
-		    the directory that is restored by this operation
-		    SHOULD be identical to their value prior to the
-		    creation of the junction.  </t>
-
-		<t> After removal of the junction, the fileserver 
-		    MAY check if any of its existing junctions 
-		    reference the NSDB specified in the removed 
-		    junction's FSN. If the NSDB is not referenced, the 
-                    fileserver MAY delete the connection parameters 
-                    of the unreferenced NSDB.  </t>
-
-	    	</section>
-
-	    	<section title="Errors">
-
-<?rfc subcompact="yes" ?>
-	    		<t><list style="empty">
-			<t> FEDFS_ERR_ACCESS </t>
-			<t> FEDFS_ERR_BADCHAR </t>
-			<t> FEDFS_ERR_BADNAME </t>
-			<t> FEDFS_ERR_NAMETOOLONG </t>
-			<t> FEDFS_ERR_LOOP </t>
-			<t> FEDFS_ERR_BADXDR </t>
-			<t> FEDFS_ERR_INVAL </t>
-			<t> FEDFS_ERR_IO </t>
-			<t> FEDFS_ERR_NOTJUNCT </t>
-			<t> FEDFS_ERR_NOTLOCAL </t>
-			<t> FEDFS_ERR_PERM </t>
-			<t> FEDFS_ERR_ROFS </t>
-			<t> FEDFS_ERR_SVRFAULT </t>
-			<t> FEDFS_ERR_PATH_TYPE_UNSUPP </t>
-			<t> FEDFS_ERR_NOTSUPP </t>
-			<t> FEDFS_ERR_DELAY </t>
-  			</list></t>
-<?rfc subcompact="no" ?>
-
-	    	</section>
-
-	    </section>
-
-	    <section title="FEDFS_LOOKUP_JUNCTION" 
-	    				anchor="lookup-junction">
-
-	    	<section title="Synopsis">
-		<t>
-		Query the server to discover the current value of the
-		junction (if any) at a given path in the server namespace.
-		</t>
-	    	</section>
-
-	    	<section title="Description">
-
-		<t> This operation queries a server to determine
-		    whether a given path ends in a junction, and if
-		    so, the FSN to which the junction refers and 
-		    the filerserver's ability to resolve the 
-		    junction. </t>
-
-		<t> Ordinary NFSv4 operations do not provide any
-		    general mechanism to determine whether an object
-		    is a junction -- there is no encoding specified
-		    by the NFSv4 protocol that can represent this
-		    information. </t>
-
-		<t> As with FEDFS_CREATE_JUNCTION, the pathname MUST be 
-		    in the form of an array of one or more UTF-8 path 
-		    component strings. It is not required that this 
-		    path be accessible in any other manner (e.g., to 
-		    a client).  This path does not appear in the 
-		    federated namespace, except by coincidence; there is 
-		    no requirement that the global namespace reflect 
-		    the server namespace, nor is it required that this 
-		    path be relative to the server pseudo-root. It does 
-		    not need to be a path that is accessible via NFS.  </t>
-
-		<t> If the path contains an invalid UTF-8 character,
-		    then status FEDFS_ERR_BADCHAR MUST be returned. 
-		    </t>
-
-		<t> The path used to lookup a junction might not be the 
-		    same path that was used to create the junction.  If 
-		    the namespace on the server has changed, then a 
-		    junction might now appear at a different path than where 
-		    it was created.  If there is more than one valid path 
-		    to the junction, any of them might be used.  </t>
-
-		<t> The path is REQUIRED to exist and be completely
-		    local to the server.  It MUST NOT contain a
-		    junction, except as the final component.  If any
-		    other component of the path is a junction, then
-		    this operation MUST fail with status
-		    FEDFS_ERR_NOTLOCAL.  If the last component of the
-		    path is not a junction then this operation MUST
-		    return the status FEDFS_ERR_NOTJUNCT.  The path
-		    might contain a symbolic link (if supported by the
-		    local server), but the traversal of the path MUST 
-		    remain within the server-local namespace.  </t>
-
-		<t> The server MAY enforce the local permissions on
-		    the path, including the final component.  If the
-		    path cannot be traversed because of insufficient
-		    permissions, or the parent directory of the
-		    junction is an unexecutable or unwritable directory,
-		    then the operation MAY fail with status
-		    FEDFS_ERR_ACCESS.  </t>
-
-		<t> If the junction exists, the resolve parameter 
-		    allows for testing the fileserver's ability 
-		    to resolve the junction. If the junction does not 
-		    exist, the fileserver will ignore the resolve 
-		    parameter. </t>
-
-		<t> If the junction exists and the resolve parameter 
-		    is set to FEDFS_RESOLVE_NONE, the fileserver 
-		    MUST NOT attempt to resolve the FSN. This will 
-		    allow the administrator to obtain the junction's 
-		    FSN even if the resolution would fail. Therefore
-		    on success, the result of a FEDFS_RESOLVE_NONE 
-		    call will return a 0 (zero) length fsl list in 
-		    the FedFsLookupResOk structure. </t>
-
-		<t> If the junction exists and the resolve parameter 
-		    is set to FEDFS_RESOLVE_CACHE, the fileserver 
-		    MUST attempt to resolve the FSN using its FSL 
-		    cache, if one exists. The fileserver MUST NOT 
-		    resolve the FSN by contacting the appropriate 
-		    NSDB. If the fileserver's cache does not have
-		    a mapping for the FSN in question, the result
-		    of the operation MUST be FEDFS_OK with 0 (zero) 
-		    elements in the FedFsLookupResOk structure's 
-		    fsl array. The operation MAY fail with status 
-		    FEDFS_ERR_NO_CACHE if the fileserver does not 
-		    contain an FSN-to-FSL cache or with status 
-		    FEDFS_ERR_UNKNOWN_CACHE if the state of the 
-		    cache is unknown. </t>
-
-		<t> If the junction exists and the resolve parameter 
-		    is set to FEDFS_RESOLVE_NSDB, the fileserver 
-		    MUST attempt to resolve the FSN by contacting 
-		    the appropriate NSDB. The FSN MUST NOT be 
-		    resolved using cached information. 
-		    The resolution MAY fail with
-		    FEDFS_ERR_NSDB_ROUTE,
-		    FEDFS_ERR_NSDB_DOWN,
-		    FEDFS_ERR_NSDB_CONN, 
-		    FEDFS_ERR_NSDB_AUTH,
-		    FEDFS_ERR_NSDB_LDAP,
-		    FEDFS_ERR_NSDB_LDAP_VAL,
-		    FEDFS_ERR_NSDB_NOFSN,
-		    FEDFS_ERR_NSDB_NOFSL,
-		    FEDFS_ERR_NSDB_NONCE, 
-		    FEDFS_ERR_NSDB_RESPONSE,
-		    FEDFS_ERR_NSDB_FAULT,
-		    FEDFS_ERR_NSDB_LDAP_REFERRAL,
-		    FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL, 
-		    FEDFS_ERR_NSDB_LDAP_REFERRAL_NOTFOLLOWED, or 
-		    FEDFS_ERR_NSDB_PARAMS_LDAP_REFERRAL,
-		    depending on the nature of the failure. </t>
-
-		<t> In the case of a LDAP failure, the fileserver 
-		    MAY return either FEDFS_ERR_NSDB_LDAP or 
-		    FEDFS_ERR_NSDB_LDAP_VAL. FEDFS_ERR_NSDB_LDAP
-		    indicates that an LDAP protocol error occurred 
-		    during the resolution. FEDFS_ERR_NSDB_LDAP_VAL
-		    also indicates that an LDAP protocol error occurred
-		    during the resolution and allows the LDAP 
-		    protocol error value to be returned in the 
-		    FedFsLookupRes's ldapResultCode field (see 
-		    the resultCode values in Section 4.1.9 of 
-		    <xref target="RFC4511"/>).  </t>
-
-		<t> If the NSDB responds with an LDAP referral, either 
-		    the Referral type defined in Section 4.1.10 of 
-		    <xref target="RFC4511"/> or the 
-		    SearchResultReference type defined in Section 
-		    4.5.3 of <xref target="RFC4511"/>, the fileserver 
-		    SHOULD process the LDAP referral using the same 
-		    policies as the fileserver's file-access protocol
-		    server. The fileserver can indicate a failure 
-		    while processing the LDAP referral using 
-		    FEDFS_ERR_NSDB_LDAP_REFERRAL,
-		    FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL, 
-		    FEDFS_ERR_NSDB_LDAP_REFERRAL_NOTFOLLOWED, or 
-		    FEDFS_ERR_NSDB_PARAMS_LDAP_REFERRAL. The 
-		    FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL is analogous
-		    to the FEDFS_ERR_NSDB_LDAP_VAL error and 
-		    allows the LDAP protocol error value to 
-		    be returned in the FedFsLookupResReferralVal's
-		    ldapResultCode field. The FEDFS_ERR_NSDB_LDAP_REFERRAL
-		    and FEDFS_ERR_NSDB_PARAMS_LDAP_REFERRAL errors
-		    errors allow the NSDB targeted by the LDAP 
-		    referral to be returned in the FedFsLookupRes's 
-		    targetNsdb field. Similarly, the
-		    FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL error 
-		    includes this information in the 
-		    FedFsLookupResReferralVal's targetNsdb. </t>
-
-		<t> If the fileserver has a cache of FSL records, 
-		    the process of resolving an FSN using an NSDB 
-		    SHOULD result in the cache being updated. A 
-		    failure to update the cache can be indicated 
-		    with the FEDFS_ERR_NO_CACHE_UPDATE status value.
-		    When updating the cache, new FSLs for the given 
-		    FSN SHOULD be added to the cache and deleted 
-		    FSLs SHOULD be removed from the cache. This 
-		    behavior is desirable because it allows an 
-		    administrator to proactively request that the 
-		    fileserver refresh its FSL cache. For example, 
-		    the administrator might like to refresh the 
-		    fileserver's cache when changes are made to
-		    an FSN's FSLs. </t>
-
-		<t> If the junction is resolved, the fileserver 
-		    will include a list of UUIDs for the 
-		    FSN's FSLs in the FedFsLookupResOk structure's
-		    fsl array. </t>
- 
-		</section>
-
-	    	<section title="Errors">
-
-<?rfc subcompact="yes" ?>
-	    		<t><list style="empty">
-			<t> FEDFS_ERR_ACCESS </t>
-			<t> FEDFS_ERR_BADCHAR </t>
-			<t> FEDFS_ERR_BADNAME </t>
-			<t> FEDFS_ERR_NAMETOOLONG </t>
-			<t> FEDFS_ERR_LOOP </t>
-			<t> FEDFS_ERR_BADXDR </t>
-			<t> FEDFS_ERR_INVAL </t>
-			<t> FEDFS_ERR_IO </t>
-			<t> FEDFS_ERR_NOTJUNCT </t>
-			<t> FEDFS_ERR_NOTLOCAL </t>
-			<t> FEDFS_ERR_PERM </t>
-			<t> FEDFS_ERR_SVRFAULT </t>
-			<t> FEDFS_ERR_NSDB_ROUTE </t>
-			<t> FEDFS_ERR_NSDB_DOWN </t>
-			<t> FEDFS_ERR_NSDB_CONN </t>
-			<t> FEDFS_ERR_NSDB_AUTH </t>
-			<t> FEDFS_ERR_NSDB_LDAP </t>
-			<t> FEDFS_ERR_NSDB_LDAP_VAL </t>
-			<t> FEDFS_ERR_NSDB_NONCE </t>
-			<t> FEDFS_ERR_NSDB_NOFSN </t>
-			<t> FEDFS_ERR_NSDB_NOFSL </t>
-			<t> FEDFS_ERR_NSDB_RESPONSE </t>
-			<t> FEDFS_ERR_NSDB_FAULT </t>
-			<t> FEDFS_ERR_NSDB_PARAMS </t>
-			<t> FEDFS_ERR_NSDB_LDAP_REFERRAL </t>
-			<t> FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL </t>
-			<t> FEDFS_ERR_NSDB_LDAP_REFERRAL_NOTFOLLOWED </t>
-			<t> FEDFS_ERR_NSDB_PARAMS_LDAP_REFERRAL </t>
-			<t> FEDFS_ERR_PATH_TYPE_UNSUPP </t>
-			<t> FEDFS_ERR_NOTSUPP </t>
-			<t> FEDFS_ERR_DELAY </t>
-  			<t> FEDFS_ERR_NO_CACHE </t>
-			<t> FEDFS_ERR_UNKNOWN_CACHE </t>
-			<t> FEDFS_ERR_NO_CACHE_UPDATE </t>
-  			</list></t>
-<?rfc subcompact="no" ?>
-
-	    	</section>
-	
-	    </section>
-
-	    <section title="FEDFS_CREATE_REPLICATION">
-
-	    	<section title="Synopsis">
-		<t>
-		Set an FSN representing the replication information for the 
-		fileset containing the pathname.
-		</t>
-		</section>
-
-	    	<section title="Description">
-
-		<t> This operation indicates the replication 
-		    information to be returned for a particular 
-		    fileset.  An NFSv4.x client might request 
-		    fs_locations or fs_locations_info at any time 
-		    to detect other copies of this fileset, and 
-		    this operation supports this by supplying the 
-		    FSN the fileserver should use to respond. This 
-		    FSN should be associated with the entire 
-		    fileset in which the path resides, and should 
-		    be used to satisfy fs_locations or 
-		    fs_locations_info attribute requests whenever 
-		    no junction is being accessed; if a junction 
-		    is being accessed, the FSN specified by 
-		    FEDFS_CREATE_JUNCTION will take precedence. Setting 
-		    the replication FSN on a fileset that already 
-		    has a replication FSN set is allowed. </t>
-
-		<t> This operation differs from FEDFS_CREATE_JUNCTION 
-		    in that it controls a fileset-wide attribute not 
-		    associated with a junction. </t>
-
-		<t> The server SHOULD permit this operation even 
-		    on read-only filesets, but MAY return 
-		    FEDFS_ERR_ROFS if this is not possible. </t>
-
-		<t> If the path contains an invalid UTF-8 character, 
-		    then status FEDFS_ERR_BADCHAR MUST be returned. </t>
-
-		<t> The path is REQUIRED to exist and be completely 
-		    local to the server. It MUST NOT contain a junction.  
-		    If any component of the path is a junction, then 
-		    this operation MUST fail with status 
-		    FEDFS_ERR_NOTLOCAL.  The path might contain a 
-		    symbolic link (if supported by the local server), 
-		    but the traversal of the path MUST remain within 
-		    the server-local namespace. </t>
-
-		<t> The server MAY enforce the local permissions on 
-		    the path, including the final component.  If the 
-		    path cannot be traversed because of insufficient 
-		    permissions, or the final component is an 
-		    unexecutable or unwritable directory, then the 
-		    operation MAY fail with status FEDFS_ERR_ACCESS. </t>
-
-		<t> The operation SHOULD fail with status 
-		    FEDFS_ERR_NSDB_PARAMS if the fileserver does 
-		    not have any connection parameters on record 
-		    for the specified NSDB. </t>
-
-		<t>  The same FSN value SHOULD be associated with 
-		     all replicas of a filesystem. Depending on the
-		     underlying representation, the FSN associated
-		     with a filesystem might or might not be replicated
-		     automatically with the filesystem replication
-		     mechanism. Therefore if FEDFS_CREATE_REPLICATION 
-		     is used on one replica of a filesystem, it
-		     SHOULD be used on all replicas. </t>
-
-		</section>
-
-	    	<section title="Errors">
-
-<?rfc subcompact="yes" ?>
-	    		<t><list style="empty">
-			<t> FEDFS_ERR_ACCESS </t>
-			<t> FEDFS_ERR_BADCHAR </t>
-			<t> FEDFS_ERR_BADNAME </t>
-			<t> FEDFS_ERR_NAMETOOLONG </t>
-			<t> FEDFS_ERR_LOOP </t>
-			<t> FEDFS_ERR_BADXDR </t>
-			<t> FEDFS_ERR_EXIST </t>
-			<t> FEDFS_ERR_INVAL </t>
-			<t> FEDFS_ERR_IO </t>
-			<t> FEDFS_ERR_NOSPC </t>
-			<t> FEDFS_ERR_NOTLOCAL </t>
-			<t> FEDFS_ERR_PERM </t>
-			<t> FEDFS_ERR_ROFS </t>
-			<t> FEDFS_ERR_SVRFAULT </t>
-			<t> FEDFS_ERR_PATH_TYPE_UNSUPP </t>
-			<t> FEDFS_ERR_NOTSUPP </t>
-			<t> FEDFS_ERR_DELAY </t>
-  			</list></t>
-<?rfc subcompact="no" ?>
-
-		</section>
-
-	    </section>
-
-	    <section title="FEDFS_DELETE_REPLICATION">
-
-	    	<section title="Synopsis">
-		<t>
-		Remove the replication information for the fileset containing 
-		the pathname.
-		</t>
-	    	</section>
-
-	    	<section title="Description">
-
-		<t> This operation removes any replication information 
-		    from the fileset in which the path resides, such 
-		    that NFSv4.x client requests for fs_locations or 
-		    fs_locations_info in the absence of a junction will 
-		    not be satisfied. </t>
- 
-		<t> This operation differs from FEDFS_DELETE_JUNCTION 
-		    in that it controls a fileset-wide attribute not 
-		    associated with a junction. </t>
-
-		<t> The server SHOULD permit this operation even on 
-		    read-only filesets, but MAY return FEDFS_ERR_ROFS 
-		    if this is not possible. </t>
-
-		<t> If the path contains an invalid UTF-8 character, 
-		    then status FEDFS_ERR_BADCHAR MUST be returned. </t>
-
-		<t> The path is REQUIRED to exist and be completely 
-		    local to the server. It MUST NOT contain a junction. 
-		    If any component of the path is a junction, then 
-		    this operation MUST fail with status 
-		    FEDFS_ERR_NOTLOCAL. </t>
-
-		<t> The server MAY enforce the local permissions on 
-		    the path, including the final component. If the 
-		    path cannot be traversed because of insufficient 
-		    permissions, or the parent directory of the junction
-		    unexecutable or unwritable directory, then the 
-		    operation MAY fail with status FEDFS_ERR_ACCESS. </t>
-
-	    	</section>
-
-	    	<section title="Errors">
-
-<?rfc subcompact="yes" ?>
-	    		<t><list style="empty">
-			<t> FEDFS_ERR_ACCESS </t>
-			<t> FEDFS_ERR_BADCHAR </t>
-			<t> FEDFS_ERR_BADNAME </t>
-			<t> FEDFS_ERR_NAMETOOLONG </t>
-			<t> FEDFS_ERR_LOOP </t>
-			<t> FEDFS_ERR_BADXDR </t>
-			<t> FEDFS_ERR_INVAL </t>
-			<t> FEDFS_ERR_IO </t>
-			<t> FEDFS_ERR_NOTJUNCT </t>
-			<t> FEDFS_ERR_NOTLOCAL </t>
-			<t> FEDFS_ERR_PERM </t>
-			<t> FEDFS_ERR_ROFS </t>
-			<t> FEDFS_ERR_SVRFAULT </t>
-			<t> FEDFS_ERR_PATH_TYPE_UNSUPP </t>
-			<t> FEDFS_ERR_NOTSUPP </t>
-			<t> FEDFS_ERR_DELAY </t>
-  			</list></t>
-<?rfc subcompact="no" ?>
-
-	    	</section>
-
-	    </section>
-
-	    <section title="FEDFS_LOOKUP_REPLICATION">
-
-	    	<section title="Synopsis">
-		<t> Query the server to discover the current replication 
-		    information (if any) at the given path.
-		</t>
-	    	</section>
-
-	    	<section title="Description">
-
-		<t> This operation queries a server to determine 
-		    whether a fileset containing the given path 
-		    has replication information associated with 
-		    it, and if so, the FSN for that replication 
-		    information. </t>
-
-		<t> This operation differs from FEDFS_LOOKUP_JUNCTION 
-		    in that it inquires about a fileset-wide 
-		    attribute not associated with a junction. </t>
-
-		<t> If the path contains an invalid UTF-8 
-		    character, then status FEDFS_ERR_BADCHAR 
-		    MUST be returned. </t>
-
-		<t> The path is REQUIRED to exist and be completely 
-		    local to the server. It MUST NOT contain a junction. 
-		    If any component of the path is a junction, then 
-		    this operation MUST fail with status 
-		    FEDFS_ERR_NOTLOCAL. </t>
-
-		<t> The server MAY enforce the local permissions 
-		    on the path, including the final component.  If 
-		    the path cannot be traversed because of 
-		    insufficient permissions, or the parent directory 
-		    of the junction is an unexecutable or unwritable 
-		    directory, then the operation MAY fail with status 
-		    FEDFS_ERR_ACCESS. </t>
-
-		<t> Interpretation of the 'resolve' parameter and 
-		    the procedure's results shall be the same as 
-		    specified in <xref target="lookup-junction"/> 
-		    for the FEDFS_LOOKUP_JUNCTION operation. </t>
-
-		</section>
-
-	    	<section title="Errors">
-
-<?rfc subcompact="yes" ?>
-	    		<t><list style="empty">
-			<t> FEDFS_ERR_ACCESS </t>
-			<t> FEDFS_ERR_BADCHAR </t>
-			<t> FEDFS_ERR_BADNAME </t>
-			<t> FEDFS_ERR_NAMETOOLONG </t>
-			<t> FEDFS_ERR_LOOP </t>
-			<t> FEDFS_ERR_BADXDR </t>
-			<t> FEDFS_ERR_INVAL </t>
-			<t> FEDFS_ERR_IO </t>
-			<t> FEDFS_ERR_NOTJUNCT </t>
-			<t> FEDFS_ERR_NOTLOCAL </t>
-			<t> FEDFS_ERR_PERM </t>
-			<t> FEDFS_ERR_SVRFAULT </t>
-			<t> FEDFS_ERR_NSDB_ROUTE </t>
-			<t> FEDFS_ERR_NSDB_DOWN </t>
-			<t> FEDFS_ERR_NSDB_CONN </t>
-			<t> FEDFS_ERR_NSDB_AUTH </t>
-			<t> FEDFS_ERR_NSDB_LDAP </t>
-			<t> FEDFS_ERR_NSDB_LDAP_VAL </t>
-			<t> FEDFS_ERR_NSDB_NONCE </t>
-			<t> FEDFS_ERR_NSDB_NOFSN </t>
-			<t> FEDFS_ERR_NSDB_NOFSL </t>
-			<t> FEDFS_ERR_NSDB_RESPONSE </t>
-			<t> FEDFS_ERR_NSDB_FAULT </t>
-			<t> FEDFS_ERR_NSDB_PARAMS </t>
-			<t> FEDFS_ERR_NSDB_LDAP_REFERRAL </t>
-			<t> FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL </t>
-			<t> FEDFS_ERR_NSDB_LDAP_REFERRAL_NOTFOLLOWED </t>
-			<t> FEDFS_ERR_NSDB_PARAMS_LDAP_REFERRAL </t>
-			<t> FEDFS_ERR_PATH_TYPE_UNSUPP </t>
-			<t> FEDFS_ERR_NOTSUPP </t>
-			<t> FEDFS_ERR_DELAY </t>
-  			<t> FEDFS_ERR_NO_CACHE </t>
-			<t> FEDFS_ERR_UNKNOWN_CACHE </t>
-  			</list></t>
-<?rfc subcompact="no" ?>
-
-	    	</section>
-
-	    </section>
-
-	    <section title="FEDFS_SET_NSDB_PARAMS">
-
-	    	<section title="Synopsis">
-		<t>
-		Set the connection parameters for the specified NSDB.
-		</t>
-	    	</section>
-
-	    	<section title="Description">
-
-	        <t> This operations allows the administrator to set 
-	            the connection parameters for a given NSDB. </t>
-
-                <t> If a record for the given NSDB does not exist, a 
-                    new record is created with the specified connection 
-                    parameters. </t>
-
-		<t> If a record for the given NSDB does exist, the 
-		    existing connection parameters are replaced 
-		    with the specified connection parameters. </t>
-
-		<t> An NSDB is specified using a FedFsNsdbName. 
-		    The rules in <xref target="nsdb-equality"/> 
-		    define when two FedFsNsdbNames are considered 
-		    equal </t>
-
-		<t> The given NSDB need not be referenced by 
-		    any junctions on the fileserver. This 
-		    situation will occur when connection parameters 
-		    for a new NSDB are installed. </t>
-
-		<t> The format of the connection parameters is 
-		    described above. </t>
-
-		<t> On success, this operation returns FEDFS_OK. 
-		    When the operation returns, the new connection 
-		    parameters SHOULD be used for all subsequent 
-		    LDAP connections to the given NSDB. Existing 
-		    connections MAY be terminated and re-established 
-		    using the new connection parameters. The connection 
-		    parameters SHOULD be durable across fileserver 
-		    reboots. </t>
-
-		<t> On failure, an error value indicating the 
-		    type of error is returned. The operation 
-		    MAY return FEDFS_ERR_ACCESS if the operation's 
-		    associated user does not have sufficient 
-		    permissions to create/modify NSDB connection 
-		    parameters.  </t>
-
-	    	</section>
-
-	    	<section title="Errors">
-
-<?rfc subcompact="yes" ?>
-	    		<t><list style="empty">
-			<t> FEDFS_ERR_ACCESS </t>
-			<t> FEDFS_ERR_BADCHAR </t>
-			<t> FEDFS_ERR_BADNAME </t>
-			<t> FEDFS_ERR_BADXDR </t>
-			<t> FEDFS_ERR_INVAL </t>
-			<t> FEDFS_ERR_IO </t>
-			<t> FEDFS_ERR_NOSPC </t>
-			<t> FEDFS_ERR_SVRFAULT </t>
-			<t> FEDFS_ERR_NOTSUPP </t>
-			<t> FEDFS_ERR_DELAY </t>
-  			</list></t>
-<?rfc subcompact="no" ?>
-
-	    	</section>
-
-	    </section>
-
-	    <section title="FEDFS_GET_NSDB_PARAMS">
-
-	    	<section title="Synopsis">
-		<t>
-		Get the connection parameters for the specified NSDB.
-		</t>
-	    	</section>
-
-	    	<section title="Description">
-
-	        <t> This operations allows the administrator to 
-	            retrieve connection parameters, if they exist,
-	            for the given NSDB.</t>
-
-		<t> An NSDB is specified using a FedFsNsdbName. 
-		    The rules in <xref target="nsdb-equality"/> 
-		    define when two FedFsNsdbNames are considered 
-		    equal </t>
-
-		<t> A set of connection parameters is considered 
-		    a match if their associated NSDB is equal 
-		    (as defined above) to the operation's NSDB
-		    argument. Therefore, there is at most one 
-		    set of connection parameters that can match 
-		    the query described by this operation. </t>
-
-		<t> The format of the connection parameters is
-		    described above. </t>
-
-	        <t> On success, this operation returns FEDFS_OK 
-	            and the connection parameters on record for the 
-	            given NSDB. </t>
-
-		<t> On failure, an error value indicating the 
-		    type of error is returned. This operation MAY 
-		    return FEDFS_ERR_NSDB_PARAMS to indicate that 
-		    there are no connection parameters on record for 
-	            the given NSDB. The operation MAY return 
-	            FEDFS_ERR_ACCESS if the operation's associated 
-	            user does not have sufficient permissions to 
-	            view NSDB connection parameters.  </t>
-
-	    	</section>
-
-	    	<section title="Errors">
-
-<?rfc subcompact="yes" ?>
-	    		<t><list style="empty">
-			<t> FEDFS_ERR_ACCESS </t>
-			<t> FEDFS_ERR_BADCHAR </t>
-			<t> FEDFS_ERR_BADNAME </t>
-			<t> FEDFS_ERR_BADXDR </t>
-			<t> FEDFS_ERR_INVAL </t>
-			<t> FEDFS_ERR_IO </t>
-			<t> FEDFS_ERR_SVRFAULT </t>
-			<t> FEDFS_ERR_NSDB_PARAMS </t>
-			<t> FEDFS_ERR_NOTSUPP </t>
-			<t> FEDFS_ERR_DELAY </t>
-  			</list></t>
-<?rfc subcompact="no" ?>
-
-	    	</section>
-
-	    </section>
-
-	    <section title="FEDFS_GET_LIMITED_NSDB_PARAMS">
-
-	    	<section title="Synopsis">
-		<t>
-		Get a limited subset of the connection parameters for the
-		specified NSDB.
-		</t>
-	    	</section>
-
-	    	<section title="Description">
-
-	        <t> This operations allows the administrator to 
-	            retrieve a limited subset of information on 
-	            the connection parameters, if they exist,
-	            for the given NSDB.</t>
-
-		<t> An NSDB is specified using a FedFsNsdbName. 
-		    The rules in <xref target="nsdb-equality"/> 
-		    define when two FedFsNsdbNames are considered 
-		    equal </t>
-
-		<t> A set of connection parameters is considered 
-		    a match if their associated NSDB is equal 
-		    (as defined above) to the operation's NSDB
-		    argument. Therefore, there is at most one 
-		    set of connection parameters that can match 
-		    the query described by this operation. </t>
-
-		<t> This operation returns a limited 
-		    subset of the connection parameters. Only 
-		    the FedFsConnectionSec mechanism that 
-		    is used to protect communication between the 
-		    fileserver and NSDB is returned. </t>
-
-		<t> Viewing the limited subset of NSDB connection 
-		    parameters returned by FEDFS_GET_LIMITED_NSDB_PARAMS 
-		    MAY be a less privileged operation than viewing 
-		    the entire set of NSDB connection parameters 
-		    returned by FEDFS_GET_NSDB_PARAMS. For example, 
-		    the full contents of an NSDB's connection 
-		    parameters could contain sensitive information 
-		    for some security mechanisms. 
-		    FEDFS_GET_LIMITED_NSDB_PARAMS allows the 
-		    fileserver to communicate a subset of the 
-		    connection parameters (the security mechanism) 
-		    to users with sufficient permissions without 
-		    revealing more sensitive information. </t>
-
-	        <t> On success, this operation returns FEDFS_OK 
-	            and the FedFsConnectionSec value on record 
-	            for the given NSDB. </t>
-
-		<t> On failure, an error value indicating the 
-		    type of error is returned. This operation MAY 
-		    return FEDFS_ERR_NSDB_PARAMS to indicate that 
-		    there are no connection parameters on record for 
-	            the given NSDB. The operation MAY return 
-	            FEDFS_ERR_ACCESS if the operation's associated 
-	            user does not have sufficient permissions to 
-	            view the subset of NSDB connection parameters
-	            returned by this procedure.  </t>
-
-	    	</section>
-
-	    	<section title="Errors">
-
-<?rfc subcompact="yes" ?>
-	    		<t><list style="empty">
-			<t> FEDFS_ERR_ACCESS </t>
-			<t> FEDFS_ERR_BADCHAR </t>
-			<t> FEDFS_ERR_BADNAME </t>
-			<t> FEDFS_ERR_BADXDR </t>
-			<t> FEDFS_ERR_INVAL </t>
-			<t> FEDFS_ERR_IO </t>
-			<t> FEDFS_ERR_SVRFAULT </t>
-			<t> FEDFS_ERR_NSDB_PARAMS </t>
-			<t> FEDFS_ERR_NOTSUPP </t>
-			<t> FEDFS_ERR_DELAY </t>
-  			</list></t>
-<?rfc subcompact="no" ?>
-
-	    	</section>
-
-	    </section>
-
+      <t>
+        The procedures defined in <xref target="protocol"/> are described
+        in detail in the following sections.
+      </t>
+  
+      <t>
+        Fileservers that participate as "internal" nodes in the
+        federated namespace MUST implement the following procedures:
+      </t>
+  
+      <?rfc subcompact="yes" ?>
+        <t>
+          <list style="empty">
+            <t> FEDFS_NULL </t>
+            <t> FEDFS_CREATE_JUNCTION </t>
+            <t> FEDFS_DELETE_JUNCTION </t>
+            <t> FEDFS_LOOKUP_JUNCTION </t>
+            <t> FEDFS_SET_NSDB_PARAMS </t>
+            <t> FEDFS_GET_NSDB_PARAMS </t>
+            <t> FEDFS_GET_LIMITED_NSDB_PARAMS </t>
+          </list>
+        </t>
+      <?rfc subcompact="no" ?>
+  
+      <t>
+        and SHOULD implement the following procedures:
+      </t>
+  
+      <?rfc subcompact="yes" ?>
+        <t>
+          <list style="empty">
+            <t> FEDFS_CREATE_REPLICATION </t>
+            <t> FEDFS_DELETE_REPLICATION </t>
+            <t> FEDFS_LOOKUP_REPLICATION </t>
+          </list>
+        </t>
+      <?rfc subcompact="no" ?>
+  
+      <t>
+        Fileservers that participate as "leaf" nodes in the namespace
+        (i.e., fileservers that host filesets that are the target of
+        junctions, but that do not contain any junctions) are not
+        required to implement any of these operations.
+      </t>
+  
+      <t>
+        Operations that modify the state of a
+        replicated fileset MUST result in the update of all of the
+        replicas in a consistent manner.  Ideally all of the
+        replicas SHOULD be updated before any operation returns.
+        If one or more of the replicas are unavailable, the
+        operation MAY succeed, but the changes MUST be applied
+        before the unavailable replicas are brought back online.
+        We assume that replicas are updated via some protocol that
+        permits state changes to be reflected consistently across
+        the set of replicas in such a manner that the replicas
+        will converge to a consistent state within a bounded
+        number of successful message exchanges between the servers
+        hosting the replicas.
+      </t>
+  
+      <section title="FEDFS_NULL">
+        <section title="Synopsis">
+          <t>
+            The standard NULL procedure.
+          </t>
+        </section>
+  
+        <section title="Description">
+          <t>
+            The null RPC, which is included, by convention, in every
+            ONC RPC protocol. This procedure does not take any arguments
+            and does not produce a result.
+          </t>
+        </section>
+  
+        <section title="Errors">
+          <?rfc subcompact="yes" ?>
+            <t>
+              <list style="empty">
+                <t>
+                  None.
+                </t>
+              </list>
+            </t>
+          <?rfc subcompact="no" ?>
+        </section>
+      </section>
+  
+      <section title="FEDFS_CREATE_JUNCTION">
+        <section title="Synopsis">
+          <t>
+            Create a new junction from some location on the
+            server (defined as a pathname) to an FSN.
+          </t>
+        </section>
+  
+        <section title="Description">
+          <t>
+            This operation creates a junction from a
+            server-relative path to a (potentially) remote
+            fileset named by the given FSN.
+          </t>
+  
+          <t>
+            The junction directory on the server is identified by
+            a pathname in the form of an array of one or more
+            UTF-8 path component strings. It is not required that
+            this path be accessible in any other manner (e.g.,
+            to a client).  This path does not appear in the federated
+            namespace, except by coincidence; there is no requirement
+            that the global namespace parallel the server namespace, nor
+            is it required that this path be relative to the server
+            pseudo-root.  It does not need to be a path that
+            is accessible via NFS (although the junction will
+            be of limited utility if the directory specified
+            by the path is not also accessible via NFS).
+          </t>
+  
+          <t>
+            If the fileset is read-only, then this operation
+            MUST indicate this with a status of
+            FEDFS_ERR_ROFS.
+          </t>
+  
+          <t>
+            If the path contains an invalid UTF-8 character,
+            then status FEDFS_ERR_BADCHAR MUST be returned.
+          </t>
+  
+          <t>
+            The path is REQUIRED to exist and be completely
+            local to the server.  It MUST NOT contain a
+            junction.  If the last component of the path is a
+            junction (i.e., this operation is attempting to
+            create a junction where one already exists), then
+            this operation MUST return the error FEDFS_ERR_EXIST (even
+            if the requested junction is identical to the
+            current junction).  If any other component of the
+            path is a junction, then this operation MUST fail
+            with status FEDFS_ERR_NOTLOCAL.  The path might contain a
+            symbolic link (if supported by the local server),
+            but the traversal of the path MUST remain within
+            the server-local namespace.
+          </t>
+  
+          <t>
+            If any component of the path does not exist, then
+            the operation fails with status FEDFS_ERR_INVAL.
+          </t>
+  
+          <t>
+            The server MAY enforce the local permissions on
+            the path, including the final component.  If the
+            path cannot be traversed because of insufficient
+            permissions, or the final component is an
+            unexecutable or unwritable directory, then the
+            operation MAY fail with status FEDFS_ERR_ACCESS.
+          </t>
+  
+          <t>
+            The operation SHOULD fail with status FEDFS_ERR_NSDB_PARAMS
+            if the fileserver does not have any connection parameters
+            on record for the specified NSDB.
+          </t>
+  
+          <t>
+            The association between the path and the FSN MUST
+            be durable before the operation returns
+            successfully.  If the operation return codes
+            indicates success, then the junction was successfully
+            created and is immediately accessible.
+          </t>
+  
+          <t>
+            If successful, subsequent references via NFSv4
+            <xref target="3530bis"/> or NFSv4.1 <xref target="RFC5661"/>
+            clients to the directory that has been replaced by
+            the junction will result in a referral to a current
+            location of the target fileset
+            <xref target="FEDFS-NSDB"/>.
+          </t>
+  
+          <t>
+            The effective permissions of the
+            directory that is converted, by this operation,
+            into a junction are the permissions of the root
+            directory of the target fileset.  The original
+            permissions of the directory (and any other
+            attributes it might have) are subsumed by the
+            junction.
+          </t>
+  
+          <t>
+            This operation does not create a
+            fileset at the location targeted by the junction.
+            If the target fileset does not exist, the
+            junction will still be created. An NFS client
+            will discover the missing fileset when it
+            traverses the junction.
+          </t>
+        </section>
+  
+        <section title="Errors">
+          <?rfc subcompact="yes" ?>
+            <t>
+              <list style="empty">
+                <t> FEDFS_ERR_ACCESS </t>
+                <t> FEDFS_ERR_BADCHAR </t>
+                <t> FEDFS_ERR_BADNAME </t>
+                <t> FEDFS_ERR_NAMETOOLONG </t>
+                <t> FEDFS_ERR_LOOP </t>
+                <t> FEDFS_ERR_BADXDR </t>
+                <t> FEDFS_ERR_EXIST </t>
+                <t> FEDFS_ERR_INVAL </t>
+                <t> FEDFS_ERR_IO </t>
+                <t> FEDFS_ERR_NOSPC </t>
+                <t> FEDFS_ERR_NOTLOCAL </t>
+                <t> FEDFS_ERR_PERM </t>
+                <t> FEDFS_ERR_ROFS </t>
+                <t> FEDFS_ERR_SVRFAULT </t>
+                <t> FEDFS_ERR_PATH_TYPE_UNSUPP </t>
+                <t> FEDFS_ERR_NOTSUPP </t>
+                <t> FEDFS_ERR_DELAY </t>
+              </list>
+            </t>
+          <?rfc subcompact="no" ?>
+        </section>
+      </section>
+  
+      <section title="FEDFS_DELETE_JUNCTION">
+        <section title="Synopsis">
+          <t>
+            Delete an existing junction from some location on the
+            server (defined as a pathname).
+          </t>
+        </section>
+  
+        <section title="Description">
+          <t>
+            This operation removes a junction specified by a
+            server-relative path.
+          </t>
+  
+          <t>
+            As with FEDFS_CREATE_JUNCTION, the junction on the server
+            is identified by a pathname in the form of an array of one
+            or more UTF-8 path component strings. It is not required
+            that this path be accessible in any other manner (e.g.,
+            to a client).  This path does not appear in the federated
+            namespace, except by coincidence; there is no requirement
+            that the global namespace reflect the server namespace,
+            nor is it required that this path be relative to
+            the server pseudo-root.  It does not need to be a
+            path that is accessible via NFS.
+          </t>
+  
+          <t>
+            If the fileset is read-only, then this operation
+            SHOULD indicate this with a status of
+            FEDFS_ERR_ROFS.
+          </t>
+  
+          <t>
+            If the path contains an invalid UTF-8 character,
+            then status FEDFS_ERR_BADCHAR MUST be returned.
+          </t>
+  
+          <t>
+            The path used to delete a junction might not be the
+            same path that was used to create the junction.
+            If the namespace on the server has changed, then
+            the junction might now appear at a different path
+            than where it was created.  If there is more than
+            one valid path to the junction, any of them can
+            be used.
+          </t>
+  
+          <t>
+            The path is REQUIRED to exist and be completely
+            local to the server.  It MUST NOT contain a
+            junction, except as the final component, which
+            MUST be a junction.  If any other component of the
+            path is a junction, then this operation MUST fail
+            with status FEDFS_ERR_NOTLOCAL.  If the last
+            component of the path is not a junction then this
+            operation MUST return status FEDFS_ERR_NOTJUNCT.  The
+            path might contain a symbolic link (if supported by
+            the local server), but the traversal of the path
+            MUST remain within the server-local namespace.
+          </t>
+  
+          <t>
+            The server MAY enforce the local permissions on
+            the path, including the final component.  If the
+            path cannot be traversed because of insufficient
+            permissions, or the parent directory of the
+            junction is an unexecutable or unwritable directory,
+            then the operation MAY fail with status
+            FEDFS_ERR_ACCESS.
+          </t>
+  
+          <t>
+            The removal of the association between the path
+            and the FSN MUST be durable before the operation
+            returns successfully.  If the operation return
+            codes indicates success, then the junction
+            was successfully destroyed.
+          </t>
+  
+          <t>
+            The effective permissions and other attributes of
+            the directory that is restored by this operation
+            SHOULD be identical to their value prior to the
+            creation of the junction.
+          </t>
+  
+          <t>
+            After removal of the junction, the fileserver
+            MAY check if any of its existing junctions
+            reference the NSDB specified in the removed
+            junction's FSN. If the NSDB is not referenced, the
+            fileserver MAY delete the connection parameters
+            of the unreferenced NSDB.
+          </t>
+        </section>
+  
+        <section title="Errors">
+          <?rfc subcompact="yes" ?>
+            <t>
+              <list style="empty">
+                <t> FEDFS_ERR_ACCESS </t>
+                <t> FEDFS_ERR_BADCHAR </t>
+                <t> FEDFS_ERR_BADNAME </t>
+                <t> FEDFS_ERR_NAMETOOLONG </t>
+                <t> FEDFS_ERR_LOOP </t>
+                <t> FEDFS_ERR_BADXDR </t>
+                <t> FEDFS_ERR_INVAL </t>
+                <t> FEDFS_ERR_IO </t>
+                <t> FEDFS_ERR_NOTJUNCT </t>
+                <t> FEDFS_ERR_NOTLOCAL </t>
+                <t> FEDFS_ERR_PERM </t>
+                <t> FEDFS_ERR_ROFS </t>
+                <t> FEDFS_ERR_SVRFAULT </t>
+                <t> FEDFS_ERR_PATH_TYPE_UNSUPP </t>
+                <t> FEDFS_ERR_NOTSUPP </t>
+                <t> FEDFS_ERR_DELAY </t>
+              </list>
+            </t>
+          <?rfc subcompact="no" ?>
+        </section>
+      </section>
+  
+      <section title="FEDFS_LOOKUP_JUNCTION" anchor="lookup-junction">
+        <section title="Synopsis">
+          <t>
+            Query the server to discover the current value of the
+            junction (if any) at a given path in the server namespace.
+          </t>
+        </section>
+  
+        <section title="Description">
+          <t>
+            This operation queries a server to determine
+            whether a given path ends in a junction, and if
+            so, the FSN to which the junction refers and
+            the filerserver's ability to resolve the
+            junction.
+          </t>
+  
+          <t>
+            Ordinary NFSv4 operations do not provide any
+            general mechanism to determine whether an object
+            is a junction -- there is no encoding specified
+            by the NFSv4 protocol that can represent this
+            information.
+          </t>
+  
+          <t>
+            As with FEDFS_CREATE_JUNCTION, the pathname MUST be
+            in the form of an array of one or more UTF-8 path
+            component strings. It is not required that this
+            path be accessible in any other manner (e.g., to
+            a client).  This path does not appear in the
+            federated namespace, except by coincidence; there is
+            no requirement that the global namespace reflect
+            the server namespace, nor is it required that this
+            path be relative to the server pseudo-root. It does
+            not need to be a path that is accessible via NFS.
+          </t>
+  
+          <t>
+            If the path contains an invalid UTF-8 character,
+            then status FEDFS_ERR_BADCHAR MUST be returned.
+          </t>
+  
+          <t>
+            The path used to lookup a junction might not be the
+            same path that was used to create the junction.  If
+            the namespace on the server has changed, then a
+            junction might now appear at a different path than where
+            it was created.  If there is more than one valid path
+            to the junction, any of them might be used.
+          </t>
+  
+          <t>
+            The path is REQUIRED to exist and be completely
+            local to the server.  It MUST NOT contain a
+            junction, except as the final component.  If any
+            other component of the path is a junction, then
+            this operation MUST fail with status
+            FEDFS_ERR_NOTLOCAL.  If the last component of the
+            path is not a junction then this operation MUST
+            return the status FEDFS_ERR_NOTJUNCT.  The path
+            might contain a symbolic link (if supported by the
+            local server), but the traversal of the path MUST
+            remain within the server-local namespace.
+          </t>
+  
+          <t>
+            The server MAY enforce the local permissions on
+            the path, including the final component.  If the
+            path cannot be traversed because of insufficient
+            permissions, or the parent directory of the
+            junction is an unexecutable or unwritable directory,
+            then the operation MAY fail with status
+            FEDFS_ERR_ACCESS.
+          </t>
+  
+          <t>
+            If the junction exists, the resolve parameter
+            allows for testing the fileserver's ability
+            to resolve the junction. If the junction does not
+            exist, the fileserver will ignore the resolve
+            parameter.
+          </t>
+  
+          <t>
+            If the junction exists and the resolve parameter
+            is set to FEDFS_RESOLVE_NONE, the fileserver
+            MUST NOT attempt to resolve the FSN. This will
+            allow the administrator to obtain the junction's
+            FSN even if the resolution would fail. Therefore
+            on success, the result of a FEDFS_RESOLVE_NONE
+            call will return a 0 (zero) length fsl list in
+            the FedFsLookupResOk structure.
+          </t>
+  
+          <t>
+            If the junction exists and the resolve parameter
+            is set to FEDFS_RESOLVE_CACHE, the fileserver
+            MUST attempt to resolve the FSN using its FSL
+            cache, if one exists. The fileserver MUST NOT
+            resolve the FSN by contacting the appropriate
+            NSDB. If the fileserver's cache does not have
+            a mapping for the FSN in question, the result
+            of the operation MUST be FEDFS_OK with 0 (zero)
+            elements in the FedFsLookupResOk structure's
+            fsl array. The operation MAY fail with status
+            FEDFS_ERR_NO_CACHE if the fileserver does not
+            contain an FSN-to-FSL cache or with status
+            FEDFS_ERR_UNKNOWN_CACHE if the state of the
+            cache is unknown.
+          </t>
+  
+          <t>
+            If the junction exists and the resolve parameter
+            is set to FEDFS_RESOLVE_NSDB, the fileserver
+            MUST attempt to resolve the FSN by contacting
+            the appropriate NSDB. The FSN MUST NOT be
+            resolved using cached information.
+            The resolution MAY fail with
+            FEDFS_ERR_NSDB_ROUTE,
+            FEDFS_ERR_NSDB_DOWN,
+            FEDFS_ERR_NSDB_CONN,
+            FEDFS_ERR_NSDB_AUTH,
+            FEDFS_ERR_NSDB_LDAP,
+            FEDFS_ERR_NSDB_LDAP_VAL,
+            FEDFS_ERR_NSDB_NOFSN,
+            FEDFS_ERR_NSDB_NOFSL,
+            FEDFS_ERR_NSDB_NONCE,
+            FEDFS_ERR_NSDB_RESPONSE,
+            FEDFS_ERR_NSDB_FAULT,
+            FEDFS_ERR_NSDB_LDAP_REFERRAL,
+            FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL,
+            FEDFS_ERR_NSDB_LDAP_REFERRAL_NOTFOLLOWED, or
+            FEDFS_ERR_NSDB_PARAMS_LDAP_REFERRAL,
+            depending on the nature of the failure.
+          </t>
+  
+          <t>
+            In the case of a LDAP failure, the fileserver
+            MAY return either FEDFS_ERR_NSDB_LDAP or
+            FEDFS_ERR_NSDB_LDAP_VAL. FEDFS_ERR_NSDB_LDAP
+            indicates that an LDAP protocol error occurred
+            during the resolution. FEDFS_ERR_NSDB_LDAP_VAL
+            also indicates that an LDAP protocol error occurred
+            during the resolution and allows the LDAP
+            protocol error value to be returned in the
+            FedFsLookupRes's ldapResultCode field (see
+            the resultCode values in Section 4.1.9 of
+            <xref target="RFC4511"/>).
+          </t>
+  
+          <t>
+            If the NSDB responds with an LDAP referral, either
+            the Referral type defined in Section 4.1.10 of
+            <xref target="RFC4511"/> or the
+            SearchResultReference type defined in Section
+            4.5.3 of <xref target="RFC4511"/>, the fileserver
+            SHOULD process the LDAP referral using the same
+            policies as the fileserver's file-access protocol
+            server. The fileserver can indicate a failure
+            while processing the LDAP referral using
+            FEDFS_ERR_NSDB_LDAP_REFERRAL,
+            FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL,
+            FEDFS_ERR_NSDB_LDAP_REFERRAL_NOTFOLLOWED, or
+            FEDFS_ERR_NSDB_PARAMS_LDAP_REFERRAL. The
+            FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL is analogous
+            to the FEDFS_ERR_NSDB_LDAP_VAL error and
+            allows the LDAP protocol error value to
+            be returned in the FedFsLookupResReferralVal's
+            ldapResultCode field. The FEDFS_ERR_NSDB_LDAP_REFERRAL
+            and FEDFS_ERR_NSDB_PARAMS_LDAP_REFERRAL errors
+            errors allow the NSDB targeted by the LDAP
+            referral to be returned in the FedFsLookupRes's
+            targetNsdb field. Similarly, the
+            FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL error
+            includes this information in the
+            FedFsLookupResReferralVal's targetNsdb.
+          </t>
+  
+          <t>
+            If the fileserver has a cache of FSL records,
+            the process of resolving an FSN using an NSDB
+            SHOULD result in the cache being updated. A
+            failure to update the cache can be indicated
+            with the FEDFS_ERR_NO_CACHE_UPDATE status value.
+            When updating the cache, new FSLs for the given
+            FSN SHOULD be added to the cache and deleted
+            FSLs SHOULD be removed from the cache. This
+            behavior is desirable because it allows an
+            administrator to proactively request that the
+            fileserver refresh its FSL cache. For example,
+            the administrator might like to refresh the
+            fileserver's cache when changes are made to
+            an FSN's FSLs.
+          </t>
+  
+          <t>
+            If the junction is resolved, the fileserver
+            will include a list of UUIDs for the
+            FSN's FSLs in the FedFsLookupResOk structure's
+            fsl array.
+          </t>
+        </section>
+  
+        <section title="Errors">
+          <?rfc subcompact="yes" ?>
+            <t>
+              <list style="empty">
+                <t> FEDFS_ERR_ACCESS </t>
+                <t> FEDFS_ERR_BADCHAR </t>
+                <t> FEDFS_ERR_BADNAME </t>
+                <t> FEDFS_ERR_NAMETOOLONG </t>
+                <t> FEDFS_ERR_LOOP </t>
+                <t> FEDFS_ERR_BADXDR </t>
+                <t> FEDFS_ERR_INVAL </t>
+                <t> FEDFS_ERR_IO </t>
+                <t> FEDFS_ERR_NOTJUNCT </t>
+                <t> FEDFS_ERR_NOTLOCAL </t>
+                <t> FEDFS_ERR_PERM </t>
+                <t> FEDFS_ERR_SVRFAULT </t>
+                <t> FEDFS_ERR_NSDB_ROUTE </t>
+                <t> FEDFS_ERR_NSDB_DOWN </t>
+                <t> FEDFS_ERR_NSDB_CONN </t>
+                <t> FEDFS_ERR_NSDB_AUTH </t>
+                <t> FEDFS_ERR_NSDB_LDAP </t>
+                <t> FEDFS_ERR_NSDB_LDAP_VAL </t>
+                <t> FEDFS_ERR_NSDB_NONCE </t>
+                <t> FEDFS_ERR_NSDB_NOFSN </t>
+                <t> FEDFS_ERR_NSDB_NOFSL </t>
+                <t> FEDFS_ERR_NSDB_RESPONSE </t>
+                <t> FEDFS_ERR_NSDB_FAULT </t>
+                <t> FEDFS_ERR_NSDB_PARAMS </t>
+                <t> FEDFS_ERR_NSDB_LDAP_REFERRAL </t>
+                <t> FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL </t>
+                <t> FEDFS_ERR_NSDB_LDAP_REFERRAL_NOTFOLLOWED </t>
+                <t> FEDFS_ERR_NSDB_PARAMS_LDAP_REFERRAL </t>
+                <t> FEDFS_ERR_PATH_TYPE_UNSUPP </t>
+                <t> FEDFS_ERR_NOTSUPP </t>
+                <t> FEDFS_ERR_DELAY </t>
+                <t> FEDFS_ERR_NO_CACHE </t>
+                <t> FEDFS_ERR_UNKNOWN_CACHE </t>
+                <t> FEDFS_ERR_NO_CACHE_UPDATE </t>
+              </list>
+            </t>
+          <?rfc subcompact="no" ?>
+        </section>
+      </section>
+  
+      <section title="FEDFS_CREATE_REPLICATION">
+        <section title="Synopsis">
+          <t>
+            Set an FSN representing the replication information for the
+            fileset containing the pathname.
+          </t>
+        </section>
+  
+        <section title="Description">
+          <t>
+            This operation indicates the replication
+            information to be returned for a particular
+            fileset.  An NFSv4.x client might request
+            fs_locations or fs_locations_info at any time
+            to detect other copies of this fileset, and
+            this operation supports this by supplying the
+            FSN the fileserver should use to respond. This
+            FSN should be associated with the entire
+            fileset in which the path resides, and should
+            be used to satisfy fs_locations or
+            fs_locations_info attribute requests whenever
+            no junction is being accessed; if a junction
+            is being accessed, the FSN specified by
+            FEDFS_CREATE_JUNCTION will take precedence. Setting
+            the replication FSN on a fileset that already
+            has a replication FSN set is allowed.
+          </t>
+  
+          <t>
+            This operation differs from FEDFS_CREATE_JUNCTION
+            in that it controls a fileset-wide attribute not
+            associated with a junction.
+          </t>
+  
+          <t>
+            The server SHOULD permit this operation even
+            on read-only filesets, but MAY return
+            FEDFS_ERR_ROFS if this is not possible.
+          </t>
+  
+          <t>
+            If the path contains an invalid UTF-8 character,
+            then status FEDFS_ERR_BADCHAR MUST be returned.
+          </t>
+  
+          <t>
+            The path is REQUIRED to exist and be completely
+            local to the server. It MUST NOT contain a junction.
+            If any component of the path is a junction, then
+            this operation MUST fail with status
+            FEDFS_ERR_NOTLOCAL.  The path might contain a
+            symbolic link (if supported by the local server),
+            but the traversal of the path MUST remain within
+            the server-local namespace.
+          </t>
+  
+          <t>
+            The server MAY enforce the local permissions on
+            the path, including the final component.  If the
+            path cannot be traversed because of insufficient
+            permissions, or the final component is an
+            unexecutable or unwritable directory, then the
+            operation MAY fail with status FEDFS_ERR_ACCESS.
+          </t>
+  
+          <t>
+            The operation SHOULD fail with status
+            FEDFS_ERR_NSDB_PARAMS if the fileserver does
+            not have any connection parameters on record
+            for the specified NSDB.
+          </t>
+  
+          <t>
+             The same FSN value SHOULD be associated with
+             all replicas of a filesystem. Depending on the
+             underlying representation, the FSN associated
+             with a filesystem might or might not be replicated
+             automatically with the filesystem replication
+             mechanism. Therefore if FEDFS_CREATE_REPLICATION
+             is used on one replica of a filesystem, it
+             SHOULD be used on all replicas.
+          </t>
+        </section>
+  
+        <section title="Errors">
+          <?rfc subcompact="yes" ?>
+            <t>
+              <list style="empty">
+                <t> FEDFS_ERR_ACCESS </t>
+                <t> FEDFS_ERR_BADCHAR </t>
+                <t> FEDFS_ERR_BADNAME </t>
+                <t> FEDFS_ERR_NAMETOOLONG </t>
+                <t> FEDFS_ERR_LOOP </t>
+                <t> FEDFS_ERR_BADXDR </t>
+                <t> FEDFS_ERR_EXIST </t>
+                <t> FEDFS_ERR_INVAL </t>
+                <t> FEDFS_ERR_IO </t>
+                <t> FEDFS_ERR_NOSPC </t>
+                <t> FEDFS_ERR_NOTLOCAL </t>
+                <t> FEDFS_ERR_PERM </t>
+                <t> FEDFS_ERR_ROFS </t>
+                <t> FEDFS_ERR_SVRFAULT </t>
+                <t> FEDFS_ERR_PATH_TYPE_UNSUPP </t>
+                <t> FEDFS_ERR_NOTSUPP </t>
+                <t> FEDFS_ERR_DELAY </t>
+              </list>
+            </t>
+          <?rfc subcompact="no" ?>
+        </section>
+      </section>
+  
+      <section title="FEDFS_DELETE_REPLICATION">
+        <section title="Synopsis">
+          <t>
+            Remove the replication information for the fileset containing
+            the pathname.
+          </t>
+        </section>
+  
+        <section title="Description">
+          <t>
+            This operation removes any replication information
+            from the fileset in which the path resides, such
+            that NFSv4.x client requests for fs_locations or
+            fs_locations_info in the absence of a junction will
+            not be satisfied.
+          </t>
+  
+          <t>
+            This operation differs from FEDFS_DELETE_JUNCTION
+            in that it controls a fileset-wide attribute not
+            associated with a junction.
+          </t>
+  
+          <t>
+            The server SHOULD permit this operation even on
+            read-only filesets, but MAY return FEDFS_ERR_ROFS
+            if this is not possible.
+          </t>
+  
+          <t>
+            If the path contains an invalid UTF-8 character,
+            then status FEDFS_ERR_BADCHAR MUST be returned.
+          </t>
+  
+          <t>
+            The path is REQUIRED to exist and be completely
+            local to the server. It MUST NOT contain a junction.
+            If any component of the path is a junction, then
+            this operation MUST fail with status
+            FEDFS_ERR_NOTLOCAL.
+          </t>
+  
+          <t>
+            The server MAY enforce the local permissions on
+            the path, including the final component. If the
+            path cannot be traversed because of insufficient
+            permissions, or the parent directory of the junction
+            unexecutable or unwritable directory, then the
+            operation MAY fail with status FEDFS_ERR_ACCESS.
+          </t>
+        </section>
+  
+        <section title="Errors">
+          <?rfc subcompact="yes" ?>
+            <t>
+              <list style="empty">
+                <t> FEDFS_ERR_ACCESS </t>
+                <t> FEDFS_ERR_BADCHAR </t>
+                <t> FEDFS_ERR_BADNAME </t>
+                <t> FEDFS_ERR_NAMETOOLONG </t>
+                <t> FEDFS_ERR_LOOP </t>
+                <t> FEDFS_ERR_BADXDR </t>
+                <t> FEDFS_ERR_INVAL </t>
+                <t> FEDFS_ERR_IO </t>
+                <t> FEDFS_ERR_NOTJUNCT </t>
+                <t> FEDFS_ERR_NOTLOCAL </t>
+                <t> FEDFS_ERR_PERM </t>
+                <t> FEDFS_ERR_ROFS </t>
+                <t> FEDFS_ERR_SVRFAULT </t>
+                <t> FEDFS_ERR_PATH_TYPE_UNSUPP </t>
+                <t> FEDFS_ERR_NOTSUPP </t>
+                <t> FEDFS_ERR_DELAY </t>
+              </list>
+            </t>
+          <?rfc subcompact="no" ?>
+        </section>
+      </section>
+  
+      <section title="FEDFS_LOOKUP_REPLICATION">
+        <section title="Synopsis">
+          <t>
+            Query the server to discover the current replication
+            information (if any) at the given path.
+          </t>
+        </section>
+  
+        <section title="Description">
+          <t>
+            This operation queries a server to determine
+            whether a fileset containing the given path
+            has replication information associated with
+            it, and if so, the FSN for that replication
+            information.
+          </t>
+  
+          <t>
+            This operation differs from FEDFS_LOOKUP_JUNCTION
+            in that it inquires about a fileset-wide
+            attribute not associated with a junction.
+          </t>
+  
+          <t>
+            If the path contains an invalid UTF-8
+            character, then status FEDFS_ERR_BADCHAR
+            MUST be returned.
+          </t>
+  
+          <t>
+            The path is REQUIRED to exist and be completely
+            local to the server. It MUST NOT contain a junction.
+            If any component of the path is a junction, then
+            this operation MUST fail with status
+            FEDFS_ERR_NOTLOCAL.
+          </t>
+  
+          <t>
+            The server MAY enforce the local permissions
+            on the path, including the final component.  If
+            the path cannot be traversed because of
+            insufficient permissions, or the parent directory
+            of the junction is an unexecutable or unwritable
+            directory, then the operation MAY fail with status
+            FEDFS_ERR_ACCESS.
+          </t>
+  
+          <t>
+            Interpretation of the 'resolve' parameter and
+            the procedure's results shall be the same as
+            specified in <xref target="lookup-junction"/>
+            for the FEDFS_LOOKUP_JUNCTION operation.
+          </t>
+        </section>
+  
+        <section title="Errors">
+          <?rfc subcompact="yes" ?>
+            <t>
+              <list style="empty">
+                <t> FEDFS_ERR_ACCESS </t>
+                <t> FEDFS_ERR_BADCHAR </t>
+                <t> FEDFS_ERR_BADNAME </t>
+                <t> FEDFS_ERR_NAMETOOLONG </t>
+                <t> FEDFS_ERR_LOOP </t>
+                <t> FEDFS_ERR_BADXDR </t>
+                <t> FEDFS_ERR_INVAL </t>
+                <t> FEDFS_ERR_IO </t>
+                <t> FEDFS_ERR_NOTJUNCT </t>
+                <t> FEDFS_ERR_NOTLOCAL </t>
+                <t> FEDFS_ERR_PERM </t>
+                <t> FEDFS_ERR_SVRFAULT </t>
+                <t> FEDFS_ERR_NSDB_ROUTE </t>
+                <t> FEDFS_ERR_NSDB_DOWN </t>
+                <t> FEDFS_ERR_NSDB_CONN </t>
+                <t> FEDFS_ERR_NSDB_AUTH </t>
+                <t> FEDFS_ERR_NSDB_LDAP </t>
+                <t> FEDFS_ERR_NSDB_LDAP_VAL </t>
+                <t> FEDFS_ERR_NSDB_NONCE </t>
+                <t> FEDFS_ERR_NSDB_NOFSN </t>
+                <t> FEDFS_ERR_NSDB_NOFSL </t>
+                <t> FEDFS_ERR_NSDB_RESPONSE </t>
+                <t> FEDFS_ERR_NSDB_FAULT </t>
+                <t> FEDFS_ERR_NSDB_PARAMS </t>
+                <t> FEDFS_ERR_NSDB_LDAP_REFERRAL </t>
+                <t> FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL </t>
+                <t> FEDFS_ERR_NSDB_LDAP_REFERRAL_NOTFOLLOWED </t>
+                <t> FEDFS_ERR_NSDB_PARAMS_LDAP_REFERRAL </t>
+                <t> FEDFS_ERR_PATH_TYPE_UNSUPP </t>
+                <t> FEDFS_ERR_NOTSUPP </t>
+                <t> FEDFS_ERR_DELAY </t>
+                <t> FEDFS_ERR_NO_CACHE </t>
+                <t> FEDFS_ERR_UNKNOWN_CACHE </t>
+              </list>
+            </t>
+          <?rfc subcompact="no" ?>
+        </section>
+      </section>
+  
+      <section title="FEDFS_SET_NSDB_PARAMS">
+        <section title="Synopsis">
+          <t>
+            Set the connection parameters for the specified NSDB.
+          </t>
+        </section>
+  
+        <section title="Description">
+          <t>
+            This operations allows the administrator to set
+            the connection parameters for a given NSDB.
+          </t>
+  
+          <t>
+            If a record for the given NSDB does not exist, a
+            new record is created with the specified connection
+            parameters.
+          </t>
+  
+          <t>
+            If a record for the given NSDB does exist, the
+            existing connection parameters are replaced
+            with the specified connection parameters.
+          </t>
+  
+          <t>
+            An NSDB is specified using a FedFsNsdbName.
+            The rules in <xref target="nsdb-equality"/>
+            define when two FedFsNsdbNames are considered
+            equal.
+          </t>
+  
+          <t>
+            The given NSDB need not be referenced by
+            any junctions on the fileserver. This
+            situation will occur when connection parameters
+            for a new NSDB are installed.
+          </t>
+  
+          <t>
+            The format of the connection parameters is
+            described above.
+          </t>
+  
+          <t>
+            On success, this operation returns FEDFS_OK.
+            When the operation returns, the new connection
+            parameters SHOULD be used for all subsequent
+            LDAP connections to the given NSDB. Existing
+            connections MAY be terminated and re-established
+            using the new connection parameters. The connection
+            parameters SHOULD be durable across fileserver
+            reboots.
+          </t>
+  
+          <t>
+            On failure, an error value indicating the
+            type of error is returned. The operation
+            MAY return FEDFS_ERR_ACCESS if the operation's
+            associated user does not have sufficient
+            permissions to create/modify NSDB connection
+            parameters.
+          </t>
+        </section>
+  
+        <section title="Errors">
+          <?rfc subcompact="yes" ?>
+            <t>
+              <list style="empty">
+                <t> FEDFS_ERR_ACCESS </t>
+                <t> FEDFS_ERR_BADCHAR </t>
+                <t> FEDFS_ERR_BADNAME </t>
+                <t> FEDFS_ERR_BADXDR </t>
+                <t> FEDFS_ERR_INVAL </t>
+                <t> FEDFS_ERR_IO </t>
+                <t> FEDFS_ERR_NOSPC </t>
+                <t> FEDFS_ERR_SVRFAULT </t>
+                <t> FEDFS_ERR_NOTSUPP </t>
+                <t> FEDFS_ERR_DELAY </t>
+              </list>
+            </t>
+          <?rfc subcompact="no" ?>
+        </section>
+      </section>
+  
+      <section title="FEDFS_GET_NSDB_PARAMS">
+        <section title="Synopsis">
+          <t>
+            Get the connection parameters for the specified NSDB.
+          </t>
+        </section>
+  
+        <section title="Description">
+          <t>
+            This operations allows the administrator to
+            retrieve connection parameters, if they exist,
+            for the given NSDB.
+          </t>
+  
+          <t>
+            An NSDB is specified using a FedFsNsdbName.
+            The rules in <xref target="nsdb-equality"/>
+            define when two FedFsNsdbNames are considered
+            equal.
+          </t>
+  
+          <t>
+            A set of connection parameters is considered
+            a match if their associated NSDB is equal
+            (as defined above) to the operation's NSDB
+            argument. Therefore, there is at most one
+            set of connection parameters that can match
+            the query described by this operation.
+          </t>
+  
+          <t>
+            The format of the connection parameters is
+            described above.
+          </t>
+  
+          <t>
+            On success, this operation returns FEDFS_OK
+            and the connection parameters on record for the
+            given NSDB.
+          </t>
+  
+          <t>
+            On failure, an error value indicating the
+            type of error is returned. This operation MAY
+            return FEDFS_ERR_NSDB_PARAMS to indicate that
+            there are no connection parameters on record for
+            the given NSDB. The operation MAY return
+            FEDFS_ERR_ACCESS if the operation's associated
+            user does not have sufficient permissions to
+            view NSDB connection parameters.
+          </t>
+        </section>
+  
+        <section title="Errors">
+          <?rfc subcompact="yes" ?>
+            <t>
+              <list style="empty">
+                <t> FEDFS_ERR_ACCESS </t>
+                <t> FEDFS_ERR_BADCHAR </t>
+                <t> FEDFS_ERR_BADNAME </t>
+                <t> FEDFS_ERR_BADXDR </t>
+                <t> FEDFS_ERR_INVAL </t>
+                <t> FEDFS_ERR_IO </t>
+                <t> FEDFS_ERR_SVRFAULT </t>
+                <t> FEDFS_ERR_NSDB_PARAMS </t>
+                <t> FEDFS_ERR_NOTSUPP </t>
+                <t> FEDFS_ERR_DELAY </t>
+              </list>
+            </t>
+          <?rfc subcompact="no" ?>
+        </section>
+      </section>
+  
+      <section title="FEDFS_GET_LIMITED_NSDB_PARAMS">
+        <section title="Synopsis">
+          <t>
+            Get a limited subset of the connection parameters for the
+            specified NSDB.
+          </t>
+        </section>
+  
+        <section title="Description">
+          <t>
+            This operations allows the administrator to
+            retrieve a limited subset of information on
+            the connection parameters, if they exist,
+            for the given NSDB.
+          </t>
+  
+          <t>
+            An NSDB is specified using a FedFsNsdbName.
+            The rules in <xref target="nsdb-equality"/>
+            define when two FedFsNsdbNames are considered
+            equal.
+          </t>
+  
+          <t>
+            A set of connection parameters is considered
+            a match if their associated NSDB is equal
+            (as defined above) to the operation's NSDB
+            argument. Therefore, there is at most one
+            set of connection parameters that can match
+            the query described by this operation.
+          </t>
+  
+          <t>
+            This operation returns a limited
+            subset of the connection parameters. Only
+            the FedFsConnectionSec mechanism that
+            is used to protect communication between the
+            fileserver and NSDB is returned.
+          </t>
+  
+          <t>
+            Viewing the limited subset of NSDB connection
+            parameters returned by FEDFS_GET_LIMITED_NSDB_PARAMS
+            MAY be a less privileged operation than viewing
+            the entire set of NSDB connection parameters
+            returned by FEDFS_GET_NSDB_PARAMS. For example,
+            the full contents of an NSDB's connection
+            parameters could contain sensitive information
+            for some security mechanisms.
+            FEDFS_GET_LIMITED_NSDB_PARAMS allows the
+            fileserver to communicate a subset of the
+            connection parameters (the security mechanism)
+            to users with sufficient permissions without
+            revealing more sensitive information.
+          </t>
+  
+          <t>
+            On success, this operation returns FEDFS_OK
+            and the FedFsConnectionSec value on record
+            for the given NSDB.
+          </t>
+  
+          <t>
+            On failure, an error value indicating the
+            type of error is returned. This operation MAY
+            return FEDFS_ERR_NSDB_PARAMS to indicate that
+            there are no connection parameters on record for
+            the given NSDB. The operation MAY return
+            FEDFS_ERR_ACCESS if the operation's associated
+            user does not have sufficient permissions to
+            view the subset of NSDB connection parameters
+            returned by this procedure.
+          </t>
+        </section>
+  
+        <section title="Errors">
+          <?rfc subcompact="yes" ?>
+            <t>
+              <list style="empty">
+                <t> FEDFS_ERR_ACCESS </t>
+                <t> FEDFS_ERR_BADCHAR </t>
+                <t> FEDFS_ERR_BADNAME </t>
+                <t> FEDFS_ERR_BADXDR </t>
+                <t> FEDFS_ERR_INVAL </t>
+                <t> FEDFS_ERR_IO </t>
+                <t> FEDFS_ERR_SVRFAULT </t>
+                <t> FEDFS_ERR_NSDB_PARAMS </t>
+                <t> FEDFS_ERR_NOTSUPP </t>
+                <t> FEDFS_ERR_DELAY </t>
+              </list>
+            </t>
+          <?rfc subcompact="no" ?>
+        </section>
+      </section>
     </section>
-
+  
     <section title="Security Considerations">
-
-	<t> The ONC RPC protocol supports authentication, integrity 
-	and privacy via the RPCSEC_GSS framework <xref target="RFC2203"/>. 
-	Fileservers which support the FedFS administration protocol 
-	described above MUST support RPCSEC_GSS. </t>
-
+      <t>
+        The ONC RPC protocol supports authentication, integrity
+        and privacy via the RPCSEC_GSS framework <xref target="RFC2203"/>.
+        Fileservers which support the FedFS administration protocol
+        described above MUST support RPCSEC_GSS.
+      </t>
     </section>
-
+  
     <section title="IANA Considerations">
-
-	<t> A range of ONC RPC program numbers were assigned for use by FedFS 
-	using the procedure described in Section 7.3 "Program Number Assignment" of 
-	<xref target="RFC5531"/>. The FedFS range is: </t>
-
-	<t>
-	    <list style="hanging">
-
-		<t> IETF NFSv4 Working Group - FedFS        100418 - 100421 </t>
-
-	    </list>
-	</t>
-
-	<t> This document describes version 1 of the ONC RPC program 100418
-	with short name "fedfs_admin". </t>
-
+      <t>
+        A range of ONC RPC program numbers were assigned for use by FedFS
+        using the procedure described in Section 7.3 "Program Number Assignment" of
+        <xref target="RFC5531"/>. The FedFS range is:
+      </t>
+  
+      <t>
+        <list style="hanging">
+          <t>
+            IETF NFSv4 Working Group - FedFS        100418 - 100421
+          </t>
+        </list>
+      </t>
+  
+      <t>
+        This document describes version 1 of the ONC RPC program 100418
+        with short name "fedfs_admin".
+      </t>
     </section>
-
-</middle>
-
-<back>
-
+  </middle>
+  
+  <back>
     <references title='Normative References'>
-
-	<?rfc include="references/reference.RFC.2119.xml"?>
-	<?rfc include="references/reference.RFC.2203.xml"?>
-	<?rfc include="references/reference.RFC.4122.xml"?>
-	<?rfc include="references/reference.RFC.4506.xml"?>
-	<?rfc include="references/reference.RFC.4511.xml"?>
-	<?rfc include="references/reference.RFC.4513.xml"?>
-	<?rfc include="references/reference.RFC.5246.xml"?>
-	<?rfc include="references/reference.RFC.5280.xml"?>
-	<?rfc include="references/reference.RFC.5531.xml"?>
-	<?rfc include="references/reference.I-D.ietf-nfsv4-rfc3530bis.xml"?>
-
+      <?rfc include="references/reference.RFC.2119.xml"?>
+      <?rfc include="references/reference.RFC.2203.xml"?>
+      <?rfc include="references/reference.RFC.4122.xml"?>
+      <?rfc include="references/reference.RFC.4506.xml"?>
+      <?rfc include="references/reference.RFC.4511.xml"?>
+      <?rfc include="references/reference.RFC.4513.xml"?>
+      <?rfc include="references/reference.RFC.5246.xml"?>
+      <?rfc include="references/reference.RFC.5280.xml"?>
+      <?rfc include="references/reference.RFC.5531.xml"?>
+      <?rfc include="references/reference.I-D.ietf-nfsv4-rfc3530bis.xml"?>
     </references>
-
+  
     <references title='Informative References'>
-
-	<?rfc include="references/reference.RFC.1094.xml"?>
-	<?rfc include="references/reference.RFC.1813.xml"?>
-	<?rfc include="references/reference.RFC.5661.xml"?>
-	<?rfc include="references/reference.RFC.5716.xml"?>
-	<?rfc include="references/reference.I-D.ietf-nfsv4-federated-fs-protocol.xml"?>
-	<?rfc include="references/reference.RFC.5662.xml"?>
-	<?rfc include="references/reference.MS-SMB.xml"?>
-	<?rfc include="references/reference.MS-SMB2.xml"?>
-	<?rfc include="references/reference.MS-CIFS.xml"?>
-
+      <?rfc include="references/reference.RFC.1094.xml"?>
+      <?rfc include="references/reference.RFC.1813.xml"?>
+      <?rfc include="references/reference.RFC.5661.xml"?>
+      <?rfc include="references/reference.RFC.5716.xml"?>
+      <?rfc include="references/reference.I-D.ietf-nfsv4-federated-fs-protocol.xml"?>
+      <?rfc include="references/reference.RFC.5662.xml"?>
+      <?rfc include="references/reference.MS-SMB.xml"?>
+      <?rfc include="references/reference.MS-SMB2.xml"?>
+      <?rfc include="references/reference.MS-CIFS.xml"?>
     </references>
-
+  
     <section anchor="app-additional" title="Acknowledgments">
-		<t> We would like to thank Robert Thurlow of Sun Microsystems for 
-		    helping to author this document, including drafting the  
-		    replication procedure text. </t>
-
-		<t> We would also like to thank Paul Lemahieu of EMC and Mario Wurzl of EMC 
-		    for helping to author this document. </t>
-
-		<t> We would also like to thank Trond Myklebust for suggesting improvements 
-		    to the FSL pathname format, Chuck Lever for suggesting improvements to the 
-		    XDR type definitions and error codes, David Noveck for his suggestions 
-		    on internationalization and path encoding rules, and Nicolas Williams for 
-		    his suggestions. </t>
-
-		<t> The extract.sh shell script and formatting conventions were
-		    first described by the authors of the NFSv4.1 XDR specification
-		    <xref target="RFC5662"/>. </t>
-
+      <t>
+        We would like to thank Robert Thurlow for
+        helping to author this document, including drafting the
+        replication procedure text.
+      </t>
+  
+      <t>
+        We would also like to thank Paul Lemahieu and Mario Wurzl
+        for helping to author this document.
+      </t>
+  
+      <t>
+        We would also like to thank Trond Myklebust for suggesting improvements
+        to the FSL pathname format, Chuck Lever for suggesting improvements to the
+        XDR type definitions and error codes, David Noveck for his suggestions
+        on internationalization and path encoding rules, and Nicolas Williams for
+        his suggestions.
+      </t>
+  
+      <t>
+        The extract.sh shell script and formatting conventions were
+        first described by the authors of the NFSv4.1 XDR specification
+        <xref target="RFC5662"/>.
+      </t>
     </section>
-
-</back>
+  </back>
 </rfc>
