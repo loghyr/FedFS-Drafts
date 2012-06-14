@@ -3,7 +3,7 @@
 
 XML2RFC		= xml2rfc.tcl
 
-ADMIN_VERS=11
+ADMIN_VERS=12
 PROT_VERS=13
 
 DRAFTS	= \
