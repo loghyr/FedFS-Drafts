@@ -13,8 +13,7 @@ Tasks to complete draft-ietf-nfsv4-federated-fs-admin:
 -------------------------------------------------------------------------------
 
 ADMIN-1
-   Status: OPEN, although some subtasks are closed
-   Task: Address AD comments from David Harrington
+   Status: CLOSED
 
 ADMIN-1.1
     Status: CLOSED
@@ -52,7 +51,7 @@ ADMIN-1.6
     Description: "Note that" is usually superfluous.
 
 ADMIN-1.7
-    Status: OPEN
+    Status: CLOSED
     Description: Security Considerations is too limited. At a minimum, the discussion
     about FEDFS_GET_LIMITED_NSDB_PARAMS should be referenced in the security considerations.
     Plan: Cite FEDFS_GET_LIMITED_NSDB_PARAMS in Security Considerations.

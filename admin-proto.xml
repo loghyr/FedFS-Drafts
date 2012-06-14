@@ -46,7 +46,7 @@
           The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
           "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",
           "MAY", and "OPTIONAL" in this document are to be
-          interpreted as described in <xref target="RFC2119"/>.
+          interpreted as described in <xref target="RFC2119" />.
       </t>
     </note>
   </front>
@@ -81,12 +81,12 @@
   
       <t>
         The requirements for federated namespaces are described
-        in <xref target="RFC5716"/>.
+        in <xref target="RFC5716" />.
       </t>
   
       <t>
         The filesystem federation protocol described in
-        <xref target="FEDFS-NSDB"/> allows fileservers from different
+        <xref target="FEDFS-NSDB" /> allows fileservers from different
         vendors and/or with different administrators to cooperatively
         build a namespace.
       </t>
@@ -104,9 +104,9 @@
     <section title="Protocol" anchor="protocol">
       <t>
         The RPC protocol used by the administration operations is
-        ONC RPC <xref target="RFC5531"/>.  The data structures used
+        ONC RPC <xref target="RFC5531" />.  The data structures used
         for the parameters and return values of these procedures are
-        expressed in this document in XDR <xref target="RFC4506"/>.
+        expressed in this document in XDR <xref target="RFC4506" />.
       </t>
   
       <t>
@@ -412,7 +412,7 @@
       <t>
         Many of the error status names and meanings (and the prose
         for their descriptions) are taken from the specification
-        for NFSv4 <xref target="3530bis"/>.  Note, however, that
+        for NFSv4 <xref target="3530bis" />.  Note, however, that
         the numeric values for the status codes are different. For
         example, the name and meaning of FEDFS_ERR_ACCESS was
         inspired by NFSv4's NFS4ERR_ACCESS, but their numeric values
@@ -628,34 +628,34 @@
   
           <t hangText="FedFsUuid:">
             A universally unique identifier (UUID) as described in
-            <xref target="RFC4122"/> as a version 1 UUID.  The UUID
+            <xref target="RFC4122" /> as a version 1 UUID.  The UUID
             should be formatted in network byte order.
           </t>
   
           <t hangText="FedFsNsdbName:">
             A (hostname, port) pair.
   
-            <vspace blankLines="1"/>
+            <vspace blankLines="1" />
   
             The hostname is a variable length UTF-8 string that
             represents an NSDB's network location in DNS name
             notation. It SHOULD be prepared using the server4 rules
             defined in Chapter 12 "Internationalization" of
-            <xref target="3530bis"/>. The DNS name MUST be
+            <xref target="3530bis" />. The DNS name MUST be
             represented using a fully qualified domain name. A
             system (i.e., fileserver or administrative host) SHOULD
             resolve the fully qualified domain name to a network
             address using the system's standard resolution mechanisms.
   
-            <vspace blankLines="1"/>
+            <vspace blankLines="1" />
   
             The port is the NSDB transport port for the LDAP
             interface (see <xref target='RFC4511' />). The value
-            MUST be in the range 0 (zero) to 65535. A value of
-            0 (zero) indicates that the standard LDAP port
+            MUST be in the range 0 to 65535. A value of
+            0 indicates that the standard LDAP port
             number, 389, SHOULD be assumed.
   
-            <vspace blankLines="1"/>
+            <vspace blankLines="1" />
   
             FSNs are immutable and invariant. The attributes of an
             FSN, including the fedfsNsdbName, are expected to remain
@@ -669,7 +669,7 @@
             string containing a filesystem path component.
             It SHOULD be prepared using the component4 rules defined
             in Chapter 12 "Internationalization" of
-            <xref target="3530bis"/>.
+            <xref target="3530bis" />.
           </t>
   
           <t hangText="FedFsPathName:">
@@ -679,12 +679,12 @@
             of the array, the second component is stored at the second
             position of the array, and so on.
   
-            <vspace blankLines="1"/>
+            <vspace blankLines="1" />
   
             The path "/" MUST be encoded as an array with zero
             components.
   
-            <vspace blankLines="1"/>
+            <vspace blankLines="1" />
   
             A FedFsPathName MUST NOT contain any zero-length
             components.
@@ -700,13 +700,13 @@
             The type specific description of a
             pathname.
   
-            <vspace blankLines="1"/>
+            <vspace blankLines="1" />
   
             A FEDFS_PATH_SYS is an implementation dependent
             administrative pathname. For example, it could be a
             local file system path.
   
-            <vspace blankLines="1"/>
+            <vspace blankLines="1" />
   
             A FEDFS_PATH_NFS is a pathname in the NFSv4
             server's single-server namespace.
@@ -718,30 +718,30 @@
             contains a data structure that maps an NSDB name (DNS
             name and port value) to these LDAP connection parameters.
   
-            <vspace blankLines="1"/>
+            <vspace blankLines="1" />
   
             The secType field indicates the security mechanism
             that MUST be used to protect all connections to
             the NSDB with the connection parameters.
   
-            <vspace blankLines="1"/>
+            <vspace blankLines="1" />
   
             A value of FEDFS_SEC_NONE indicates that no security
             mechanism is necessary. In this case, the secData array
-            will have 0 (zero) length.
+            will have 0 length.
   
-            <vspace blankLines="1"/>
+            <vspace blankLines="1" />
   
             A value of FEDFS_SEC_TLS indicates that the StartTLS
-            security mechanism <xref target="RFC4513"/> MUST
+            security mechanism <xref target="RFC4513" /> MUST
             be used to protect all connections to the NSDB.
             In this case, the secData array will contain an
             X.509v3 certificate in binary DER format
-            <xref target="RFC5280"/>. The certificate SHOULD be
+            <xref target="RFC5280" />. The certificate SHOULD be
             used by the fileserver to authenticate the identity
             of the NSDB. In particular, this certificate
             SHOULD be used to validate the NSDB's TLS certificate
-            list chain (see 7.4.2 of <xref target="RFC5246"/>).
+            list chain (see 7.4.2 of <xref target="RFC5246" />).
             The certificate could be that of a certificate authority
             or a self-signed certificate.
           </t>
@@ -754,7 +754,7 @@
           their DNS name and port values are the same.
           As described above, the standard LDAP port
           number, 389, SHOULD be assumed if a port
-          number of 0 (zero) is specified. Therefore, the
+          number of 0 is specified. Therefore, the
           FedFsNsdbName "(nsdb.example.com, 0)" is considered
           equal to "(nsdb.example.com, 389)" but not equal
           to "(nsdb.example.com, 1066)" since the port number
@@ -766,7 +766,7 @@
   
     <section title="Procedures">
       <t>
-        The procedures defined in <xref target="protocol"/> are described
+        The procedures defined in <xref target="protocol" /> are described
         in detail in the following sections.
       </t>
   
@@ -941,11 +941,11 @@
   
           <t>
             If successful, subsequent references via NFSv4
-            <xref target="3530bis"/> or NFSv4.1 <xref target="RFC5661"/>
+            <xref target="3530bis" /> or NFSv4.1 <xref target="RFC5661" />
             clients to the directory that has been replaced by
             the junction will result in a referral to a current
             location of the target fileset
-            <xref target="FEDFS-NSDB"/>.
+            <xref target="FEDFS-NSDB" />.
           </t>
   
           <t>
@@ -1209,7 +1209,7 @@
             allow the administrator to obtain the junction's
             FSN even if the resolution would fail. Therefore
             on success, the result of a FEDFS_RESOLVE_NONE
-            call will return a 0 (zero) length fsl list in
+            call will return a 0 length fsl list in
             the FedFsLookupResOk structure.
           </t>
   
@@ -1221,7 +1221,7 @@
             resolve the FSN by contacting the appropriate
             NSDB. If the fileserver's cache does not have
             a mapping for the FSN in question, the result
-            of the operation MUST be FEDFS_OK with 0 (zero)
+            of the operation MUST be FEDFS_OK with 0
             elements in the FedFsLookupResOk structure's
             fsl array. The operation MAY fail with status
             FEDFS_ERR_NO_CACHE if the fileserver does not
@@ -1266,15 +1266,15 @@
             protocol error value to be returned in the
             FedFsLookupRes's ldapResultCode field (see
             the resultCode values in Section 4.1.9 of
-            <xref target="RFC4511"/>).
+            <xref target="RFC4511" />).
           </t>
   
           <t>
             If the NSDB responds with an LDAP referral, either
             the Referral type defined in Section 4.1.10 of
-            <xref target="RFC4511"/> or the
+            <xref target="RFC4511" /> or the
             SearchResultReference type defined in Section
-            4.5.3 of <xref target="RFC4511"/>, the fileserver
+            4.5.3 of <xref target="RFC4511" />, the fileserver
             SHOULD process the LDAP referral using the same
             policies as the fileserver's file-access protocol
             server. The fileserver can indicate a failure
@@ -1605,7 +1605,7 @@
           <t>
             Interpretation of the 'resolve' parameter and
             the procedure's results shall be the same as
-            specified in <xref target="lookup-junction"/>
+            specified in <xref target="lookup-junction" />
             for the FEDFS_LOOKUP_JUNCTION operation.
           </t>
         </section>
@@ -1680,7 +1680,7 @@
   
           <t>
             An NSDB is specified using a FedFsNsdbName.
-            The rules in <xref target="nsdb-equality"/>
+            The rules in <xref target="nsdb-equality" />
             define when two FedFsNsdbNames are considered
             equal.
           </t>
@@ -1754,7 +1754,7 @@
   
           <t>
             An NSDB is specified using a FedFsNsdbName.
-            The rules in <xref target="nsdb-equality"/>
+            The rules in <xref target="nsdb-equality" />
             define when two FedFsNsdbNames are considered
             equal.
           </t>
@@ -1819,17 +1819,17 @@
           </t>
         </section>
   
-        <section title="Description">
+        <section title="Description" anchor='fglnp:desc'>
           <t>
-            This operations allows the administrator to
+            This operation allows the administrator to
             retrieve a limited subset of information on
             the connection parameters, if they exist,
             for the given NSDB.
           </t>
   
           <t>
-            An NSDB is specified using a FedFsNsdbName.
-            The rules in <xref target="nsdb-equality"/>
+            A NSDB is specified using a FedFsNsdbName.
+            The rules in <xref target="nsdb-equality" />
             define when two FedFsNsdbNames are considered
             equal.
           </t>
@@ -1910,9 +1910,14 @@
     <section title="Security Considerations">
       <t>
         The ONC RPC protocol supports authentication, integrity
-        and privacy via the RPCSEC_GSS framework <xref target="RFC2203"/>.
+        and privacy via the RPCSEC_GSS framework <xref target="RFC2203" />.
         Fileservers which support the FedFS administration protocol
         described above MUST support RPCSEC_GSS.
+      </t>
+
+      <t>
+        FEDFS_GET_LIMITED_NSDB_PARAMS's interaction with the NSDB's connection
+        parameters is discussed in <xref target='fglnp:desc' />.
       </t>
     </section>
   
@@ -1920,7 +1925,7 @@
       <t>
         A range of ONC RPC program numbers were assigned for use by FedFS
         using the procedure described in Section 7.3 "Program Number Assignment" of
-        <xref target="RFC5531"/>. The FedFS range is:
+        <xref target="RFC5531" />. The FedFS range is:
       </t>
   
       <t>
@@ -1983,11 +1988,16 @@
         on internationalization and path encoding rules, and Nicolas Williams for
         his suggestions.
       </t>
+
+      <t>
+        Finally, we would like to thank Tom Haynes for his editing of
+        the final stages of the draft.
+      </t>
   
       <t>
         The extract.sh shell script and formatting conventions were
         first described by the authors of the NFSv4.1 XDR specification
-        <xref target="RFC5662"/>.
+        <xref target="RFC5662" />.
       </t>
     </section>
   </back>
