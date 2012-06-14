@@ -649,7 +649,8 @@
   
             <vspace blankLines="1"/>
   
-            The port is the NSDB transport port. The port value
+            The port is the NSDB transport port for the LDAP
+            interface (see <xref target='RFC4511' />). The value
             MUST be in the range 0 (zero) to 65535. A value of
             0 (zero) indicates that the standard LDAP port
             number, 389, SHOULD be assumed.

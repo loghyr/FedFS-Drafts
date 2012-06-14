@@ -25,7 +25,7 @@ ADMIN-1.1
      values for the status codes are different. "
 
 ADMIN-1.2
-    Status: OPEN
+    Status: CLOSED
     Description: FedFsNsdbName: "The port is the NSDB transport port." Different
     transport protocols might have different ports, so it might be important
     to identify the transport protocol, not just the port. There is also no
