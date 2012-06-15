@@ -707,7 +707,7 @@
 	    will have a namingContext attribute. Each namingContext 
 	    attribute contains the DN of the naming context's root 
 	    entry. For each naming context that contains federation 
-	    entries (e.g. FSNs and FSLs): </t>
+	    entries (e.g., FSNs and FSLs): </t>
 
 	    <t>
 	    <list style="numbers">
@@ -968,7 +968,7 @@
 		    Section 2.2 of RFC 4291 <xref target="RFC4291"/>. </t>
 
 		    <t> A DNS name MUST be represented using a fully qualified 
-		    domain name. A system (i.e. fileserver or administrative host) 
+		    domain name. A system (i.e., fileserver or administrative host) 
 		    SHOULD resolve the fully qualified domain name to a network 
 		    address using the system's standard resolution mechanisms. </t>
 
@@ -1052,7 +1052,7 @@
 
 		    <t> It MUST be a UTF-8 string containing a DNS name.
 		    The DNS name MUST be represented using a fully qualified 
-		    domain name. A system (i.e. fileserver or 
+		    domain name. A system (i.e., fileserver or 
 		    administrative host) SHOULD resolve the fully qualified 
 		    domain name to a network address using the system's standard 
 		    resolution mechanisms. </t>
@@ -2054,7 +2054,7 @@
 		    store FSL information. The fedfsNfsFsl object 
 		    class defined below is used to record an NFS FSL's 
 		    location.  Other subtypes MAY be defined for other 
-		    protocols (e.g. CIFS).  </t>
+		    protocols (e.g., CIFS).  </t>
 
 		    <t> A fedfsFsl's fedfsFslUuid, fedfsFsnUuid, 
 		    fedfsNsdbName, fedfsFslHost, and fedfsFslTTL 
@@ -2502,7 +2502,7 @@
 				<c>NFS client will detect if RDMA access is available.</c>
 				<c>fedfsNfsClassSimul</c>
 				<c>0</c>
-				<c>0 (zero) is treated as non-matching (see 11.10.1 of <xref target="RFC5661"/>).</c>
+				<c>0 is treated as non-matching (see 11.10.1 of <xref target="RFC5661"/>).</c>
 				<c>fedfsNfsClassHandle</c>
 				<c>0</c>
 				<c>See fedfsNfsClassSimul note.</c>
@@ -2785,7 +2785,7 @@
 	may compromise: a fileserver and an NSDB. </t>
 
 	<t> If an attacker compromises a fileserver, the attacker can interfere 
-	with the client's filesystem I/O operations (e.g. by returning fictitious 
+	with the client's filesystem I/O operations (e.g., by returning fictitious 
 	data in the response to a read request) or fabricating a referral. The 
 	attacker's abilities are the same regardless of whether or not the 
 	federation protocols are in use. While the federation protocols do not 
