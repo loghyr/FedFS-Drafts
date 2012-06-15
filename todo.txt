@@ -67,7 +67,7 @@ Tasks to complete draft-ietf-nfsv4-federated-fs-protocol:
 -------------------------------------------------------------------------------
 
 NSDB-1
-    Status: Open
+    Status: CLOSED
     Description: Address transport area director (TSV-DIR) review comment from David Black
 
     "NFSv4 replica mechanism is not simple, especially in its full

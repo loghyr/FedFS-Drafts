@@ -305,11 +305,14 @@
 		<t> The federation protocol does not guarantee that
 		the different locations are mutually consistent in
 		terms of the currency of the data.  It relies on the
-		client file-access protocol (e.g., NFSv4) to contain
+		client file-access protocol to contain
 		sufficient information to help the clients determine
 		the currency of the data at each location in order
 		to ensure that the clients do not revert back in
-		time when switching locations.  </t>
+		time when switching locations. NFSv4.1 provides
+    guidance on how replication can be handled in such a
+    manner, in particular see Section 11.7 of
+    <xref target='RFC5661' />.   </t>
 
 	    </section>
 
