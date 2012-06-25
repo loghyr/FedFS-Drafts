@@ -1,10 +1,9 @@
-<!-- Copyright (C) The IETF Trust (2008) -->
-<!-- $Id: glossary.xml,v 1.2 2008/08/07 03:00:20 ellard Exp $ -->
+<!-- Copyright (C) The IETF Trust (2008-2012) -->
 
 <t>
 <list style="hanging">
 
-<t hangText="Administrator:"> user with the necessary authority to
+<t hangText="Administrator:"> An user with the necessary authority to
     initiate administrative tasks on one or more servers.  </t>
 
 <t hangText="Admin Entity:"> A server or agent that administers a
@@ -42,7 +41,7 @@
     client protocol and the fileserver permit this. </t>
 
 <t hangText="Filesystem Access Protocol:"> A network filesystem access
-    protocol such as NFSv2 <xref target="RFC1094"/>, NFSv3 <xref
+    protocol such as NFSv3 <xref
     target="RFC1813"/>, NFSv4 <xref target="3530bis"/>, or
     CIFS (Common Internet File System) <xref target="MS-SMB"/> 
     <xref target="MS-SMB2"/> <xref target="MS-CIFS"/>.  </t>
