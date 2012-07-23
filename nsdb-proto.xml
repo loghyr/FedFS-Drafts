@@ -503,6 +503,57 @@
 
 	</section>
 
+	<section title="UUID considerations">
+
+	    <t> To ensure FSN and FSL records are unique across a domain,
+	    FedFS employs UUIDs conforming to <xref target="RFC4122"/> to
+	    form the distinguished names of LDAP records containing FedFS
+	    data (see <xref target="fedfsfsn"/>).  </t>
+
+	    <t> Because junctions store a tuple containing an FSN UUID and
+	    the name and port of an NSDB service, an FSN UUID must be unique
+	    only on a single NSDB service.  The probability of two FSN
+	    records sharing the same UUID on a single NSDB host is zero,
+	    due to the way FSN distinguished names are formed.  An FSN
+	    UUID collision can be detected immediately when an
+	    administrator attempts to publish an FSN or FSL by storing
+	    it on an appropriate NSDB host.  </t>
+
+	    <t> Because FSLs are children of FSNs, FSL UUIDs must be unique
+	    for just a single FSN.  As with FSNs, as soon as an FSL is
+	    published, its uniqueness is guaranteed.  </t>
+
+	    <t> Of course, there is no way to guard against UUID re-use,
+	    but that is highly unlikely provided that UUIDs are constructed
+	    carefully.  </t>
+
+	    <t> A fileserver performs the operations described in
+	    <xref target="nsdb-ops-fileservers"/> as an unauthenticated user.
+	    Thus distinguished names of FSN and FSL records, as well as
+	    the FSN and FSL records themselves, are required to be readable
+	    by anyone who can bind anonymously to an NSDB service.  Therefore
+	    FSN and FSL UUIDs should be considered public information.  </t>
+
+	    <t> Version 1 UUIDs contain a host's MAC address and a time stamp
+	    in the clear.  This gives provenance to each UUID, but attackers
+	    can use such details to guess information about the host where the
+	    UUID was generated.  Security-sensitive installations should be
+	    aware that on externally-facing NSDBs, UUIDs can reveal
+	    information about the hosts where they are generated.  </t>
+
+	    <t> In addition, version 1 UUIDs depend on the notion that a
+	    hardware MAC address is unique across machines.  The growing
+	    trend is that a MAC address is not a valid source of global
+	    uniqueness.  </t>
+
+	    <t> To minimize the probability of UUIDs colliding, a
+	    consistent procedure for generating UUIDs should be used
+	    throughout a federation.  Within a federation, UUIDs SHOULD be
+	    generated using the procedure described for version 4 of the
+	    UUID variant specified in <xref target="RFC4122"/>.  </t>
+
+	</section>
+
     </section>
 
     <section title="Examples">
@@ -922,16 +973,6 @@
 		    <t> A fedfsUuid is the base type for all of the
 		    universally unique identifiers (UUIDs) used by the
 		    federated filesystem protocols.  </t>
-
-		    <t> To minimize the probability of two UUIDs 
-		    colliding, a consistent procedure for generating 
-		    UUIDs SHOULD be used throughout a federation. Within 
-		    a federation, UUIDs SHOULD be generated using the 
-		    procedure described for version 1 of the UUID variant 
-		    specified in <xref target="RFC4122"/>. This is the
-		    time-based UUID variant provided by many UUID 
-		    programming libraries (e.g., the OSF DCE 
-		    uuid_generate_time(1) API). </t>
 
 		    <t> The UUID's text representation (as defined in 
 		    <xref target="RFC4122"/>) SHOULD be encoded as a UTF-8 
@@ -2000,7 +2041,7 @@
 
 		</section>
 
-		<section title="fedfsFsn">
+		<section title="fedfsFsn" anchor="fedfsfsn">
 
 		    <t> A fedfsFsn represents an FSN.  </t>
 
@@ -2048,7 +2089,7 @@
 
 		</section>
 
-		<section title="fedfsFsl">
+		<section title="fedfsFsl" anchor="fedfsfsl">
 
 		    <t> The fedfsFsl object class represents an FSL.  </t>
 
@@ -2803,6 +2844,11 @@
 	which query it. The LDAP operations described in <xref target="nsdb-ops"/> 
 	SHOULD be secured using the methods described above to defeat attacks 
 	on an NSDB via this channel. </t> 
+
+	<t> A fileserver binds anonymously when performing NSDB operations.
+	Thus the contents and distinguished names of FSN and FSL records are
+	required to be readable by anyone who can bind anonymously to an NSDB
+	service. </t>
 
 	<t> It should be noted that the federation protocols do not directly 
 	provide access to filesystem data. The federation protocols only 
