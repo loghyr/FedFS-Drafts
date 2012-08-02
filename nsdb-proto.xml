@@ -503,7 +503,7 @@
 
 	</section>
 
-	<section title="UUID considerations">
+	<section target="sec:uuid" title="UUID Considerations">
 
 	    <t> To ensure FSN and FSL records are unique across a domain,
 	    FedFS employs UUIDs conforming to <xref target="RFC4122"/> to
@@ -542,9 +542,10 @@
 	    information about the hosts where they are generated.  </t>
 
 	    <t> In addition, version 1 UUIDs depend on the notion that a
-	    hardware MAC address is unique across machines.  The growing
-	    trend is that a MAC address is not a valid source of global
-	    uniqueness.  </t>
+	    hardware MAC address is unique across machines.  As virtual
+      machines do not depend on unique physical MAC addresses and
+      in any event an administrator can modify the physical MAC
+      address, version 1 UUIDs are no longer considered sufficient.  </t>
 
 	    <t> To minimize the probability of UUIDs colliding, a
 	    consistent procedure for generating UUIDs should be used
@@ -893,7 +894,7 @@
 		    <figure><artwork><![CDATA[
 
   /// # 
-  /// # Copyright (c) 2010 IETF Trust and the persons identified
+  /// # Copyright (c) 2010-2012 IETF Trust and the persons identified
   /// # as authors of the code.  All rights reserved.
   /// #
   /// # The authors of the code are the authors of 
@@ -2848,7 +2849,8 @@
 	<t> A fileserver binds anonymously when performing NSDB operations.
 	Thus the contents and distinguished names of FSN and FSL records are
 	required to be readable by anyone who can bind anonymously to an NSDB
-	service. </t>
+	service. <xref target="sec:uuid"> presents the security considerations
+  in the choice of the type of UUID used in these records. </t>
 
 	<t> It should be noted that the federation protocols do not directly 
 	provide access to filesystem data. The federation protocols only 
