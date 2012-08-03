@@ -503,7 +503,7 @@
 
 	</section>
 
-	<section target="sec:uuid" title="UUID Considerations">
+	<section anchor="sec:uuid" title="UUID Considerations">
 
 	    <t> To ensure FSN and FSL records are unique across a domain,
 	    FedFS employs UUIDs conforming to <xref target="RFC4122"/> to
@@ -2849,7 +2849,7 @@
 	<t> A fileserver binds anonymously when performing NSDB operations.
 	Thus the contents and distinguished names of FSN and FSL records are
 	required to be readable by anyone who can bind anonymously to an NSDB
-	service. <xref target="sec:uuid"> presents the security considerations
+	service. <xref target="sec:uuid" /> presents the security considerations
   in the choice of the type of UUID used in these records. </t>
 
 	<t> It should be noted that the federation protocols do not directly 
