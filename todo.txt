@@ -104,7 +104,7 @@ NSDB-3
                  http://www.ietf.org/mail-archive/web/nfsv4/current/msg10413.html
 
 NSDB-4
-    Status: Open
+    Status: CLOSED
     Description: Address issue raised by Chuck Lever in "FedFS: security concern
                  regarding the use of time-variant UUIDs"
                  http://www.ietf.org/mail-archive/web/nfsv4/current/msg10421.html
