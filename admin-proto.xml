@@ -736,14 +736,16 @@
             security mechanism <xref target="RFC4513" /> MUST
             be used to protect all connections to the NSDB.
             In this case, the secData array will contain an
-            X.509v3 certificate in binary DER format
-            <xref target="RFC5280" />. The certificate SHOULD be
-            used by the fileserver to authenticate the identity
-            of the NSDB. In particular, this certificate
-            SHOULD be used to validate the NSDB's TLS certificate
-            list chain (see 7.4.2 of <xref target="RFC5246" />).
-            The certificate could be that of a certificate authority
-            or a self-signed certificate.
+            X.509v3 root certificate in binary DER format
+            <xref target="RFC5280" /> fulfilling the TLS requirement
+            that root keys be distributed independently from the TLS
+            protocol. The certificate MUST be used by the fileserver
+            as a Trust Anchor to validate the NSDB's TLS server
+            certificate list chain (see section 7.4.2 of
+            <xref target="RFC5246" />) and thus authenticate the
+            identitiy of the NSDB. The certificate could be that of a
+            certificate authority or a self-signed certificate.
+
           </t>
         </list>
       </t>
@@ -1912,7 +1914,24 @@
         The ONC RPC protocol supports authentication, integrity
         and privacy via the RPCSEC_GSS framework <xref target="RFC2203" />.
         Fileservers which support the FedFS administration protocol
-        described above MUST support RPCSEC_GSS.
+        described above MUST support RPCSEC_GSS. When RPCSEC_GSS is employed,
+        RPCSEC_GSS data integrity SHOULD be used.
+      </t>
+
+      <t>
+        It is strongly RECOMMENDED that an Access Control Service be
+        employed to restrict access to a fileserver's FedFS administration
+        configuration data via the FedFS administrative protocol to prevent
+        FedFS namespace corruption, and protect NSDB communication parameters.
+      </t>
+
+      <t>
+        For example, when the FedFsNsdbParams secType field value FEDFS_SEC_TLS
+        is chosen, the payload is used to provision the trust anchor root
+        certificate for TLS secure communication between the fileserver and
+        the NSDB.  In this case, RPCSEC_GSS with data integrity SHOULD be
+        employed along with an Access Control Service to restrict access to
+        domain adminstrators
       </t>
 
       <t>
