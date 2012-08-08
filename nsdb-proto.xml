@@ -468,8 +468,7 @@
 	    fileset.  The mechanism by which the server maps a junction
 	    to an FSN is outside the scope of this document. The FSN 
 	    (as described earlier) contains the authoritative
-	    NSDB node, the optional NSDB search base if one is defined, 
-	    and the FsnUuid (a UUID for the fileset).  </t>
+	    NSDB node, and the FsnUuid (a UUID for the fileset).  </t>
 
 	    <t> When a client traversal reaches a junction, the
 	    client is referred to a list of FSLs associated with the
