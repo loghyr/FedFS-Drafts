@@ -778,7 +778,7 @@
         <t> The naming context's root entry MUST include
             the fedfsNsdbContainerInfo (defined below)
             as one of its object classes. The
-            fedfsNsdbContainerInfo's fedfsNcePrefix
+            fedfsNsdbContainerInfo's fedfsNceDN
             attribute is used to locate the naming context's
             NCE.
         </t>
@@ -790,12 +790,10 @@
         it will not contain an NCE and its root entry will not include
         a fedfsNsdbContainerInfo as one of its object classes. </t>
 
-        <t> A fedfsNsdbContainerInfo's fedfsNcePrefix
-        attribute contains a string. Prepending this string to
-        the namingContext value produces the Distinguished Name (DN)
-        of the NSDB Container Entry. An empty fedfsNcePrefix
-        string value indicates that the NSDB Container Entry is the
-        namingContext's root entry. </t>
+        <t> A fedfsNsdbContainerInfo's fedfsNceDN attribute
+        contains the Distinguished Name (DN) of the NSDB Container
+        Entry residing under this naming context. The fedfsNceDN
+        attribute MUST NOT be empty. </t>
 
         <t> For example, an LDAP directory might have the following
         entries: </t>
@@ -808,11 +806,11 @@
          |
          |
          +---- [o=fedfs]
-         |      fedfsNcePrefix:
+         |      fedfsNceDN: o=fedfs
          |
          |
          +---- [dc=example,dc=com]
-         |      fedfsNcePrefix: ou=fedfs,ou=corp-it
+         |      fedfsNceDN: ou=fedfs,ou=corp-it,dc=example,dc=com
          |
          |
          +---- [ou=system]
@@ -1125,10 +1123,9 @@
 
         </section>
 
-        <section title="fedfsNcePrefix">
+        <section title="fedfsNceDN">
 
-            <t> A fedfsNcePrefix stores a distinguished name
-            (DN) prefix. </t>
+            <t> A fedfsNceDN stores a distinguished name (DN). </t>
 
             <t> This attribute is single-valued.  </t>
 
@@ -1137,8 +1134,8 @@
             <figure><artwork><![CDATA[
         ///
         /// attributetype (
-        ///     1.3.6.1.4.1.31103.1.7 NAME 'fedfsNcePrefix'
-        ///     DESC 'NCE prefix'
+        ///     1.3.6.1.4.1.31103.1.7 NAME 'fedfsNceDN'
+        ///     DESC 'NCE Distinguished Name'
         ///     EQUALITY distinguishedNameMatch
         ///     SYNTAX 1.3.6.1.4.1.1466.115.121.1.12
         ///     SINGLE-VALUE
@@ -1922,8 +1919,7 @@
             <t> A fedfsNsdbContainerInfo describes the location of
             the NCE.  </t>
 
-            <t> A fedfsFsn's fedfsNcePrefix attribute is
-            REQUIRED.  </t>
+            <t> A fedfsFsn's fedfsNceDN attribute is REQUIRED.  </t>
 
             <t> A fedfsFsn's fedfsAnnotation and fedfsDescr attributes
             are OPTIONAL.  </t>
@@ -1937,7 +1933,7 @@
         ///     DESC 'Describes NCE location'
         ///     SUP top AUXILIARY
         ///     MUST (
-        ///             fedfsNcePrefix
+        ///             fedfsNceDN
         ///     )
         ///     MAY (
         ///             fedfsAnnotation
@@ -2584,17 +2580,16 @@
         connect to the LDAP directory at foo.example.com
         for each namingContext value $BAR in the root DSE
             /* $BAR is a DN */
-            query for a fedfsNcePrefix value at $BAR
+            query for a fedfsNceDN value at $BAR
             /*
              * The LDAP URL for this search would be
              *
-             *  ldap://foo.example.com:389/$BAR?fedfsNcePrefix??
+             *  ldap://foo.example.com:389/$BAR?fedfsNceDN??
              *                      (objectClass=fedfsNsdbContainerInfo)
              *
              */
-            if a fedfsNcePrefix value is found
-                nce = prepend the fedfsNcePrefix value to $BAR
-                add nce to the nce_list
+            if a fedfsNceDN value is found
+                add the value to the nce_list
             ]]></artwork></figure>
 
         </section>
@@ -2809,7 +2804,7 @@
         <c> 1.3.6.1.4.1.31103.1.4    </c> <c> fedfsFsnUuid            </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.5    </c> <c> fedfsNsdbName           </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.6    </c> <c> fedfsNsdbPort           </c> <c> RFC-TBD1 </c>
-        <c> 1.3.6.1.4.1.31103.1.7    </c> <c> fedfsNcePrefix          </c> <c> RFC-TBD1 </c>
+        <c> 1.3.6.1.4.1.31103.1.7    </c> <c> fedfsNceDN              </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.8    </c> <c> fedfsFslUuid            </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.9    </c> <c> fedfsFslHost            </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.10   </c> <c> fedfsFslPort            </c> <c> RFC-TBD1 </c>
@@ -2902,7 +2897,7 @@
     <t>
         <list style="hanging">
         <t hangText="Object Identifier:"> 1.3.6.1.4.1.31103.1.7 </t>
-        <t hangText="Descriptor (short name):"> fedfsNcePrefix </t>
+        <t hangText="Descriptor (short name):"> fedfsNceDN </t>
         <t hangText="Usage:"> attribute type </t>
         </list>
     </t>
