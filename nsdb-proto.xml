@@ -415,25 +415,26 @@
         <t> The NSDB service is a federation-wide service that
         provides interfaces to define, update, and query FSN
         information, FSL information, and FSN to FSL mapping
-        information.  An individual repository of namespace
-        information is called an NSDB node.  Each NSDB node
-        is managed by a single administrative entity.  A single admin
-        entity can manage multiple NSDB nodes.  </t>
+        information.  </t>
 
-        <t> The difference between the NSDB service and an NSDB
-        node is analogous to that between the DNS service
-        and a particular DNS server.  </t>
+        <t> An individual repository of namespace information
+        is called an NSDB node.  The difference between the NSDB
+        service and an NSDB node is analogous to that between the
+        DNS service and a particular DNS server.  </t>
+
+        <t> Each NSDB node is managed by a single administrative
+        entity.  A single admininistrative entity can manage
+        multiple NSDB nodes.  </t>
 
         <t> Each NSDB node stores the definition of the FSNs
         for which it is authoritative.  It also stores the
         definitions of the FSLs associated with those FSNs.  An
         NSDB node is authoritative for the filesets that it
-        defines.  An NSDB node can cache information from a
-        peer NSDB node.  The fileserver can always contact a
-        local NSDB node (if it has been defined) or directly
-        contact any NSDB node to resolve a junction.  Each
-        NSDB node supports an LDAP <xref target="RFC4510"/>
-        interface and can be accessed by an LDAP client.  </t>
+        defines.  </t>
+
+        <t> Each NSDB node supports an LDAP <xref target="RFC4510"/>
+        interface.  The information stored on an NSDB node is
+        accessed and updated by LDAP clients.  </t>
 
         <t> An NSDB MAY be replicated throughout the federation.
         If an NSDB is replicated, the NSDB MUST exhibit loose,
