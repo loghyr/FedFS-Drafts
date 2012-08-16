@@ -2329,15 +2329,15 @@
 		    ]]></artwork></figure>
 
 		    <t> For example, if the $FSNUUID is 
-		    "f81d4fae-7dec-11d0-a765-00a0c91e6bf6",
+		    "e8c4761c-eb3b-4307-86fc-f702da197966",
 		    the $NSDBNAME is "nsdb.example.com", and the
 		    $NCE is "o=fedfs" the operation would be: </t>
 
 		    <figure><artwork><![CDATA[
-        dn: fedfsFsnUuid=f81d4fae-7dec-11d0-a765-00a0c91e6bf6,o=fedfs
+        dn: fedfsFsnUuid=e8c4761c-eb3b-4307-86fc-f702da197966,o=fedfs
         changeType: add
         objectClass: fedfsFsn
-        fedfsFsnUuid: f81d4fae-7dec-11d0-a765-00a0c91e6bf6
+        fedfsFsnUuid: e8c4761c-eb3b-4307-86fc-f702da197966
         fedfsNsdbName: nsdb.example.com
 		    ]]></artwork></figure>
 
@@ -2379,11 +2379,11 @@
 		    ]]></artwork></figure>
 
 		    <t> For example, if the $FSNUUID is 
-		    "f81d4fae-7dec-11d0-a765-00a0c91e6bf6" and $NCE 
+		    "e8c4761c-eb3b-4307-86fc-f702da197966" and $NCE 
 		    is "o=fedfs", the operation would be: </t>
 
 		    <figure><artwork><![CDATA[
-        dn: fedfsFsnUuid=f81d4fae-7dec-11d0-a765-00a0c91e6bf6,o=fedfs
+	dn: fedfsFsnUuid=e8c4761c-eb3b-4307-86fc-f702da197966,o=fedfs
         changeType: delete
 		    ]]></artwork></figure>
     
@@ -2457,8 +2457,8 @@
 
 		    ]]></artwork></figure>
 
-		    <t> For example, if the $FSNUUID is "f81d4fae-7dec-11d0-a765-00a0c91e6bf6", 
-		    the $FSLUUID is "84f775a7-8e31-14ae-b39d-10eeee060d2c", the $NSDBNAME is "nsdb.example.com", 
+		    <t> For example, if the $FSNUUID is "e8c4761c-eb3b-4307-86fc-f702da197966", 
+		    the $FSLUUID is "ba89a802-41a9-44cf-8447-dda367590eb3", the $NSDBNAME is "nsdb.example.com", 
 		    the $HOST is "server.example.com", $PORT is "2049", the $TTL is "300" seconds,
 		    the $PATH is stored in the file "/tmp/fsl_path", fileset is exported via 
 		    NFSv4.1 ($MAJOR is "4" and $MINOR is "1"), $CURRENCY is "0" (an up to date 
@@ -2473,12 +2473,12 @@
 
 		    <figure><artwork><![CDATA[
 
-        dn:fedfsFslUuid=84f775a7-8e31-14ae-b39d-10eeee060d2c,
-            fedfsFsnUuid=f81d4fae-7dec-11d0-a765-00a0c91e6bf6,o=fedfs
+        dn:fedfsFslUuid=ba89a802-41a9-44cf-8447-dda367590eb3,
+            fedfsFsnUuid=e8c4761c-eb3b-4307-86fc-f702da197966,o=fedfs
         changeType: add
         objectClass: fedfsNfsFsl
-        fedfsFslUuid: 84f775a7-8e31-14ae-b39d-10eeee060d2c
-        fedfsFsnUuid: f81d4fae-7dec-11d0-a765-00a0c91e6bf6
+        fedfsFslUuid: ba89a802-41a9-44cf-8447-dda367590eb3
+        fedfsFsnUuid: e8c4761c-eb3b-4307-86fc-f702da197966
         fedfsNsdbName: nsdb.example.com
         fedfsFslHost: server.example.com
         fedfsFslPort: 2049
@@ -2608,15 +2608,15 @@
 
 		    ]]></artwork></figure>
 
-		    <t> For example, if the $FSNUUID is "f81d4fae-7dec-11d0-a765-00a0c91e6bf6", 
-		    the $FSLUUID is "84f775a7-8e31-14ae-b39d-10eeee060d2c", and the $NCE is 
+		    <t> For example, if the $FSNUUID is "e8c4761c-eb3b-4307-86fc-f702da197966", 
+		    the $FSLUUID is "ba89a802-41a9-44cf-8447-dda367590eb3", and the $NCE is 
 		    "o=fedfs", the operation would be (for readability the DN is split into 
 		    two lines): </t>
 
 		    <figure><artwork><![CDATA[
 
-        dn: fedfsFslUuid=84f775a7-8e31-14ae-b39d-10eeee060d2c,
-             fedfsFsnUuid=f81d4fae-7dec-11d0-a765-00a0c91e6bf6,o=fedfs
+        dn: fedfsFslUuid=ba89a802-41a9-44cf-8447-dda367590eb3,
+             fedfsFsnUuid=e8c4761c-eb3b-4307-86fc-f702da197966,o=fedfs
         changeType: delete
 
 		    ]]></artwork></figure>
@@ -2649,15 +2649,15 @@
 
 		    ]]></artwork></figure>
 
-		    <t> For example, if the $FSNUUID is "f81d4fae-7dec-11d0-a765-00a0c91e6bf6", 
-		    the $FSLUUID is "84f775a7-8e31-14ae-b39d-10eeee060d2c", the $NCE is "o=fedfs",
+		    <t> For example, if the $FSNUUID is "e8c4761c-eb3b-4307-86fc-f702da197966", 
+		    the $FSLUUID is "ba89a802-41a9-44cf-8447-dda367590eb3", the $NCE is "o=fedfs",
 		    and the administrator wished to change the TTL to 10 minutes, the operation 
 		    would be (for readability the DN is split into two lines): </t>
 
 		    <figure><artwork><![CDATA[
 
-        dn: fedfsFslUuid=84f775a7-8e31-14ae-b39d-10eeee060d2c,
-             fedfsFsnUuid=f81d4fae-7dec-11d0-a765-00a0c91e6bf6,o=fedfs
+        dn: fedfsFslUuid=ba89a802-41a9-44cf-8447-dda367590eb3,
+             fedfsFsnUuid=e8c4761c-eb3b-4307-86fc-f702da197966,o=fedfs
         changeType: modify
         replace: fedfsFslTTL
         fedfsFslTTL: 600
@@ -2725,14 +2725,14 @@
 		FSL entries are returned. </t>
 
 		<t> For example if $NSDBNAME is "nsdb.example.com", $FSNUUID 
-		is "f81d4fae-7dec-11d0-a765-00a0c91e6bf6", and $NCE is 
+		is "e8c4761c-eb3b-4307-86fc-f702da197966", and $NCE is 
 		"o=fedfs", the search would be (for readability the URI is split 
 		into three lines): </t>
 
 		<figure><artwork><![CDATA[
 
         ldap://nsdb.example.com/
-                fsnUuid=f81d4fae-7dec-11d0-a765-00a0c91e6bf6,o=fedfs
+                fsnUuid=e8c4761c-eb3b-4307-86fc-f702da197966,o=fedfs
                 ??one?(objectClass=fedfsFsl)
 
 		]]></artwork></figure>
@@ -2755,14 +2755,14 @@
 		NFS FSLs. </t>
 
 		<t> For example if $NSDBNAME is nsdb.example.com, $FSNUUID 
-		is f81d4fae-7dec-11d0-a765-00a0c91e6bf6, and $NCE is 
+		is "e8c4761c-eb3b-4307-86fc-f702da197966", and $NCE is 
 		"o=fedfs",the search would be (for readability the URI is split 
 		into three lines): </t>
 	
 		<figure><artwork><![CDATA[
 
         ldap://nsdb.example.com/
-                fsnUuid=f81d4fae-7dec-11d0-a765-00a0c91e6bf6,o=fedfs
+                fsnUuid=e8c4761c-eb3b-4307-86fc-f702da197966,o=fedfs
                 ??one?(objectClass=fedfsNfsFsl)
 
 		]]></artwork></figure>
