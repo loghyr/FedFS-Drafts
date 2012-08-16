@@ -732,7 +732,7 @@
 	    As with the replication annotation described above, the 
 	    maintenance of reference information would not be controlled 
 	    by the federation protocol. The information would mostly 
-	    likely be non-authoritative because the the ability to 
+	    likely be non-authoritative because the ability to 
 	    create a junction does not require the authority to 
 	    update the FSN record. In any event, such annotations 
 	    could be useful to administrators for determining if an 
@@ -2811,7 +2811,7 @@
 	the use of RPCSEC_GSS <xref target="RFC2203"/>, which is built on the 
 	GSS-API <xref target="RFC2743"/>, is RECOMMENDED on all NFS connections 
 	between a client and fileserver. The "Security Considerations" sections of 
-	the the NFSv4 <xref target="3530bis"/> and NFSv4.1 <xref target="RFC5661"/> 
+	the NFSv4 <xref target="3530bis"/> and NFSv4.1 <xref target="RFC5661"/> 
 	specifications contain special considerations for the handling of GETATTR 
 	operations for the fs_locations and fs_locations_info attributes. For all 
 	LDAP connections established by the federated filesystem protocols, the 
