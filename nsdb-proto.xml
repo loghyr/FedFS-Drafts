@@ -1061,68 +1061,6 @@
 
         </section>
 
-        <section title="fedfsNsdbName">
-
-            <t> A fedfsNsdbName is the NSDB component of an FSN. </t>
-
-            <t> It MUST be a UTF-8 string containing a DNS name.
-            The DNS name MUST be represented using a fully qualified
-            domain name. A system (i.e., fileserver or
-            administrative host) SHOULD resolve the fully qualified
-            domain name to a network address using the system's standard
-            resolution mechanisms. </t>
-
-            <t> FSNs are immutable and invariant. The attributes of an
-            FSN, including the fedfsNsdbName, are expected to remain
-            constant. Therefore, a fedfsNsdbName SHOULD NOT contain a
-            network address, such as an IPv4 or IPv6 address, as
-            this would indefinitely assign the network address. </t>
-
-            <t> This attribute is single-valued.  </t>
-
-            <t> &lt;CODE BEGINS> </t>
-
-            <figure><artwork><![CDATA[
-        ///
-        /// attributetype (
-        ///     1.3.6.1.4.1.31103.1.5 NAME 'fedfsNsdbName'
-        ///     DESC 'The NSDB node component of an FSN'
-        ///     SUP name
-        ///     SINGLE-VALUE
-        ///     )
-        ///
-            ]]></artwork></figure>
-
-            <t> &lt;CODE ENDS> </t>
-
-        </section>
-
-        <section title="fedfsNsdbPort">
-
-            <t> A fedfsNsdbPort is the decimal representation of
-            an NSDB's port number. The fedfsNsdbPort attribute is
-            a subclass of fedfsNetPort, with the same encoding
-            rules. </t>
-
-            <t> This attribute is single-valued.  </t>
-
-            <t> &lt;CODE BEGINS> </t>
-
-            <figure><artwork><![CDATA[
-        ///
-        /// attributetype (
-        ///     1.3.6.1.4.1.31103.1.6 NAME 'fedfsNsdbPort'
-        ///     DESC 'The transport port number of an NSDB'
-        ///     SUP fedfsNetPort
-        ///     SINGLE-VALUE
-        ///     )
-        ///
-            ]]></artwork></figure>
-
-            <t> &lt;CODE ENDS> </t>
-
-        </section>
-
         <section title="fedfsNceDN">
 
             <t> A fedfsNceDN stores a distinguished name (DN). </t>
@@ -1950,14 +1888,10 @@
 
             <t> A fedfsFsn represents an FSN.  </t>
 
-            <t> A fedfsFsn's fedfsNsdbName and fedfsFsnUuid
-            attributes are REQUIRED.  </t>
+            <t> A fedfsFsn's fedfsFsnUuid attribute is REQUIRED.  </t>
 
-            <t> A fedfsFsn's fedfsNsdbPort, fedfsAnnotation, and
+            <t> A fedfsFsn's fedfsAnnotation and
             fedfsDescr attributes are OPTIONAL.  </t>
-
-            <t> If the fedfsNsdbPort is omitted, the standard LDAP
-            port number, 389, SHOULD be assumed. </t>
 
             <t> The DN of an FSN is REQUIRED to take the following
             form:  "fedfsFsnUuid=$FSNUUID,$NCE", where $FSNUUID
@@ -1980,10 +1914,8 @@
         ///     SUP top STRUCTURAL
         ///     MUST (
         ///             fedfsFsnUuid
-        ///             $ fedfsNsdbName
         ///     )
         ///     MAY (
-        ///             fedfsNsdbPort
         ///             $ fedfsAnnotation
         ///             $ fedfsDescr
         ///     ))
@@ -2006,15 +1938,10 @@
             protocols (e.g., CIFS).  </t>
 
             <t> A fedfsFsl's fedfsFslUuid, fedfsFsnUuid,
-            fedfsNsdbName, fedfsFslHost, and fedfsFslTTL
-            attributes are REQUIRED.  </t>
+            fedfsFslHost, and fedfsFslTTL attributes are REQUIRED.  </t>
 
-            <t> A fedfsFsl's fedfsNsdbPort, fedfsFslPort,
-            fedfsAnnotation, and fedfsDescr attributes
-            are OPTIONAL.  </t>
-
-            <t> If the fedfsNsdbPort is omitted, the standard LDAP
-            port number, 389, SHOULD be assumed. </t>
+            <t> A fedfsFsl's fedfsFslPort, fedfsAnnotation, and
+            fedfsDescr attributes are OPTIONAL.  </t>
 
             <t> If the fedfsFslPort is omitted, a standard port
             number based on the type of FSL should be assumed. For
@@ -2040,12 +1967,10 @@
         ///     MUST (
         ///             fedfsFslUuid
         ///             $ fedfsFsnUuid
-        ///             $ fedfsNsdbName
         ///             $ fedfsFslHost
         ///             $ fedfsFslTTL
         ///     )
         ///     MAY (
-        ///             fedfsNsdbPort
         ///             $ fedfsFslPort
         ///             $ fedfsAnnotation
         ///             $ fedfsDescr
@@ -2194,20 +2119,9 @@
         the NSDB by adding a new fedfsFsn entry in the
         NSDB's LDAP directory. </t>
 
-                <t> A fedfsFsn entry contains a fedfsFsnUuid and
-                fedfsNsdbName. The administrator chooses the fedfsFsnUuid
-        and fedfsNsdbName.  The process for
-        choosing the fedfsFsnUuid is described in
-        <xref target="sec:uuid"/>).  The fedfsNsdbName is the
-        name of the NSDB node that will serve as the
-        source of definitive information about the FSN
-        for the life of the FSN.  </t>
-
-        <t> The NSDB node that receives the request
-        SHOULD check that fedfsNsdbName value matches its
-        own value and return an error if it does not.  This
-        is to ensure that an FSN is always created by the
-        NSDB node encoded within the FSN as its owner. </t>
+        <t> A fedfsFsn entry contains a fedfsFsnUuid.
+        The administrator chooses the fedfsFsnUuid by a
+        process described in <xref target="sec:uuid"/>). </t>
 
         <t> The NSDB node that receives the request
         SHOULD check all of the attributes for validity and
@@ -2228,12 +2142,10 @@
         changeType: add
         objectClass: fedfsFsn
         fedfsFsnUuid: $FSNUUID
-        fedfsNsdbName: $NSDBNAME
             ]]></artwork></figure>
 
             <t> For example, if the $FSNUUID is
-            "e8c4761c-eb3b-4307-86fc-f702da197966",
-            the $NSDBNAME is "nsdb.example.com", and the
+            "e8c4761c-eb3b-4307-86fc-f702da197966", and the
             $NCE is "o=fedfs" the operation would be: </t>
 
             <figure><artwork><![CDATA[
@@ -2241,7 +2153,6 @@
         changeType: add
         objectClass: fedfsFsn
         fedfsFsnUuid: e8c4761c-eb3b-4307-86fc-f702da197966
-        fedfsNsdbName: nsdb.example.com
             ]]></artwork></figure>
 
         </section>
@@ -2300,16 +2211,13 @@
         given FSN by adding a new fedfsFsl entry in the
         NSDB's LDAP directory. </t>
 
-                <t> A fedfsFsl entry contains a fedfsFslUuid,
-                fedfsFsnUuid, fedfsNsdbName, fedfsFslHost, and
-                fedfsFslTTL. The administrator
-                chooses the fedfsFslUuid.  The process for
-        choosing the fedfsFslUuid is described in
+        <t> A fedfsFsl entry contains a fedfsFslUuid,
+        fedfsFsnUuid, fedfsFslHost, and fedfsFslTTL.  The
+        administrator chooses the fedfsFslUuid.  The process
+        for choosing the fedfsFslUuid is described in
         <xref target="sec:uuid"/>.  The fedfsFsnUuid is
-        the UUID of the FSL's FSN. The fedfsNsdbName is
-        the name of the NSDB node that stores definitive information
-        about the FSL's FSN. The fedfsFslHost value is the
-        network location of the fileserver that stores the
+        the UUID of the FSL's FSN.  The fedfsFslHost value is
+        the network location of the fileserver that stores the
         FSL. The fedfsFslTTL is chosen by the administrator
         as described in <xref target="fsl_caching"/>. </t>
 
@@ -2331,7 +2239,6 @@
         objectClass: fedfsNfsFsl
         fedfsFslUuid: $FSLUUID
         fedfsFsnUuid: $FSNUUID
-        fedfsNsdbName: $NSDBNAME
         fedfsFslHost: $HOST
         fedfsFslPort: $PORT
         fedfsFslTTL: $TTL
@@ -2359,7 +2266,7 @@
             ]]></artwork></figure>
 
             <t> For example, if the $FSNUUID is "e8c4761c-eb3b-4307-86fc-f702da197966",
-            the $FSLUUID is "ba89a802-41a9-44cf-8447-dda367590eb3", the $NSDBNAME is "nsdb.example.com",
+            the $FSLUUID is "ba89a802-41a9-44cf-8447-dda367590eb3",
             the $HOST is "server.example.com", $PORT is "2049", the $TTL is "300" seconds,
             the $PATH is stored in the file "/tmp/fsl_path", $CURRENCY is "0" (an up to date
             copy), the FSL is writable, but not going, split, or accessible via RDMA,
@@ -2379,7 +2286,6 @@
         objectClass: fedfsNfsFsl
         fedfsFslUuid: ba89a802-41a9-44cf-8447-dda367590eb3
         fedfsFsnUuid: e8c4761c-eb3b-4307-86fc-f702da197966
-        fedfsNsdbName: nsdb.example.com
         fedfsFslHost: server.example.com
         fedfsFslPort: 2049
         fedfsFslTTL: 300
@@ -2802,8 +2708,6 @@
         <c> 1.3.6.1.4.1.31103.1.2    </c> <c> fedfsNetAddr            </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.3    </c> <c> fedfsNetPort            </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.4    </c> <c> fedfsFsnUuid            </c> <c> RFC-TBD1 </c>
-        <c> 1.3.6.1.4.1.31103.1.5    </c> <c> fedfsNsdbName           </c> <c> RFC-TBD1 </c>
-        <c> 1.3.6.1.4.1.31103.1.6    </c> <c> fedfsNsdbPort           </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.7    </c> <c> fedfsNceDN              </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.8    </c> <c> fedfsFslUuid            </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.9    </c> <c> fedfsFslHost            </c> <c> RFC-TBD1 </c>
@@ -2874,22 +2778,6 @@
         <list style="hanging">
         <t hangText="Object Identifier:"> 1.3.6.1.4.1.31103.1.4 </t>
         <t hangText="Descriptor (short name):"> fedfsFsnUuid </t>
-        <t hangText="Usage:"> attribute type </t>
-        </list>
-    </t>
-
-    <t>
-        <list style="hanging">
-        <t hangText="Object Identifier:"> 1.3.6.1.4.1.31103.1.5 </t>
-        <t hangText="Descriptor (short name):"> fedfsNsdbName </t>
-        <t hangText="Usage:"> attribute type </t>
-        </list>
-    </t>
-
-    <t>
-        <list style="hanging">
-        <t hangText="Object Identifier:"> 1.3.6.1.4.1.31103.1.6 </t>
-        <t hangText="Descriptor (short name):"> fedfsNsdbPort </t>
         <t hangText="Usage:"> attribute type </t>
         </list>
     </t>
