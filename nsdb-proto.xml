@@ -970,35 +970,6 @@
             </list>
         </t>
 
-        <section title="fedfsUuid" anchor="uuid">
-
-            <t> A fedfsUuid is the base type for all of the
-            universally unique identifiers (UUIDs) used by the
-            federated filesystem protocols.  </t>
-
-            <t> The UUID's text representation (as defined in
-            <xref target="RFC4122"/>) SHOULD be encoded as a UTF-8
-            string.  </t>
-
-            <t> A fedfsUuid is a single-valued LDAP attribute. </t>
-
-            <t> &lt;CODE BEGINS> </t>
-
-            <figure><artwork><![CDATA[
-        ///
-        /// attributetype (
-        ///     1.3.6.1.4.1.31103.1.1 NAME 'fedfsUuid'
-        ///     DESC 'A UUID used by NSDB'
-        ///     SUP name
-        ///     SINGLE-VALUE
-        ///     )
-        ///
-            ]]></artwork></figure>
-
-            <t> &lt;CODE ENDS> </t>
-
-        </section>
-
         <section title="fedfsNetAddr">
 
             <t> A fedfsNetAddr is the locative name of a
@@ -1070,8 +1041,8 @@
             An NSDB SHOULD ensure that no two FSNs it stores have the same
             fedfsFsnUuid. </t>
 
-            <t> The fedfsFsnUuid is a subclass of fedfsUuid, with the
-            same encoding rules.  </t>
+            <t> The fedfsFsnUuid is a subclass of UUID
+            <xref target="RFC4530"/>, with the same encoding rules. </t>
 
             <t> This attribute is single-valued.  </t>
 
@@ -1082,7 +1053,7 @@
         /// attributetype (
         ///     1.3.6.1.4.1.31103.1.4 NAME 'fedfsFsnUuid'
         ///     DESC 'The FSN UUID component of an FSN'
-        ///     SUP fedfsUuid
+        ///     SUP UUID
         ///     SINGLE-VALUE
         ///     )
         ///
@@ -1188,8 +1159,8 @@
             An NSDB SHOULD ensure that no two FSLs it stores have the same
             fedfsFslUuid. </t>
 
-            <t> The fedfsFslUuid attribute is a subclass of fedfsUuid,
-            with the same encoding rules.  </t>
+            <t> The fedfsFslUuid is a subclass of UUID
+            <xref target="RFC4530"/>, with the same encoding rules. </t>
 
             <t> This attribute is single-valued.  </t>
 
@@ -1200,7 +1171,7 @@
         /// attributetype (
         ///     1.3.6.1.4.1.31103.1.8 NAME 'fedfsFslUuid'
         ///     DESC 'UUID of an FSL'
-        ///     SUP fedfsUuid
+        ///     SUP UUID
         ///     SINGLE-VALUE
         ///     )
         ///
@@ -2833,7 +2804,6 @@
         <ttcol align='left' >Description</ttcol>
         <ttcol align='left' >Reference</ttcol>
 
-        <c> 1.3.6.1.4.1.31103.1.1    </c> <c> fedfsUuid               </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.2    </c> <c> fedfsNetAddr            </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.3    </c> <c> fedfsNetPort            </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.4    </c> <c> fedfsFsnUuid            </c> <c> RFC-TBD1 </c>
@@ -2886,14 +2856,6 @@
             See "Author/Change Controller" </t>
         <t hangText="Specification:"> draft-ietf-nfsv4-federated-fs-protocol </t>
         <t hangText="Author/Change Controller:"> [document authors] </t>
-        </list>
-    </t>
-
-    <t>
-        <list style="hanging">
-        <t hangText="Object Identifier:"> 1.3.6.1.4.1.31103.1.1 </t>
-        <t hangText="Descriptor (short name):"> fedfsUuid </t>
-        <t hangText="Usage:"> attribute type </t>
         </list>
     </t>
 
@@ -3200,6 +3162,7 @@
         <?rfc include="references/reference.RFC.4517.xml"?>
         <?rfc include="references/reference.RFC.4519.xml"?>
         <?rfc include="references/reference.RFC.4520.xml"?>
+        <?rfc include="references/reference.RFC.4530.xml"?>
         <?rfc include="references/reference.RFC.5226.xml"?>
         <?rfc include="references/reference.RFC.5234.xml"?>
         <?rfc include="references/reference.RFC.5246.xml"?>
