@@ -374,12 +374,8 @@
         possible number of FSL records in a referral. However,
         the fileserver MAY omit some of the FSL records
         from the referral. For example, the fileserver might
-        omit an FSL record with a different file access protocol
-        from the one in use between the fileserver and client,
-        or the fileserver might omit an FSL record because of
-        limitations in the file access protocol's referral
-        format, or the fileserver might omit an FSL
-        record based on some other criteria.  </t>
+        omit an FSL record because of limitations in the file
+        access protocol's referral format.  </t>
 
         <t> For a given FSL record, the fileserver MAY
         convert or reduce the FSL record's contents in a manner
@@ -391,7 +387,9 @@
         in an NFSv4 fs_locations attribute. A fileserver
         will construct entries in an NFSv4 fs_locations
         attribute using the relevant contents of an NFS FSL
-        record. Whenever the fileserver converts or reduces
+        record.  </t>
+
+        <t> Whenever the fileserver converts or reduces
         FSL data, the fileserver SHOULD attempt to maintain
         the original meaning where possible. For example, an
         NFS FSL record contains the rank and order information
@@ -401,8 +399,12 @@
         this rank and order information is not explicitly
         expressible in an NFSv4 fs_locations attribute, the
         fileserver can arrange the NFSv4 fs_locations
-        attribute's locations list base on the rank and order
-        values.</t>
+        attribute's locations list based on the rank and order
+        values.  </t>
+
+        <t> Refer to the NFSv4.1 protocol specification
+        <xref target="RFC5661"/>, sections 11.9 and 11.10,
+        for further details.  </t>
 
         </section>
 
@@ -1442,70 +1444,6 @@
 
         </section>
 
-        <section title="fedfsNfsMajorVer">
-
-            <t> A fedfsNfsMajorVer contains the NFS major version of the
-            associated NFS FSL. A fedfsNfsMajorVer MUST be encoded as an
-            Integer syntax value <xref target="RFC4517"/>. </t>
-
-            <t> For example if the FSL was exported via NFS 4.1, the
-            contents of this attribute would be the value 4.  </t>
-
-            <t> This attribute is single-valued.  </t>
-
-            <t> &lt;CODE BEGINS> </t>
-
-            <figure><artwork><![CDATA[
-        ///
-        /// attributetype (
-        ///     1.3.6.1.4.1.31103.1.101 NAME 'fedfsNfsMajorVer'
-        ///     DESC 'NFS major version'
-        ///     EQUALITY integerMatch
-        ///     SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
-        ///     SINGLE-VALUE
-        ///     )
-        ///
-            ]]></artwork></figure>
-
-            <t> &lt;CODE ENDS> </t>
-
-            <t> OID 1.3.6.1.4.1.1466.115.121.1.27 is the Integer
-            syntax <xref target="RFC4517"/>.  </t>
-
-        </section>
-
-        <section title="fedfsNfsMinorVer">
-
-            <t> A fedfsNfsMinorVer contain the NFS minor version of the
-            associated NFS FSL. A fedfsNfsMinorVer MUST be encoded as
-            an Integer syntax value <xref target="RFC4517"/>.  </t>
-
-            <t> For example if the FSL was exported via NFS 4.1, the
-            contents of this attribute would be the value 1.  </t>
-
-            <t> This attribute is single-valued.  </t>
-
-            <t> &lt;CODE BEGINS> </t>
-
-            <figure><artwork><![CDATA[
-        ///
-        /// attributetype (
-        ///     1.3.6.1.4.1.31103.1.102 NAME 'fedfsNfsMinorVer'
-        ///     DESC 'NFS minor version'
-        ///     EQUALITY integerMatch
-        ///     SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
-        ///     SINGLE-VALUE
-        ///     )
-        ///
-            ]]></artwork></figure>
-
-            <t> &lt;CODE ENDS> </t>
-
-            <t> OID 1.3.6.1.4.1.1466.115.121.1.27 is the Integer
-            syntax <xref target="RFC4517"/>.  </t>
-
-        </section>
-
         <section title="fedfsNfsCurrency">
 
             <t> A fedfsNfsCurrency stores the NFSv4.1 fs_locations_server's
@@ -2178,8 +2116,6 @@
         ///     SUP fedfsFsl STRUCTURAL
         ///     MUST (
         ///             fedfsNfsPath
-        ///             $ fedfsNfsMajorVer
-        ///             $ fedfsNfsMinorVer
         ///             $ fedfsNfsCurrency
         ///             $ fedfsNfsGenFlagWritable
         ///             $ fedfsNfsGenFlagGoing
@@ -2433,8 +2369,6 @@
         fedfsFslPort: $PORT
         fedfsFslTTL: $TTL
         fedfsNfsPath: $PATH
-        fedfsNfsMajorVer: $MAJOR
-        fedfsNfsMinorVer: $MINOR
         fedfsNfsCurrency: $CURRENCY
         fedfsNfsGenFlagWritable: $WRITABLE
         fedfsNfsGenFlagGoing: $GOING
@@ -2460,8 +2394,7 @@
             <t> For example, if the $FSNUUID is "e8c4761c-eb3b-4307-86fc-f702da197966",
             the $FSLUUID is "ba89a802-41a9-44cf-8447-dda367590eb3", the $NSDBNAME is "nsdb.example.com",
             the $HOST is "server.example.com", $PORT is "2049", the $TTL is "300" seconds,
-            the $PATH is stored in the file "/tmp/fsl_path", fileset is exported via
-            NFSv4.1 ($MAJOR is "4" and $MINOR is "1"), $CURRENCY is "0" (an up to date
+            the $PATH is stored in the file "/tmp/fsl_path", $CURRENCY is "0" (an up to date
             copy), the FSL is writable, but not going, split, or accessible via RDMA,
             the simultaneous-use class is "1", the handle class is "0", the fileid class is
             "1", the write-verifier class is "1", the change class is "1", the readdir class is
@@ -2484,8 +2417,6 @@
         fedfsFslPort: 2049
         fedfsFslTTL: 300
         fedfsNfsPath:< file:///tmp/fsl_path
-        fedfsNfsMajorVer: 4
-        fedfsNfsMinorVer: 1
         fedfsNfsCurrency: 0
         fedfsNfsGenFlagWritable: TRUE
         fedfsNfsGenFlagGoing: FALSE
@@ -2916,8 +2847,6 @@
         <c> 1.3.6.1.4.1.31103.1.12   </c> <c> fedfsAnnotation         </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.13   </c> <c> fedfsDescr              </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.100  </c> <c> fedfsNfsPath            </c> <c> RFC-TBD1 </c>
-        <c> 1.3.6.1.4.1.31103.1.101  </c> <c> fedfsNfsMajorVer        </c> <c> RFC-TBD1 </c>
-        <c> 1.3.6.1.4.1.31103.1.102  </c> <c> fedfsNfsMinorVer        </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.103  </c> <c> fedfsNfsCurrency        </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.104  </c> <c> fedfsNfsGenFlagWritable </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.105  </c> <c> fedfsNfsGenFlagGoing    </c> <c> RFC-TBD1 </c>
@@ -3068,22 +2997,6 @@
         <list style="hanging">
         <t hangText="Object Identifier:"> 1.3.6.1.4.1.31103.1.100 </t>
         <t hangText="Descriptor (short name):"> fedfsNfsPath </t>
-        <t hangText="Usage:"> attribute type </t>
-        </list>
-    </t>
-
-    <t>
-        <list style="hanging">
-        <t hangText="Object Identifier:"> 1.3.6.1.4.1.31103.1.101 </t>
-        <t hangText="Descriptor (short name):"> fedfsNfsMajorVer </t>
-        <t hangText="Usage:"> attribute type </t>
-        </list>
-    </t>
-
-    <t>
-        <list style="hanging">
-        <t hangText="Object Identifier:"> 1.3.6.1.4.1.31103.1.102 </t>
-        <t hangText="Descriptor (short name):"> fedfsNfsMinorVer </t>
         <t hangText="Usage:"> attribute type </t>
         </list>
     </t>
