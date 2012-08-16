@@ -98,7 +98,7 @@ NSDB-2
     Relevant: http://www.ietf.org/mail-archive/web/nfsv4/current/msg10406.html
 
 NSDB-3
-    Status: Open
+    Status: CLOSED
     Description: Address issue raised by Chuck Lever in "FedFS: Question regarding
                  fedfsNfsMajorVer and fedfsNfsMinorVer"
                  http://www.ietf.org/mail-archive/web/nfsv4/current/msg10413.html
