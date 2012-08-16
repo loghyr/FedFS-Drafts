@@ -2295,7 +2295,7 @@
                 fedfsNsdbName. The administrator chooses the fedfsFsnUuid
 		and fedfsNsdbName.  The process for 
 		choosing the fedfsFsnUuid is described in
-		<xref target="uuid"/>).  The fedfsNsdbName is the
+		<xref target="sec:uuid"/>).  The fedfsNsdbName is the
 		name of the NSDB node that will serve as the
 		source of definitive information about the FSN 
 		for the life of the FSN.  </t>
@@ -2402,7 +2402,7 @@
                 fedfsFslTTL. The administrator
                 chooses the fedfsFslUuid.  The process for 
 		choosing the fedfsFslUuid is described in
-		<xref target="uuid"/>.  The fedfsFsnUuid is 
+		<xref target="sec:uuid"/>.  The fedfsFsnUuid is 
 		the UUID of the FSL's FSN. The fedfsNsdbName is 
 		the name of the NSDB node that stores definitive information 
 		about the FSL's FSN. The fedfsFslHost value is the 
