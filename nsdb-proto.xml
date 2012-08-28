@@ -196,7 +196,7 @@
         After an FSN is created, it is associated with one or more
         fileset locations (FSLs) on a fileserver. </t>
 
-        <t> The attributes of an FSN are: </t>
+        <t> An FSN consists of: </t>
 
 <!--NOTE: hangIndent is set to 6 and hanging text has 3 space prefix to -->
 <!--      set the list off from the body text.                          -->
@@ -215,6 +215,12 @@
         </list>
         </t>
 
+        <t> The FsnUuid is a required attribute of an FSN
+        record, but the NsdbName is not stored as an attribute
+        of the record.  The NsdbName is obvious to NSDB clients,
+        and is indeed authenticated in cases where TLS security
+        is in effect. </t>
+
     </section>
 
     <section title="Fileset Location (FSL)">
@@ -226,7 +232,7 @@
         to access its data. An FSL's attributes can be used by a fileserver
         to decide which locations it will return to a client. </t>
 
-        <t> All FSLs have the following attributes: </t>
+        <t> An FSL consists of: </t>
 
 <!--NOTE: hangIndent is set to 6 and hanging text has 3 space prefix to -->
 <!--      set the list off from the body text.                          -->
@@ -262,6 +268,9 @@
 
         </list>
         </t>
+
+        <t> The NsdbName is not stored as an attribute of an FSL
+        record for the same reason it is not stored in FSN records. </t>
 
         <t> This document defines an FSL subtype for NFS. An NFS FSL
         contains information suitable for use in an NFSv4
