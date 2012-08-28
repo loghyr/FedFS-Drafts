@@ -2752,7 +2752,7 @@
     <t>
         <list style="hanging">
         <t hangText="Subject:"> Request for LDAP Descriptor Registration </t>
-        <t hangText="Person & email address to contact for further information:">
+        <t hangText="Person &amp; email address to contact for further information:">
             See "Author/Change Controller" </t>
         <t hangText="Specification:"> draft-ietf-nfsv4-federated-fs-protocol </t>
         <t hangText="Author/Change Controller:"> [document authors] </t>
