@@ -221,6 +221,26 @@
         and is indeed authenticated in cases where TLS security
         is in effect. </t>
 
+        <t> An FSN record may also contain: </t>
+
+<!--NOTE: hangIndent is set to 6 and hanging text has 3 space prefix to -->
+<!--      set the list off from the body text.                          -->
+        <t>
+        <list style="hanging" hangIndent="6">
+
+            <t hangText="   Annotations:"> optional name/value pairs
+            that can be interpreted by a fileserver. The semantics
+            of this field are not defined by this document. These
+            tuples are intended to be used by higher-level
+            protocols. </t>
+
+            <t hangText="   Descriptions:"> optional text
+            descriptions. The semantics of this field are
+            not defined by this document. </t>
+
+        </list>
+        </t>
+
     </section>
 
     <section title="Fileset Location (FSL)">
@@ -256,6 +276,19 @@
             <t hangText="   FslTTL:"> the time in seconds during
             which the FSL may be cached </t>
 
+        </list>
+        </t>
+
+        <t> The NsdbName is not stored as an attribute of an FSL
+        record for the same reason it is not stored in FSN records. </t>
+
+        <t> An FSL record may also contain: </t>
+
+<!--NOTE: hangIndent is set to 6 and hanging text has 3 space prefix to -->
+<!--      set the list off from the body text.                          -->
+        <t>
+        <list style="hanging" hangIndent="6">
+
             <t hangText="   Annotations:"> optional name/value pairs
             that can be interpreted by a fileserver. The semantics
             of this field are not defined by this document. These
@@ -268,9 +301,6 @@
 
         </list>
         </t>
-
-        <t> The NsdbName is not stored as an attribute of an FSL
-        record for the same reason it is not stored in FSN records. </t>
 
         <t> This document defines an FSL subtype for NFS. An NFS FSL
         contains information suitable for use in an NFSv4
