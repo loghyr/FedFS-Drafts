@@ -513,8 +513,8 @@
         data (see <xref target="fedfsfsn"/>).  </t>
 
         <t> Because junctions store a tuple containing an FSN UUID and
-        the name and port of an NSDB service, an FSN UUID must be unique
-        only on a single NSDB service.  The probability of two FSN
+        the name and port of an NSDB node, an FSN UUID must be unique
+        only on a single NSDB node.  The probability of two FSN
         records sharing the same UUID on a single NSDB host is zero,
         due to the way FSN distinguished names are formed.  An FSN
         UUID collision can be detected immediately when an
@@ -533,7 +533,7 @@
         <xref target="nsdb-ops-fileservers"/> as an unauthenticated user.
         Thus distinguished names of FSN and FSL records, as well as
         the FSN and FSL records themselves, are required to be readable
-        by anyone who can bind anonymously to an NSDB service.  Therefore
+        by anyone who can bind anonymously to an NSDB node.  Therefore
         FSN and FSL UUIDs should be considered public information.  </t>
 
         <t> Version 1 UUIDs contain a host's MAC address and a time stamp
