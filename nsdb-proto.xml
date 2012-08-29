@@ -212,6 +212,8 @@
             <xref target="RFC4122"/>, that is used to uniquely
             identify an FSN. </t>
 
+            <t hangText="   FsnTTL:"> the time in seconds during
+            which the FSN's FSL information may be cached. </t>
         </list>
         </t>
 
@@ -220,6 +222,12 @@
         of the record.  The NsdbName is obvious to NSDB clients,
         and is indeed authenticated in cases where TLS security
         is in effect. </t>
+
+        <t> An FSN record also contains a cache time-to-live attribute.
+        The FsnUuid and NsdbName values never change during an FSN's
+        lifetime.  However, an FSN's FSL information can change over
+        time, and is typically cached on fileservers for performance.
+        More detail is provided in <xref target="fsl_caching"/>. </t>
 
         <t> An FSN record may also contain: </t>
 
@@ -272,9 +280,6 @@
 
             <t hangText="   FslHost:"> the network location of the
             host fileserver storing the physical data </t>
-
-            <t hangText="   FslTTL:"> the time in seconds during
-            which the FSL may be cached </t>
 
         </list>
         </t>
@@ -357,11 +362,17 @@
 
         <section title="Caching of Fileset Locations" anchor="fsl_caching">
 
-        <t> To resolve an FSN to a set of FSL records, the
-        fileserver queries the appropriate NSDB for the FSL records.
-        A fileserver MAY cache these FSL records for a limited period
-        of time. The period of time, if any, during which FSL records
-        MAY be cached is indicated by the FSL's TTL field. </t>
+        <t> To resolve an FSN to a set of FSL records, a
+        fileserver queries the NSDB node named in the FSN
+        for FSL records associated with this FSN. </t>
+
+        <t> The period of time during which these FSL records MAY
+        be cached is indicated by the parent FSN's TTL attribute.
+        A value of zero indicates that the results of resolving this
+        FSN SHOULD NOT be cached.  In addition, a fileserver SHOULD
+        check back with the NSDB node after the FSN TTL has expired
+        to discover if any new FSL records have been added for this
+        FSN. </t>
 
         <t> The combination of FSL caching and FSL migration presents
         a challenge. For example, suppose there are three fileservers
@@ -387,12 +398,12 @@
         <t> Such supplemental junctions (on fileserver B in the example)
         would not be required to be in place forever. They need to stay
         in place only until cached FSL entries for the target fileset
-        are invalidated. Each FSL contains a TTL field, a count in
+        are invalidated. An FSL's parent FSN contains a TTL field, a count in
         seconds of the time interval the FSL MAY be cached. This is an upper
         bound for the lifetime of the cached information and a lower bound for the
         lifetime of the supplemental junctions. For example, suppose this
         field contains the value 3600 seconds (one hour). In such a case,
-        administrators MUST keep the supplemental junctions in place for at
+        administrators SHOULD keep the supplemental junctions in place for at
         least one hour after the fileset move has taken place, and FSL data
         MUST NOT be cached by a referring fileserver for more than one hour
         without a refresh. </t>
@@ -1101,6 +1112,36 @@
 
         </section>
 
+        <section title="fedfsFsnTTL">
+
+            <t> A fedfsFsnTTL is the amount of time in seconds an FSN's
+            TTL and it's children FSL records SHOULD be cached by a
+            fileserver.  A fedfsFsnTTL MUST be encoded as an Integer
+            syntax value <xref target="RFC4517"/>.  </t>
+
+            <t> This attribute is single-valued.  </t>
+
+            <t> &lt;CODE BEGINS> </t>
+
+            <figure><artwork><![CDATA[
+        ///
+        /// attributetype (
+        ///     1.3.6.1.4.1.31103.1.11 NAME 'fedfsFsnTTL'
+        ///     DESC 'Time to live of an FSN tree'
+        ///     EQUALITY integerMatch
+        ///     SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+        ///     SINGLE-VALUE
+        ///     )
+        ///
+            ]]></artwork></figure>
+
+            <t> &lt;CODE ENDS> </t>
+
+            <t> OID 1.3.6.1.4.1.1466.115.121.1.27 is the Integer
+            syntax <xref target="RFC4517"/>.  </t>
+
+        </section>
+
         <section title="fedfsNceDN">
 
             <t> A fedfsNceDN stores a distinguished name (DN). </t>
@@ -1204,36 +1245,6 @@
             ]]></artwork></figure>
 
             <t> &lt;CODE ENDS> </t>
-
-        </section>
-
-        <section title="fedfsFslTTL">
-
-            <t> A fedfsFslTTL is the amount of time in seconds an FSL
-            SHOULD be cached by a fileserver.  A fedfsFslTTL MUST
-            be encoded as an Integer syntax value
-            <xref target="RFC4517"/>.  </t>
-
-            <t> This attribute is single-valued.  </t>
-
-            <t> &lt;CODE BEGINS> </t>
-
-            <figure><artwork><![CDATA[
-        ///
-        /// attributetype (
-        ///     1.3.6.1.4.1.31103.1.11 NAME 'fedfsFslTTL'
-        ///     DESC 'Time to live of an FSL'
-        ///     EQUALITY integerMatch
-        ///     SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
-        ///     SINGLE-VALUE
-        ///     )
-        ///
-            ]]></artwork></figure>
-
-            <t> &lt;CODE ENDS> </t>
-
-            <t> OID 1.3.6.1.4.1.1466.115.121.1.27 is the Integer
-            syntax <xref target="RFC4517"/>.  </t>
 
         </section>
 
@@ -1862,8 +1873,8 @@
             MUST be encoded as an Integer syntax value <xref target="RFC4517"/>
             in the range [-2147483648, 2147483647].  </t>
 
-            <t> An FSL's fedfsFslTTL value and fedfsNfsValidFor value
-            MAY be different.  </t>
+            <t> An FSL's parent's fedfsFsnTTL value and its fedfsNfsValidFor
+            value MAY be different.  </t>
 
             <t> This attribute is single-valued.  </t>
 
@@ -1928,7 +1939,8 @@
 
             <t> A fedfsFsn represents an FSN.  </t>
 
-            <t> A fedfsFsn's fedfsFsnUuid attribute is REQUIRED.  </t>
+            <t> A fedfsFsn's fedfsFsnUuid and fedfsFsnTTL attributes
+            are REQUIRED.  </t>
 
             <t> A fedfsFsn's fedfsAnnotation and
             fedfsDescr attributes are OPTIONAL.  </t>
@@ -1954,6 +1966,7 @@
         ///     SUP top STRUCTURAL
         ///     MUST (
         ///             fedfsFsnUuid
+        ///             fedfsFsnTTL
         ///     )
         ///     MAY (
         ///             $ fedfsAnnotation
@@ -1978,7 +1991,7 @@
             protocols (e.g., CIFS).  </t>
 
             <t> A fedfsFsl's fedfsFslUuid, fedfsFsnUuid,
-            fedfsFslHost, and fedfsFslTTL attributes are REQUIRED.  </t>
+            fedfsFslHost attributes are REQUIRED.  </t>
 
             <t> A fedfsFsl's fedfsFslPort, fedfsAnnotation, and
             fedfsDescr attributes are OPTIONAL.  </t>
@@ -2008,7 +2021,6 @@
         ///             fedfsFslUuid
         ///             $ fedfsFsnUuid
         ///             $ fedfsFslHost
-        ///             $ fedfsFslTTL
         ///     )
         ///     MAY (
         ///             $ fedfsFslPort
@@ -2161,7 +2173,10 @@
 
         <t> A fedfsFsn entry contains a fedfsFsnUuid.
         The administrator chooses the fedfsFsnUuid by a
-        process described in <xref target="sec:uuid"/>). </t>
+        process described in <xref target="sec:uuid"/>).
+        A fedfsFsn entry also contains a fedfsFsnTTL.
+        The fedfsFsnTTL is chosen by the administrator
+        as described in <xref target="fsl_caching"/>. </t>
 
         <t> The NSDB node that receives the request
         SHOULD check all of the attributes for validity and
@@ -2182,17 +2197,20 @@
         changeType: add
         objectClass: fedfsFsn
         fedfsFsnUuid: $FSNUUID
+        fedfsFsnTTL: $TTL
             ]]></artwork></figure>
 
             <t> For example, if the $FSNUUID is
-            "e8c4761c-eb3b-4307-86fc-f702da197966", and the
-            $NCE is "o=fedfs" the operation would be: </t>
+            "e8c4761c-eb3b-4307-86fc-f702da197966", the $TTL
+            is "300" seconds, and the $NCE is "o=fedfs" the
+            operation would be: </t>
 
             <figure><artwork><![CDATA[
         dn: fedfsFsnUuid=e8c4761c-eb3b-4307-86fc-f702da197966,o=fedfs
         changeType: add
         objectClass: fedfsFsn
         fedfsFsnUuid: e8c4761c-eb3b-4307-86fc-f702da197966
+        fedfsFsnTTL: 300
             ]]></artwork></figure>
 
         </section>
@@ -2252,14 +2270,13 @@
         NSDB's LDAP directory. </t>
 
         <t> A fedfsFsl entry contains a fedfsFslUuid,
-        fedfsFsnUuid, fedfsFslHost, and fedfsFslTTL.  The
+        fedfsFsnUuid, and fedfsFslHost.  The
         administrator chooses the fedfsFslUuid.  The process
         for choosing the fedfsFslUuid is described in
         <xref target="sec:uuid"/>.  The fedfsFsnUuid is
         the UUID of the FSL's FSN.  The fedfsFslHost value is
         the network location of the fileserver that stores the
-        FSL. The fedfsFslTTL is chosen by the administrator
-        as described in <xref target="fsl_caching"/>. </t>
+        FSL. </t>
 
         <t> The administrator will also set additional
         attributes depending on the FSL type. </t>
@@ -2281,7 +2298,6 @@
         fedfsFsnUuid: $FSNUUID
         fedfsFslHost: $HOST
         fedfsFslPort: $PORT
-        fedfsFslTTL: $TTL
         fedfsNfsPath: $PATH
         fedfsNfsCurrency: $CURRENCY
         fedfsNfsGenFlagWritable: $WRITABLE
@@ -2307,7 +2323,7 @@
 
             <t> For example, if the $FSNUUID is "e8c4761c-eb3b-4307-86fc-f702da197966",
             the $FSLUUID is "ba89a802-41a9-44cf-8447-dda367590eb3",
-            the $HOST is "server.example.com", $PORT is "2049", the $TTL is "300" seconds,
+            the $HOST is "server.example.com", $PORT is "2049",
             the $PATH is stored in the file "/tmp/fsl_path", $CURRENCY is "0" (an up to date
             copy), the FSL is writable, but not going, split, or accessible via RDMA,
             the simultaneous-use class is "1", the handle class is "0", the fileid class is
@@ -2328,7 +2344,6 @@
         fedfsFsnUuid: e8c4761c-eb3b-4307-86fc-f702da197966
         fedfsFslHost: server.example.com
         fedfsFslPort: 2049
-        fedfsFslTTL: 300
         fedfsNfsPath:< file:///tmp/fsl_path
         fedfsNfsCurrency: 0
         fedfsNfsGenFlagWritable: TRUE
@@ -2495,7 +2510,7 @@
 
             <t> For example, if the $FSNUUID is "e8c4761c-eb3b-4307-86fc-f702da197966",
             the $FSLUUID is "ba89a802-41a9-44cf-8447-dda367590eb3", the $NCE is "o=fedfs",
-            and the administrator wished to change the TTL to 10 minutes, the operation
+            and the administrator wished to change the NFS read rank to 10, the operation
             would be (for readability the DN is split into two lines): </t>
 
             <figure><artwork><![CDATA[
@@ -2503,8 +2518,8 @@
         dn: fedfsFslUuid=ba89a802-41a9-44cf-8447-dda367590eb3,
              fedfsFsnUuid=e8c4761c-eb3b-4307-86fc-f702da197966,o=fedfs
         changeType: modify
-        replace: fedfsFslTTL
-        fedfsFslTTL: 600
+        replace: fedfsNfsReadClass
+        fedfsNfsReadRank: 10
 
             ]]></artwork></figure>
 
@@ -2755,10 +2770,11 @@
         <c> 1.3.6.1.4.1.31103.1.8    </c> <c> fedfsFslUuid            </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.9    </c> <c> fedfsFslHost            </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.10   </c> <c> fedfsFslPort            </c> <c> RFC-TBD1 </c>
-        <c> 1.3.6.1.4.1.31103.1.11   </c> <c> fedfsFslTTL             </c> <c> RFC-TBD1 </c>
+        <c> 1.3.6.1.4.1.31103.1.11   </c> <c> fedfsFslTTL             </c> <c> deprecated </c>
         <c> 1.3.6.1.4.1.31103.1.12   </c> <c> fedfsAnnotation         </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.13   </c> <c> fedfsDescr              </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.14   </c> <c> fedfsNceDN              </c> <c> RFC-TBD1 </c>
+        <c> 1.3.6.1.4.1.31103.1.15   </c> <c> fedfsFsnTTL             </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.100  </c> <c> fedfsNfsPath            </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.101  </c> <c> fedfsNfsMajorVer        </c> <c> deprecated </c>
         <c> 1.3.6.1.4.1.31103.1.102  </c> <c> fedfsNfsMinorVer        </c> <c> deprecated </c>
@@ -2888,7 +2904,7 @@
         <list style="hanging">
         <t hangText="Object Identifier:"> 1.3.6.1.4.1.31103.1.11 </t>
         <t hangText="Descriptor (short name):"> fedfsFslTTL </t>
-        <t hangText="Usage:"> attribute type </t>
+        <t hangText="Usage:"> attribute type, deprecated </t>
         </list>
     </t>
 
@@ -2912,6 +2928,14 @@
         <list style="hanging">
         <t hangText="Object Identifier:"> 1.3.6.1.4.1.31103.1.14 </t>
         <t hangText="Descriptor (short name):"> fedfsNceDN </t>
+        <t hangText="Usage:"> attribute type </t>
+        </list>
+    </t>
+
+    <t>
+        <list style="hanging">
+        <t hangText="Object Identifier:"> 1.3.6.1.4.1.31103.1.15 </t>
+        <t hangText="Descriptor (short name):"> fedfsFsnTTL </t>
         <t hangText="Usage:"> attribute type </t>
         </list>
     </t>
