@@ -362,7 +362,7 @@
             <xref target="RFC3986"/>. </t>
 
             <t> A URI path consists of a sequence of path segments
-            separated by a slash ("/") character <xref target="RFC3986"/>.  
+            separated by a slash ("/") character <xref target="RFC3986"/>.
             The component4 elements of an NFS pathname are encoded as
             path segments in an NFS URI.  A slash ("/") character
             contained in a component4 element MUST be represented using
@@ -370,7 +370,7 @@
 
             <t> A URI path can be empty.  In this case, the represented
             NFS pathname is "/". </t>
-    
+
             <t> Although "." and ".." are legal to use within the path
             component of a URI, they MUST NOT be used in the path
             component of an NFS URI. </t>
