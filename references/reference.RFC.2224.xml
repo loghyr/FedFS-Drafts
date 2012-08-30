@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<reference anchor='RFC2224'>
+
+<front>
+<title>NFS URL Scheme</title>
+<author initials='B.' surname='Callaghan' fullname='Brent Callaghan'>
+<organization>Sun Microsystems, Inc.</organization>
+<address>
+<postal>
+<street>Mailstop Mpk17-201</street>
+<street>901 San Antonio Road</street>
+<street>Palo Alto</street>
+<street>California 94303</street></postal>
+<phone>1-415-786-5067</phone>
+<facsimile>1-415-786-5896</facsimile>
+<email>brent.callaghan@eng.sun.com</email></address></author>
+<date year='1997' month='October' />
+<area>Applications</area>
+<keyword>NFS</keyword>
+<keyword>network file system</keyword>
+<keyword>uniform resource</keyword>
+<abstract>
+<t>
+   A new URL scheme, &apos;nfs&apos; is defined.  It is used to refer to files and
+   directories on NFS servers using the general URL syntax defined in
+   RFC 1738, &quot;Uniform Resource Locators (URL)&quot;.
+</t>
+<t>
+   This scheme uses the public filehandle and multi-component lookup
+   [RFC2054, RFC2055] to access server data with a minimum of protocol
+   overhead.
+</t>
+<t>
+   The NFS protocol provides access to shared filesystems across
+   networks.  It is designed to be machine, operating system, network
+   architecture, and transport protocol independent.  The protocol
+   currently exists in two versions: version 2  and version 3
+   , both built on ONC RPC  at its associated eXternal
+   Data Representation (XDR)  and Binding Protocol .
+</t></abstract></front>
+
+<seriesInfo name='RFC' value='2224' />
+<format type='TXT' octets='22726' target='http://www.rfc-editor.org/rfc/rfc2224.txt' />
+<format type='HTML' octets='35259' target='http://xml.resource.org/public/rfc/html/rfc2224.html' />
+<format type='XML' octets='24941' target='http://xml.resource.org/public/rfc/xml/rfc2224.xml' />
+</reference>

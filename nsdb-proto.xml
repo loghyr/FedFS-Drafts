@@ -278,9 +278,6 @@
             NSDB node that contains authoritative information for
             this FSL. </t>
 
-            <t hangText="   FslHost:"> the network location of the
-            host fileserver storing the physical data </t>
-
         </list>
         </t>
 
@@ -316,6 +313,78 @@
         each such protocol, a corresponding FSL subtype SHOULD be defined.
         The contents and format of such FSL subtypes are not defined in
         this document. </t>
+
+        <section anchor="nfs-uri" title="The NFS URI scheme">
+
+        <t> We extend the NFS URL scheme specified in
+        <xref target="RFC2224"/> (which is defined only for NFS
+        versions 2 and 3, to use it for locating NFS version 4
+        filesets.  This extention follows rules set out for Uniform
+        Resource Identifier schemes in <xref target="RFC3986"/>.
+        In the following text, we refer to this extended NFS URL
+        as an NFS URI. </t>
+
+        <t> The network location of an NFS fileset is stored in an
+        FSL record encoded as an NFS URI.  An NFS URI uses the
+        authority and path URI components, but not the query or
+        fragment components.  Use of the familiar "nfs" scheme name
+        is retained. </t>
+
+            <section title="The NFS URI authority component">
+
+            <t> In its "server" field, the NFSv4 fs_location4 data type
+            contains a list of universal addresses or UTF-8 hostnames.
+            Each may optionally include a port number.  The NFSv4
+            fs_locations_item4 data type contains this data in its
+            "fli_entries" field <xref target="RFC5661"/>.  This
+            information is encoded in the authority component of an
+            NFS URI.  Sections 3.2.2 and 3.2.3 of <xref target="RFC3986"/>
+            specify how to represent this data in the "host" subcomponent
+            of the authority component of a URI. </t>
+
+            <t> The "server" and "fli_entries" fields can encode a list
+            of server hostnames that share the same pathname.  An FSL
+            record represents only a single hostname and pathname pair.
+            An NFS fileserver MAY combine a set of FSL records into a
+            single fs_location4 or fs_locations_item4 only if each FSL
+            record in the set contains the same pathname and extended
+            filesystem information. </t>
+
+            </section>
+
+            <section title="The NFS URI path component">
+
+            <t> The path component of an NFS URI encodes the "rootpath"
+            field of the NFSv4 fs_location4 data type or the
+            "fli_rootpath" of the NFSv4 fs_locations_item4 data type
+            <xref target="RFC5661"/>.  The rules for encoding the path
+            component of a URI are specified in section 3.3 of
+            <xref target="RFC3986"/>. </t>
+
+            <t> A URI path consists of a sequence of path segments
+            separated by a slash ("/") character <xref target="RFC3986"/>.  
+            The component4 elements of an NFS pathname are encoded as
+            path segments in an NFS URI.  A slash ("/") character
+            contained in a component4 element MUST be represented using
+            URI percent encoding. </t>
+
+            <t> A URI path can be empty.  In this case, the represented
+            NFS pathname is "/". </t>
+    
+            <t> Although "." and ".." are legal to use within the path
+            component of a URI, they MUST NOT be used in the path
+            component of an NFS URI. </t>
+
+            <t> The component4 elements of an NFS pathname SHOULD be
+            prepared using the component4 rules defined in Chapter 12
+            "Internationalization" of <xref target="3530bis"/> prior to
+            encoding the path component of an NFS URI.  Because a URI
+            is a US-ASCII string, any UTF-8 code point in a component4
+            element MUST use URI percent encoding. </t>
+
+        </section>
+
+        </section>
 
         <section title="Mutual Consistency across Fileset Locations">
 
@@ -1197,57 +1266,6 @@
 
         </section>
 
-        <section title="fedfsFslHost">
-
-            <t> A fedfsFslHost is the host component of an FSL. The
-            fedfsFslHost attribute is a subclass of fedfsNetAddr,
-            with the same encoding rules. </t>
-
-            <t> This attribute is single-valued.  </t>
-
-            <t> &lt;CODE BEGINS> </t>
-
-            <figure><artwork><![CDATA[
-        ///
-        /// attributetype (
-        ///     1.3.6.1.4.1.31103.1.9 NAME 'fedfsFslHost'
-        ///     DESC 'Service location for a fileserver'
-        ///     SUP fedfsNetAddr
-        ///     SINGLE-VALUE
-        ///     )
-        ///
-            ]]></artwork></figure>
-
-            <t> &lt;CODE ENDS> </t>
-
-        </section>
-
-        <section title="fedfsFslPort">
-
-            <t> A fedfsFslPort is the decimal representation of
-            a file service's port number. The fedfsFslPort
-            attribute is a subclass of fedfsNetPort, with the
-            same encoding rules. </t>
-
-            <t> This attribute is single-valued.  </t>
-
-            <t> &lt;CODE BEGINS> </t>
-
-            <figure><artwork><![CDATA[
-        ///
-        /// attributetype (
-        ///     1.3.6.1.4.1.31103.1.10 NAME 'fedfsFslPort'
-        ///     DESC 'The file service transport port number'
-        ///     SUP fedfsNetPort
-        ///     SINGLE-VALUE
-        ///     )
-        ///
-            ]]></artwork></figure>
-
-            <t> &lt;CODE ENDS> </t>
-
-        </section>
-
         <section title="fedfsAnnotation" anchor="fedfsAnnotation">
 
             <t> A fedfsAnnotation contains an object annotation
@@ -1362,21 +1380,11 @@
 
         </section>
 
-        <section title="fedfsNfsPath">
+        <section title="fedfsNfsURI">
 
-            <t> A fedfsNfsPath is the path attribute of an FSL.
-                The path MUST be the XDR encoded NFS path as
-                defined by the NFS pathname4 XDR type of the
-                fs_location's rootpath <xref target="3530bis"/>
-                and the fs_locations_item's fli_rootpath
-                <xref target="RFC5661"/>. The NFS pathname4 XDR
-                type is a variable length array of component4
-                elements. The NFS component4 XDR type is a variable
-                length array of opaque data. A fedfsNfsPath
-                attribute's component4 elements SHOULD be prepared
-                using the component4 rules defined in Chapter 12
-                "Internationalization" of
-                <xref target="3530bis"/>. </t>
+            <t> A fedfsNfsURI stores the host and pathname components
+            of an FSL.  A fedfsNfsURI MUST be encoded as an NFS URI
+            <xref target="nfs-uri"/>. </t>
 
             <t> This attribute is single-valued.  </t>
 
@@ -1385,19 +1393,16 @@
             <figure><artwork><![CDATA[
         ///
         /// attributetype (
-        ///     1.3.6.1.4.1.31103.1.100 NAME 'fedfsNfsPath'
-        ///     DESC 'Server-local path to a fileset'
-        ///     EQUALITY octetStringMatch
-        ///     SYNTAX 1.3.6.1.4.1.1466.115.121.1.40
+        ///     1.3.6.1.4.1.31103.1.120 NAME 'fedfsNfsURI'
+        ///     DESC 'Location of fileset'
+        ///     EQUALITY integerMatch
+        ///     SUP IA5String
         ///     SINGLE-VALUE
         ///     )
         ///
             ]]></artwork></figure>
 
             <t> &lt;CODE ENDS> </t>
-
-            <t> OID 1.3.6.1.4.1.1466.115.121.1.40 is the Octet String
-            syntax <xref target="RFC4517"/>.  </t>
 
         </section>
 
@@ -1990,16 +1995,11 @@
             location.  Other subtypes MAY be defined for other
             protocols (e.g., CIFS).  </t>
 
-            <t> A fedfsFsl's fedfsFslUuid, fedfsFsnUuid,
-            fedfsFslHost attributes are REQUIRED.  </t>
+            <t> A fedfsFsl's fedfsFslUuid and fedfsFsnUuid
+            attributes are REQUIRED.  </t>
 
-            <t> A fedfsFsl's fedfsFslPort, fedfsAnnotation, and
-            fedfsDescr attributes are OPTIONAL.  </t>
-
-            <t> If the fedfsFslPort is omitted, a standard port
-            number based on the type of FSL should be assumed. For
-            an NFS FSL, the standard NFS port number, 2049, SHOULD
-            be assumed. </t>
+            <t> A fedfsFsl's fedfsAnnotation, and fedfsDescr
+            attributes are OPTIONAL.  </t>
 
             <t> The DN of an FSL is REQUIRED to take the following
             form:  "fedfsFslUuid=$FSLUUID,fedfsFsnUuid=$FSNUUID,$NCE"
@@ -2020,10 +2020,8 @@
         ///     MUST (
         ///             fedfsFslUuid
         ///             $ fedfsFsnUuid
-        ///             $ fedfsFslHost
         ///     )
         ///     MAY (
-        ///             $ fedfsFslPort
         ///             $ fedfsAnnotation
         ///             $ fedfsDescr
         ///     ))
@@ -2059,7 +2057,7 @@
         ///     DESC 'An NFS location of a fileset'
         ///     SUP fedfsFsl STRUCTURAL
         ///     MUST (
-        ///             fedfsNfsPath
+        ///             fedfsNfsURI
         ///             $ fedfsNfsCurrency
         ///             $ fedfsNfsGenFlagWritable
         ///             $ fedfsNfsGenFlagGoing
@@ -2269,14 +2267,12 @@
         given FSN by adding a new fedfsFsl entry in the
         NSDB's LDAP directory. </t>
 
-        <t> A fedfsFsl entry contains a fedfsFslUuid,
-        fedfsFsnUuid, and fedfsFslHost.  The
+        <t> A fedfsFsl entry contains a fedfsFslUuid and
+        fedfsFsnUuid.  The
         administrator chooses the fedfsFslUuid.  The process
         for choosing the fedfsFslUuid is described in
         <xref target="sec:uuid"/>.  The fedfsFsnUuid is
-        the UUID of the FSL's FSN.  The fedfsFslHost value is
-        the network location of the fileserver that stores the
-        FSL. </t>
+        the UUID of the FSL's FSN. </t>
 
         <t> The administrator will also set additional
         attributes depending on the FSL type. </t>
@@ -2296,9 +2292,7 @@
         objectClass: fedfsNfsFsl
         fedfsFslUuid: $FSLUUID
         fedfsFsnUuid: $FSNUUID
-        fedfsFslHost: $HOST
-        fedfsFslPort: $PORT
-        fedfsNfsPath: $PATH
+        fedfsNfsURI: nfs://$HOST:$PORT//$PATH
         fedfsNfsCurrency: $CURRENCY
         fedfsNfsGenFlagWritable: $WRITABLE
         fedfsNfsGenFlagGoing: $GOING
@@ -2342,9 +2336,7 @@
         objectClass: fedfsNfsFsl
         fedfsFslUuid: ba89a802-41a9-44cf-8447-dda367590eb3
         fedfsFsnUuid: e8c4761c-eb3b-4307-86fc-f702da197966
-        fedfsFslHost: server.example.com
-        fedfsFslPort: 2049
-        fedfsNfsPath:< file:///tmp/fsl_path
+        fedfsNfsURI: nfs://server.example.com//tmp/fsl_path
         fedfsNfsCurrency: 0
         fedfsNfsGenFlagWritable: TRUE
         fedfsNfsGenFlagGoing: FALSE
@@ -2768,14 +2760,14 @@
         <c> 1.3.6.1.4.1.31103.1.6    </c> <c> fedfsNsdbPort           </c> <c> deprecated </c>
         <c> 1.3.6.1.4.1.31103.1.7    </c> <c> fedfsNcePrefix          </c> <c> deprecated </c>
         <c> 1.3.6.1.4.1.31103.1.8    </c> <c> fedfsFslUuid            </c> <c> RFC-TBD1 </c>
-        <c> 1.3.6.1.4.1.31103.1.9    </c> <c> fedfsFslHost            </c> <c> RFC-TBD1 </c>
-        <c> 1.3.6.1.4.1.31103.1.10   </c> <c> fedfsFslPort            </c> <c> RFC-TBD1 </c>
+        <c> 1.3.6.1.4.1.31103.1.9    </c> <c> fedfsFslHost            </c> <c> deprecated </c>
+        <c> 1.3.6.1.4.1.31103.1.10   </c> <c> fedfsFslPort            </c> <c> deprecated </c>
         <c> 1.3.6.1.4.1.31103.1.11   </c> <c> fedfsFslTTL             </c> <c> deprecated </c>
         <c> 1.3.6.1.4.1.31103.1.12   </c> <c> fedfsAnnotation         </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.13   </c> <c> fedfsDescr              </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.14   </c> <c> fedfsNceDN              </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.15   </c> <c> fedfsFsnTTL             </c> <c> RFC-TBD1 </c>
-        <c> 1.3.6.1.4.1.31103.1.100  </c> <c> fedfsNfsPath            </c> <c> RFC-TBD1 </c>
+        <c> 1.3.6.1.4.1.31103.1.100  </c> <c> fedfsNfsPath            </c> <c> deprecated </c>
         <c> 1.3.6.1.4.1.31103.1.101  </c> <c> fedfsNfsMajorVer        </c> <c> deprecated </c>
         <c> 1.3.6.1.4.1.31103.1.102  </c> <c> fedfsNfsMinorVer        </c> <c> deprecated </c>
         <c> 1.3.6.1.4.1.31103.1.103  </c> <c> fedfsNfsCurrency        </c> <c> RFC-TBD1 </c>
@@ -2795,6 +2787,7 @@
         <c> 1.3.6.1.4.1.31103.1.117  </c> <c> fedfsNfsWriteOrder      </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.118  </c> <c> fedfsNfsVarSub          </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.119  </c> <c> fedfsNfsValidFor        </c> <c> RFC-TBD1 </c>
+        <c> 1.3.6.1.4.1.31103.1.120  </c> <c> fedfsNfsURI             </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.1001 </c> <c> fedfsNsdbContainerInfo  </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.1002 </c> <c> fedfsFsn                </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.1003 </c> <c> fedfsFsl                </c> <c> RFC-TBD1 </c>
@@ -2888,7 +2881,7 @@
         <list style="hanging">
         <t hangText="Object Identifier:"> 1.3.6.1.4.1.31103.1.9 </t>
         <t hangText="Descriptor (short name):"> fedfsFslHost </t>
-        <t hangText="Usage:"> attribute type </t>
+        <t hangText="Usage:"> attribute type, deprecated </t>
         </list>
     </t>
 
@@ -2896,7 +2889,7 @@
         <list style="hanging">
         <t hangText="Object Identifier:"> 1.3.6.1.4.1.31103.1.10 </t>
         <t hangText="Descriptor (short name):"> fedfsFslPort </t>
-        <t hangText="Usage:"> attribute type </t>
+        <t hangText="Usage:"> attribute type, deprecated </t>
         </list>
     </t>
 
@@ -2944,7 +2937,7 @@
         <list style="hanging">
         <t hangText="Object Identifier:"> 1.3.6.1.4.1.31103.1.100 </t>
         <t hangText="Descriptor (short name):"> fedfsNfsPath </t>
-        <t hangText="Usage:"> attribute type </t>
+        <t hangText="Usage:"> attribute type, deprecated </t>
         </list>
     </t>
 
@@ -3102,6 +3095,14 @@
 
     <t>
         <list style="hanging">
+        <t hangText="Object Identifier:"> 1.3.6.1.4.1.31103.1.120 </t>
+        <t hangText="Descriptor (short name):"> fedfsNfsURI </t>
+        <t hangText="Usage:"> attribute type </t>
+        </list>
+    </t>
+
+    <t>
+        <list style="hanging">
         <t hangText="Object Identifier:"> 1.3.6.1.4.1.31103.1.1001 </t>
         <t hangText="Descriptor (short name):"> fedfsNsdbContainerInfo </t>
         <t hangText="Usage:"> object class </t>
@@ -3176,6 +3177,7 @@
 
         <?rfc include="references/reference.RFC.1094.xml"?>
         <?rfc include="references/reference.RFC.1813.xml"?>
+        <?rfc include="references/reference.RFC.2224.xml"?>
         <?rfc include="references/reference.RFC.3254.xml"?>
         <?rfc include="references/reference.AFS.xml"?>
         <?rfc include="references/reference.RFC.5716.xml"?>
