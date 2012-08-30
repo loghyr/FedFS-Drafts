@@ -91,7 +91,7 @@ NSDB-1
     mechanism that's already in RFC 5661."
 
 NSDB-2
-    Status: Open
+    Status: CLOSED
     Description: Address issue raised by Chuck Lever in "FedFS: Comment about fedfsFslPort"
                  http://www.ietf.org/mail-archive/web/nfsv4/current/msg10305.html
 
