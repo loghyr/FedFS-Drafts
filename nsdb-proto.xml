@@ -192,9 +192,9 @@
     <section title="Fileset Name (FSN)">
 
         <t> A fileset is uniquely represented by its fileset name
-        (FSN).  An FSN is considered unique across the federation.
+        (FSN).  An FSN is considered unique across a federation.
         After an FSN is created, it is associated with one or more
-        fileset locations (FSLs) on a fileserver. </t>
+        fileset locations (FSLs) on one or more fileservers. </t>
 
         <t> An FSN consists of: </t>
 
@@ -406,20 +406,19 @@
         consistency of a read-only location if the
         read-write location is changing.  </t>
 
-        <t> Regardless of the type, all locations exist at
-        the same mount point in the namespace and, thus, one
-        client may be referred to one location while another
-        is directed to a different location.  Since updates
-        to each fileset location are not controlled by the
-        federation protocol, it is the responsibility of
-        administrators to guarantee the functional
-        equivalence of the data.  </t>
+        <t> Regardless of the type, one file-access client may
+        be referred to a location described by one FSL while
+        another client chooses to use a location described by
+        another FSL.  Since updates to each fileset location
+        are not controlled by the federation protocol, it is the
+        responsibility of administrators to guarantee the
+        functional equivalence of the data.  </t>
 
         <t> The federation protocol does not guarantee that
         the different locations are mutually consistent in
         terms of the currency of the data.  It relies on the
-        client file-access protocol to contain
-        sufficient information to help the clients determine
+        file-access protocol to contain
+        sufficient information to help clients determine
         the currency of the data at each location in order
         to ensure that the clients do not revert back in
         time when switching locations. NFSv4.1 provides
@@ -615,8 +614,9 @@
         designated fileservers in the federation can export the root
         fileset to render the federation-wide unified namespace. When
         a client mounts the root fileset from any of these designated
-        fileservers it can view a common federation-wide namespace.
-        The root fileset could be implemented either as an exported
+        fileservers it can view a common federation-wide namespace.  </t>
+
+        <t> The root fileset could be implemented either as an exported
         NFS file system or as data in the NSDB itself. The properties
         and schema definition of an NSDB-based root fileset and
         the protocol details that describe how to configure and replicate
@@ -756,7 +756,7 @@
         node and the FSN are already known.  The only
         remaining step is to add another FSL. </t>
 
-        <t> Note that the federation protocols only provide
+        <t> Note that the federation protocols provide only
         the mechanisms to register and unregister replicas
         of a fileset. Fileserver-to-fileserver replication
         protocols are not defined. </t>
@@ -824,11 +824,13 @@
         where a fileset is created and mounted at some point in
         the namespace.  A snapshot of the read-write FSL of that
         fileset is taken periodically at different frequencies
-        say a daily snapshot or a weekly snapshot.  The
+        (say, a daily or weekly snapshot).  The
         different snapshots are mounted at different locations
-        in the namespace.  The daily snapshots are considered as
-        a different fileset from the weekly ones but both are
-        related to the source fileset.  For this we can define
+        in the namespace. </t>
+
+        <t> The daily snapshots are considered as
+        different filesets from the weekly ones, but both are
+        related to the source fileset.  We can define
         an annotation labeling the filesets as source and
         replica.  The replication protocol can use this
         information to copy data from one or more FSLs of the
@@ -846,14 +848,16 @@
         annotating the filesets with user-defined relationships.
         </t>
 
-        <t>  Another potential use for annotations is recording
+        <t> Another potential use for annotations is recording
         references to an FSN. A single annotation containing
-        the number of references could be defined or multiple
+        the number of references could be defined; or multiple
         annotations, one per reference, could be used to store
         detailed information on the location of each reference.
-        As with the replication annotation described above, the
+        </t>
+
+        <t> As with the replication annotation described above, the
         maintenance of reference information would not be controlled
-        by the federation protocol. The information would mostly
+        by the federation protocol. The information would most
         likely be non-authoritative because the ability to
         create a junction does not require the authority to
         update the FSN record. In any event, such annotations
@@ -890,9 +894,9 @@
 
         <t> There MUST be an LDAP entry that is superior
             to all of the naming context's federation entries in
-            the Directory Information Tree (DIT) This entry is
+            the Directory Information Tree (DIT). This entry is
             termed the NSDB Container Entry (NCE). The NCE's
-            children are FSNs. An FSNs children are FSLs.
+            children are FSNs. An FSN's children are FSLs.
             </t>
 
         <t> The naming context's root entry MUST include
@@ -2028,7 +2032,7 @@
 
     <t> The operations defined by the protocol can be described
     as several sub-protocols that are used by entities within
-    the federation to perform different roles.  </t>
+    a federation to perform different roles.  </t>
 
     <t> The first of these sub-protocols defines how the state
     of an NSDB node can be initialized and updated.  The
@@ -2064,7 +2068,7 @@
     For example, a variable named FOO would be specified as $FOO. </t>
 
     <t> This document uses the term NSDB client to refer to an LDAP
-    client that uses either of the NSDB sub-protocols</t>
+    client that uses either of the NSDB sub-protocols.</t>
 
     <t> The third sub-protocol defines the queries and
     other requests that are sent to a fileserver in order to
@@ -2074,7 +2078,7 @@
     an administrator to create or delete a junction or discover
     related information about a particular fileserver. </t>
 
-    <t> The third sub-protocol is defined as an ONC RPC protocols.
+    <t> The third sub-protocol is defined as an ONC RPC protocol.
     The reason for using ONC RPC instead of LDAP is that all
     fileservers support ONC RPC but some do not support an LDAP
     Directory server.  </t>
@@ -2162,9 +2166,9 @@
         of <xref target="RFC4511"/> defines the LDAP delete operation
         to only be capable of removing leaf entries.  </t>
 
-        <t> Note that the FSN delete function only removes
-        the fileset from the namespace (by removing the
-        records for that FSN from the NSDB node that
+        <t> Note that the FSN delete function removes the
+        fileset only from a federation namespace (by removing
+        the records for that FSN from the NSDB node that
         receives this request).  The fileset and its data
         are not deleted.  Any junction that has this FSN as
         its target may continue to point to this
@@ -2374,11 +2378,10 @@
 
         <section title="Delete an FSL">
 
-        <t> This operation deletes the given Fileset location.  The
-        admin requests the NSDB node storing the fedfsFsl to
+        <t> This operation deletes a Fileset location record.
+        The admin requests the NSDB node storing the fedfsFsl to
         delete it from its database.  This operation does
-        not result in the fileset location's data being
-        deleted at the fileserver.  </t>
+        not result in fileset data being deleted on any fileserver. </t>
 
         <section title="LDAP Request">
 
