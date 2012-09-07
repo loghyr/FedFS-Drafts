@@ -2460,19 +2460,19 @@
 
         <section title="NSDB Container Entry (NCE) Enumeration">
 
-        <t> To find the NCEs for the NSDB foo.example.com, a fileserver would do
+        <t> To find the NCEs for the NSDB nsdb.example.com, a fileserver would do
         the following: </t>
 
             <figure><artwork><![CDATA[
         nce_list = empty
-        connect to the LDAP directory at foo.example.com
+        connect to the LDAP directory at nsdb.example.com
         for each namingContext value $BAR in the root DSE
             /* $BAR is a DN */
             query for a fedfsNceDN value at $BAR
             /*
-             * The LDAP URL for this search would be
+             * The RFC 4516 LDAP URL for this search would be
              *
-             *  ldap://foo.example.com:389/$BAR?fedfsNceDN??
+             *  ldap://nsdb.example.com:389/$BAR?fedfsNceDN??
              *                      (objectClass=fedfsNsdbContainerInfo)
              *
              */
