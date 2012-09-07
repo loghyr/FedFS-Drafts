@@ -423,9 +423,9 @@
         the currency of the data at each location in order
         to ensure that the clients do not revert back in
         time when switching locations. NFSv4.1 provides
-    guidance on how replication can be handled in such a
-    manner, in particular see Section 11.7 of
-    <xref target='RFC5661' />.   </t>
+        guidance on how replication can be handled in such a
+        manner, in particular see Section 11.7 of
+        <xref target='RFC5661' />.   </t>
 
         </section>
 
@@ -664,9 +664,9 @@
 
         <t> In addition, version 1 UUIDs depend on the notion that a
         hardware MAC address is unique across machines.  As virtual
-      machines do not depend on unique physical MAC addresses and
-      in any event an administrator can modify the physical MAC
-      address, version 1 UUIDs are no longer considered sufficient.  </t>
+        machines do not depend on unique physical MAC addresses and
+        in any event an administrator can modify the physical MAC
+        address, version 1 UUIDs are no longer considered sufficient.  </t>
 
         <t> To minimize the probability of UUIDs colliding, a
         consistent procedure for generating UUIDs should be used
@@ -723,7 +723,7 @@
                 track of the FSL(s) and related
                 information for the fileset. </t>
 
-                <t> Create an FSN in the NSDB node.
+            <t> Create an FSN in the NSDB node.
 
                 <vspace blankLines="1" />
 
@@ -2634,7 +2634,7 @@
     Thus the contents and distinguished names of FSN and FSL records are
     required to be readable by anyone who can bind anonymously to an NSDB
     service. <xref target="sec:uuid" /> presents the security considerations
-  in the choice of the type of UUID used in these records. </t>
+    in the choice of the type of UUID used in these records. </t>
 
     <t> It should be noted that the federation protocols do not directly
     provide access to filesystem data. The federation protocols only
