@@ -207,7 +207,7 @@
             NSDB node that contains authoritative information for
             this FSN. </t>
 
-            <t hangText="   FsnUuid:"> a 128-bit UUID
+            <t hangText="   FsnUuid:"> a UUID
             (universally unique identifier), conforming to
             <xref target="RFC4122"/>, that is used to uniquely
             identify an FSN. </t>
@@ -267,11 +267,11 @@
         <t>
         <list style="hanging" hangIndent="6">
 
-            <t hangText="   FslUuid:"> a 128-bit UUID, conforming to
+            <t hangText="   FslUuid:"> a UUID, conforming to
             <xref target="RFC4122"/>, that is used to uniquely
             identify an FSL. </t>
 
-            <t hangText="   FsnUuid:"> the 128-bit UUID of the
+            <t hangText="   FsnUuid:"> the UUID of the
             FSL's FSN. </t>
 
             <t hangText="   NsdbName:"> the network location of the
