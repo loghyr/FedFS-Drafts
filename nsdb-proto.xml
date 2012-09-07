@@ -102,8 +102,8 @@
     <t> The requirements for federated filesystems are described
     in <xref target="RFC5716"/>. A protocol for administering
     a fileserver's namespace is described in <xref target="FEDFS-ADMIN"/>.
-    The mechanism for discovering the root of an NFSv4 namespace is
-    described in <xref target="FEDFS-DNS-SRV"/>. </t>
+    The mechanism for discovering the root of a federated namespace is
+    described in <xref target="RFC6641"/>. </t>
 
     <t> In the rest of the document, the term fileserver denotes a
     fileserver that is part of a federation. </t>
@@ -3115,7 +3115,7 @@
         <?rfc include="references/reference.AFS.xml"?>
         <?rfc include="references/reference.RFC.5716.xml"?>
         <?rfc include="references/reference.I-D.ietf-nfsv4-federated-fs-admin.xml"?>
-        <?rfc include="references/reference.I-D.ietf-nfsv4-federated-fs-dns-srv-namespace.xml"?>
+        <?rfc include="references/reference.RFC.6641.xml"?>
         <?rfc include="references/reference.RFC.5662.xml"?>
         <?rfc include="references/reference.MS-SMB.xml"?>
         <?rfc include="references/reference.MS-SMB2.xml"?>
