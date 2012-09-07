@@ -316,13 +316,13 @@
 
         <section anchor="nfs-uri" title="The NFS URI scheme">
 
-        <t> We extend the NFS URL scheme specified in
-        <xref target="RFC2224"/> (which is defined only for NFS
-        versions 2 and 3, to use it for locating NFS version 4
-        filesets.  This extention follows rules set out for Uniform
-        Resource Identifier schemes in <xref target="RFC3986"/>.
-        In the following text, we refer to this extended NFS URL
-        as an NFS URI. </t>
+        <t> To capture the location of an NFS fileset, we extend the
+        NFS URL scheme specified in <xref target="RFC2224"/> (which
+        is defined only for NFS versions 2 and 3) to use it for
+        locating NFSv4 filesets.  This extention follows rules set
+        out for Uniform Resource Identifier schemes in
+        <xref target="RFC3986"/>.  In the following text, we refer
+        to this extended NFS URL scheme as an NFS URI. </t>
 
         <t> The network location of an NFS fileset is stored in an
         FSL record encoded as an NFS URI.  An NFS URI uses the
@@ -519,6 +519,14 @@
         fileserver can arrange the NFSv4 fs_locations
         attribute's locations list based on the rank and order
         values.  </t>
+
+        <t> Another example:  A single NFS FSL record contains
+        the hostname of one fileserver.  A single fs_locations
+        attribute can contain a list of fileserver names.  An NFS
+        fileserver MAY combine two or more FSL records into a
+        single entry in an fs_locations or fs_locations_info array
+        only if each FSL record contains the same pathname and
+        extended filesystem information. </t>
 
         <t> Refer to the NFSv4.1 protocol specification
         <xref target="RFC5661"/>, sections 11.9 and 11.10,
@@ -1089,6 +1097,8 @@
 
             <t> The DN syntax (1.3.6.1.4.1.1466.115.121.1.12) described in <xref target="RFC4517"/>.  </t>
 
+            <t> The IA5String syntax (1.3.6.1.4.1.1466.115.121.1.26) described in <xref target="RFC4517"/>.  </t>
+
             </list>
         </t>
 
@@ -1334,14 +1344,18 @@
         /// attributetype (
         ///     1.3.6.1.4.1.31103.1.120 NAME 'fedfsNfsURI'
         ///     DESC 'Location of fileset'
-        ///     EQUALITY integerMatch
-        ///     SUP IA5String
+        ///     EQUALITY caseIgnoreIA5Match
+        ///     SUBSTR caseIgnoreSubstringsIA5Match
+        ///     SYNTAX 1.3.6.1.4.1.1466.115.121.1.26
         ///     SINGLE-VALUE
         ///     )
         ///
             ]]></artwork></figure>
 
             <t> &lt;CODE ENDS> </t>
+
+            <t> OID 1.3.6.1.4.1.1466.115.121.1.26 is the IA5String
+            syntax <xref target="RFC4517"/>.  </t>
 
         </section>
 
