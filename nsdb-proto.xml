@@ -449,37 +449,85 @@
 
         <t> The combination of FSL caching and FSL migration presents
         a challenge. For example, suppose there are three fileservers
-        named A, B, and C and fileserver A contains a junction to
-        fileset X stored on fileserver B. Now suppose that fileset X is
-        migrated from fileserver B to fileserver C and the corresponding
-        FSL information for fileset X in the appropriate NSDB is updated.
-        If fileserver A has a cached FSL for fileset X, a user traversing
-        the junction on fileserver A will be referred to fileserver B
-        even though fileset X has migrated to fileserver C. If fileserver
-        A had not cached  the FSL record, it would have queried the NSDB
-        and obtained the correct location of fileset X. </t>
+        named A, B, and C.  Suppose further that fileserver A
+        contains a junction J to fileset X stored on fileserver B.
+        </t>
 
-        <t> Administrators are advised to be aware of FSL caching when
-        performing a migration. When migrating a fileset, administrators
-        SHOULD create a junction at the fileset's old location referring
-        back to the NSDB entry for the fileset. This junction will redirect
-        any users who follow stale FSL information to the correct location.
-        Thus, in the above example, fileserver A would direct file-access
-        clients to fileserver B, but fileserver B would direct file-access
-        clients to fileserver C. </t>
+        <t> Now suppose that fileset X is migrated from fileserver B
+        to fileserver C, and the corresponding FSL information for
+        fileset X in the authoritative NSDB is updated.  </t>
 
-        <t> Such supplemental junctions (on fileserver B in the example)
-        would not be required to be in place forever. They need to stay
-        in place only until cached FSL entries for the target fileset
-        are invalidated. An FSL's parent FSN contains a TTL field, a count in
-        seconds of the time interval the FSL MAY be cached. This is an upper
-        bound for the lifetime of the cached information and a lower bound for the
-        lifetime of the supplemental junctions. For example, suppose this
-        field contains the value 3600 seconds (one hour). In such a case,
-        administrators SHOULD keep the supplemental junctions in place for at
-        least one hour after the fileset move has taken place, and FSL data
-        MUST NOT be cached by a referring fileserver for more than one hour
+        <t> If fileserver A has cached FSLs for fileset X, a
+        file-access client traversing junction J on fileserver A
+        will be referred to fileserver B, even though fileset X has
+        migrated to fileserver C. If fileserver A had not cached the
+        FSL records, it would have queried the NSDB and obtained the
+        correct location of fileset X.  </t>
+
+        <t> Typically, the process of fileset migration leaves a
+        redirection on the source fileserver in place of a migrated
+        fileset (without such a redirection, file-access clients
+        would find an empty space where the migrated fileset was,
+        which defeats the purpose of a managed migration).  </t>
+
+        <t> This redirection might be a new junction that targets
+        the same FSN as other junctions referring to the migrated
+        fileset, or it might be some other kind of directive,
+        depending on the fileserver implementation, that simply
+        refers file-access clients to the new location of the
+        migrated fileset.  </t>
+
+        <t> Back to our example.  Suppose, as part of the migration
+        process, a junction replaces fileset X on fileserver B.
+        Later, either:
+
+        <list style="symbols">
+
+        <t> New file-access clients are referred to fileserver
+        B by stale FSL information cached on fileserver A, or </t>
+
+        <t> File-access clients continue to access fileserver
+        B because they cache stale location data for fileset X. </t>
+
+        </list>
+
+        </t>
+
+        <t> In either case, thanks to the redirection, file-access
+        clients are informed by fileserver B that fileset X has
+        moved to fileserver C.  </t>
+
+        <t> Such redirecting junctions (here, on fileserver B)
+        would not be required to be in place forever. They need to
+        stay in place at least until FSL entries cached on
+        fileservers and locations cached on file-access clients
+        for the target fileset are invalidated.  </t>
+
+        <t> An FSL's parent FSN contains a TTL field which contains
+        a count in seconds of the time interval the FSL MAY be
+        cached. This is an upper bound for the lifetime of the
+        cached information, and thus can act as a lower bound for
+        the lifetime of redirecting junctions.  </t>
+
+        <t> For example, suppose this field contains the value 3600
+        seconds (one hour). In such a case, administrators SHOULD
+        keep the redirection in place for at least one hour after a
+        fileset migration has taken place, and FSL data MUST NOT be
+        cached by a referring fileserver for more than one hour
         without a refresh. </t>
+
+        <t> To get file-access clients to access the destination
+        fileserver more quickly, administrators SHOULD set the
+        FSN TTL field of the migrated fileset to a low number or
+        zero before migration begins.  It can be reset to a
+        more reasonable number at a later point.  </t>
+
+        <t> Note that some file-access protocols do not communicate
+        location cache expiry information to file-access clients.
+        In some cases it may be difficult to determine an
+        appropriate lifetime for redirecting junctions because
+        file-access clients may cache location information
+        indefinitely.  </t>
 
         </section>
 
