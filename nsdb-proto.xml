@@ -95,9 +95,10 @@
     mechanism to manage the namespace or exchange namespace information. </t>
 
     <t> The federated filesystem protocols in this document define
-    how to construct a namespace accessible by an NFSv4 <xref target="3530bis"/>
-    or NFSv4.1 <xref target="RFC5661"/> client and have been designed
-    to accommodate other file access protocols in the future. </t>
+    how to construct a namespace accessible by an NFSv4.0
+    <xref target="3530bis"/>, NFSv4.1 <xref target="RFC5661"/> or newer
+    client and have been designed to accommodate other file access
+    protocols in the future. </t>
 
     <t> The requirements for federated filesystems are described
     in <xref target="RFC5716"/>. A protocol for administering
@@ -115,8 +116,8 @@
     <section title="File-access Protocol">
 
         <t> A file-access protocol is a network protocol for
-        accessing data. The NFSv4 protocol and the NFSv4.1
-        protocol are both examples of a file-access protocol. </t>
+        accessing data. The NFSv4.0 protocol <xref target="3530bis"/>
+        is an example of a file-access protocol. </t>
 
     </section>
 
@@ -124,20 +125,19 @@
 
         <t> File-access clients are standard off-the-shelf network
         attached storage (NAS) clients that communicate with
-        fileservers using the NFSv4 protocol, the NFSv4.1 protocol,
-        or some other file-access protocol. </t>
+        fileservers using a standard file-access protocol. </t>
 
     </section>
 
     <section title="Fileserver">
 
         <t> Fileservers are servers that store physical fileset
-        data, or refer file-access clients to other fileservers. A
-        fileserver can be implemented in a number of different ways,
-        including a single system, a cluster of systems, or some other
-        configuration. A fileserver provides access to a federated
-        filesystem via NFSv4, NFSv4.1, or some other file-access
-        protocol. </t>
+        data, or refer file-access clients to other fileservers.
+        A fileserver provides access to its shared filesystem
+        data via a file-access protocol.  A fileserver may be
+        implemented in a number of different ways, including a
+        single system, a cluster of systems, or some other
+        configuration. </t>
 
     </section>
 
@@ -145,11 +145,15 @@
 
         <t> A referral is a mechanism by which a fileserver
         redirects a file-access client to a different
-        fileserver. The exact information contained in a referral
-        varies from one file-access protocol to another. The NFSv4
-        protocol defines the fs_locations attribute for
-        referral information. The NFSv4.1 protocol defines the
-        fs_locations_info attribute for referral information. </t>
+        fileserver or export. The exact information contained in a
+        referral varies from one file-access protocol to another.
+        The NFSv4.0 protocol, for example, defines the fs_locations
+        attribute for returning referral information to NFSv4.0
+        clients. The NFSv4.1 protocol introduces the
+        fs_locations_info attribute that can return richer referral
+        information to its clients.  NFSv4.1 fileservers may use
+        either attribute during a referral.  Both attributes are
+        defined in <xref target="RFC5661"/>. </t>
 
     </section>
 
@@ -308,9 +312,8 @@
         </t>
 
         <t> This document defines an FSL subtype for NFS. An NFS FSL
-        contains information suitable for use in an NFSv4
-        fs_locations <xref target="3530bis"/> or NFSv4.1
-        fs_locations_info attribute <xref target="RFC5661"/>. </t>
+        contains information suitable for use in one of the NFSv4
+        referral attributes (e.g., fs_locations or fs_locations_info). </t>
 
         <t> A fileset MAY be accessible by protocols other than NFS. For
         each such protocol, a corresponding FSL subtype SHOULD be defined.
@@ -488,8 +491,7 @@
         client to one or more of the FSN's FSLs. The fileserver
         converts the FSL records to a referral format understood
         by a particular file-access client, such as an NFSv4
-        fs_locations attribute or NFSv4.1 fs_locations_info
-        attribute. </t>
+        fs_locations or fs_locations_info attribute. </t>
 
         <t> To give file-access clients as many options as
         possible, the fileserver SHOULD include the maximum
@@ -503,24 +505,23 @@
         convert or reduce the FSL record's contents in a manner
         appropriate to the referral format. For example,
         an NFS FSL record contains all the data necessary to
-        construct an NFSv4.1 fs_locations_info attribute,
-        but an NFSv4.1 fs_locations_info attribute contains
+        construct an fs_locations_info attribute,
+        but an fs_locations_info attribute contains
         several pieces of information that are not found
-        in an NFSv4 fs_locations attribute. A fileserver
-        will construct entries in an NFSv4 fs_locations
-        attribute using the relevant contents of an NFS FSL
-        record.  </t>
+        in the simpler fs_locations attribute.  A fileserver
+        constructs entries in an fs_locations attribute using
+        the relevant contents of an NFS FSL record.  </t>
 
         <t> Whenever the fileserver converts or reduces
         FSL data, the fileserver SHOULD attempt to maintain
         the original meaning where possible. For example, an
         NFS FSL record contains the rank and order information
-        that is included in an NFSv4.1 fs_locations_info attribute
+        that is included in an fs_locations_info attribute
         (see NFSv4.1's FSLI4BX_READRANK, FSLI4BX_READORDER,
         FSLI4BX_WRITERANK, and FSLI4BX_WRITEORDER). While
         this rank and order information is not explicitly
-        expressible in an NFSv4 fs_locations attribute, the
-        fileserver can arrange the NFSv4 fs_locations
+        expressible in an fs_locations attribute, the
+        fileserver can arrange the fs_locations
         attribute's locations list based on the rank and order
         values.  </t>
 
@@ -606,9 +607,7 @@
         <t> When a file-access client reaches a junction, the
         fileserver refers the client to a list of FSLs associated
         with the FSN targeted by the junction.  The client can then
-        mount one of the associated FSLs.  For NFSv4 and NFSv4.1
-        clients, the FSL information is returned in the fs_locations
-        and fs_locations_info attributes respectively.  </t>
+        mount one of the associated FSLs.  </t>
 
         <t> The federation protocols do not limit where and
         how many times a fileset is mounted in the namespace.
@@ -814,8 +813,8 @@
 
             <t> The fileserver converts one or more of the FSLs to
             the location type used by the file-access client (e.g.,
-            a Network File System (NFSv4) fs_location,
-            as described in <xref target="3530bis"/>).  </t>
+            an NFSv4 fs_location attribute as described in
+            <xref target="RFC5661"/>).  </t>
 
             <t> The fileserver redirects (in whatever manner is
             appropriate for the client) the client to the
@@ -2321,12 +2320,12 @@
         <section title="Selecting fedfsNfsFsl Values">
 
             <t> The fedfsNfsFSl object class is used to describe NFSv4
-            and NFSv4.1 accessible filesets. For the reasons described
+            accessible filesets. For the reasons described
             in <xref target="fsl_referral"/>, administrators SHOULD
             choose reasonable values for all LDAP attributes of an NFSv4
             accessible fedfsNfsFsl even though some of these LDAP
-            attributes are not explicitly contained in the NFSv4
-            fs_locations attribute returned to an NFSv4 client. </t>
+            attributes are not explicitly contained in an NFSv4
+            fs_locations attribute. </t>
 
             <t> When the administrator is unable to choose reasonable
             values for the LDAP attributes not explicitly contained
@@ -2611,13 +2610,13 @@
 
     <section title="Security Considerations">
 
-    <t> Both NFSv4/NFSv4.1 and LDAP provide security mechanisms. When used in
+    <t> Both the NFSv4 and LDAPv3 protocols provide security mechanisms. When used in
     conjunction with the federated filesystem protocols described in
     this document, the use of these mechanisms is RECOMMENDED. Specifically,
     the use of RPCSEC_GSS <xref target="RFC2203"/>, which is built on the
     GSS-API <xref target="RFC2743"/>, is RECOMMENDED on all NFS connections
     between a file-access client and fileserver. The "Security Considerations"
-    sections of the NFSv4 <xref target="3530bis"/> and NFSv4.1 <xref target="RFC5661"/>
+    sections of the NFSv4.0 <xref target="3530bis"/> and NFSv4.1 <xref target="RFC5661"/>
     specifications contain special considerations for the handling of GETATTR
     operations for the fs_locations and fs_locations_info attributes. For all
     LDAP connections established by the federated filesystem protocols, the
