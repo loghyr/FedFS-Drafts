@@ -188,11 +188,12 @@
 
     <section title="Fileset">
 
-        <t> A fileset is defined to be a container of data and
+        <t> A fileset is loosely defined as a set of files and the
+        directory tree that contains them.  The fileset abstraction
         is the basic unit of data management.  Depending on the
-        configuration, they may be anything between an individual
+        configuration, a fileset may be anything from an individual
         directory of an exported filesystem to an entire exported
-        filesystem at a fileserver. </t>
+        filesystem on a fileserver. </t>
 
     </section>
 
