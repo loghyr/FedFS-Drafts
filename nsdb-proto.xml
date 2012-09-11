@@ -131,10 +131,10 @@
 
     <section title="Fileserver">
 
-        <t> Fileservers are servers that store the physical fileset
-        data or refer the client to other fileservers. A fileserver
-        can be implemented in a number of different ways, including
-        a single system, a cluster of systems, or some other
+        <t> Fileservers are servers that store physical fileset
+        data, or refer file-access clients to other fileservers. A
+        fileserver can be implemented in a number of different ways,
+        including a single system, a cluster of systems, or some other
         configuration. A fileserver provides access to a federated
         filesystem via NFSv4, NFSv4.1, or some other file-access
         protocol. </t>
@@ -144,7 +144,7 @@
     <section title="Referral">
 
         <t> A referral is a mechanism by which a fileserver
-        redirects a file-access protocol client to a different
+        redirects a file-access client to a different
         fileserver. The exact information contained in a referral
         varies from one file-access protocol to another. The NFSv4
         protocol defines the fs_locations attribute for
@@ -156,23 +156,26 @@
     <section title="Namespace">
 
         <t> The goal of a unified namespace is to make all
-        managed data available to all clients via the same path
-        in a common filesystem-like namespace.  This should be
-        achieved with minimal or zero client configuration.  In
-        particular, updates to the common namespace should not
-        require configuration changes at the client.  Filesets,
-        which are the unit of data management, are a set of
-        files and directories.  From the perspective of the
-        clients, the common namespace is constructed by mounting
-        filesets that are physically located on different
+        managed data available to any file-access client via the
+        same path in a common filesystem namespace.  This should
+        be achieved with minimal or zero configuration on file-access
+        clients.  In particular, updates to the common namespace
+        should not require configuration changes to any file-access
+        client. </t>
+
+        <t> Filesets, which are the unit of data management, are
+        a set of files and directories.  From the perspective of
+        file-access clients, the common namespace is constructed by
+        mounting filesets that are physically located on different
         fileservers.  The namespace, which is defined in terms
         of fileset definitions, fileset identifiers, the
         location of each fileset in the namespace, and the
         physical location of the implementation(s) of each
         fileset, is stored in a set of namespace repositories,
-        each managed by an administrative entity.  The namespace
-        schema defines the model used for populating, modifying,
-        and querying the namespace repositories.  It is not
+        each managed by an administrative entity. </t>
+
+        <t> The namespace schema defines the model used for populating,
+        modifying, and querying the namespace repositories.  It is not
         required by the federation that the namespace be common
         across all fileservers.  It should be possible to have
         several independently rooted namespaces. </t>
@@ -253,12 +256,12 @@
 
     <section title="Fileset Location (FSL)">
 
-        <t> An FSL describes the location where the fileset
-        data resides.  An FSL contains generic and type specific
-        information which together describe how to access the fileset.
-        An FSL's type indicates which protocol(s) may be used
-        to access its data. An FSL's attributes can be used by a fileserver
-        to decide which locations it will return to a client. </t>
+        <t> An FSL describes one physical location where a complete
+        copy of the fileset's data resides.  An FSL contains generic
+        and type specific information which together describe how to
+        access the fileset data at this location.  An FSL's attributes
+        can be used by a fileserver to decide which locations it will
+        return to a file-access client. </t>
 
         <t> An FSL consists of: </t>
 
@@ -390,8 +393,8 @@
 
         <t> All of the FSLs that have the same FSN (and thereby
         reference the same fileset) are equivalent from the
-        point of view of client access; the different
-        locations of a fileset represent the same data,
+        point of view of access by a file-access client.  Different
+        fileset locations for an FSN represent the same data,
         though potentially at different points in time.
         Fileset locations are equivalent but not identical.
         Locations may either be read-only or read-write.
@@ -414,17 +417,17 @@
         responsibility of administrators to guarantee the
         functional equivalence of the data.  </t>
 
-        <t> The federation protocol does not guarantee that
-        the different locations are mutually consistent in
-        terms of the currency of the data.  It relies on the
-        file-access protocol to contain
-        sufficient information to help clients determine
-        the currency of the data at each location in order
-        to ensure that the clients do not revert back in
-        time when switching locations. NFSv4.1 provides
-        guidance on how replication can be handled in such a
-        manner, in particular see Section 11.7 of
-        <xref target='RFC5661' />.   </t>
+        <t> The federation protocols do not guarantee that
+        different fileset locations are mutually consistent in
+        terms of the currency of their data.  However, they provide
+        a means to publish currency information so that all
+        fileservers in a federation can convey the same information
+        to file-access clients during referrals.  Clients use this
+        information to ensure they do not revert to an out-of-date
+        version of a fileset's data when switching between fileset
+        locations.  NFSv4.1 provides guidance on how replication can
+        be handled in such a manner.  In particular see Section 11.7
+        of <xref target="RFC5661"/>.  </t>
 
         </section>
 
@@ -459,9 +462,9 @@
         SHOULD create a junction at the fileset's old location referring
         back to the NSDB entry for the fileset. This junction will redirect
         any users who follow stale FSL information to the correct location.
-        Thus, in the above example, fileserver A would direct clients
-        to fileserver B, but fileserver B would in turn direct clients to
-        fileserver C. </t>
+        Thus, in the above example, fileserver A would direct file-access
+        clients to fileserver B, but fileserver B would direct file-access
+        clients to fileserver C. </t>
 
         <t> Such supplemental junctions (on fileserver B in the example)
         would not be required to be in place forever. They need to stay
@@ -481,13 +484,14 @@
         <section title="Generating A Referral from Fileset Locations" anchor="fsl_referral">
 
         <t> After resolving an FSN to a set of FSL records, the
-        fileserver can generate a referral to redirect the
-        client to one or more of the FSLs. The fileserver will
-        convert the FSL records to a referral format understood
-        by the client, such as an NFSv4 fs_locations attribute
-        or NFSv4.1 fs_locations_info attribute. </t>
+        fileserver generates a referral to redirect a file-access
+        client to one or more of the FSN's FSLs. The fileserver
+        converts the FSL records to a referral format understood
+        by a particular file-access client, such as an NFSv4
+        fs_locations attribute or NFSv4.1 fs_locations_info
+        attribute. </t>
 
-        <t> In order to give the client as many options as
+        <t> To give file-access clients as many options as
         possible, the fileserver SHOULD include the maximum
         possible number of FSL records in a referral. However,
         the fileserver MAY omit some of the FSL records
@@ -575,11 +579,11 @@
     <section title="Mount Points, Junctions and Referrals">
 
         <t> A mount point is a directory in a parent fileset
-        where a target fileset may be attached.  If a client
-        traverses the path leading from the root of the
-        namespace to the mount point of a target fileset it
-        should be able to access the data in that target
-        fileset (assuming appropriate permissions).  </t>
+        where a target fileset may be attached.  If a file-access
+        client traverses the path leading from the root of the
+        namespace to the mount point of a target fileset, it
+        should be able to mount and access the data in that
+        target fileset (assuming appropriate permissions).  </t>
 
         <t> The directory where a fileset is mounted is
         represented by a junction in the underlying filesystem.
@@ -599,13 +603,12 @@
         (as described earlier) contains the authoritative
         NSDB node, and the FsnUuid (a UUID for the fileset).  </t>
 
-        <t> When a client traversal reaches a junction, the
-        client is referred to a list of FSLs associated with the
-        FSN targeted by the junction.  The client can then redirect
-        its connection to one of the FSLs.  This act is called a
-        referral.  For NFSv4 and NFSv4.1 clients, the FSL information
-        is returned in the fs_locations and fs_locations_info
-        attributes respectively.  </t>
+        <t> When a file-access client reaches a junction, the
+        fileserver refers the client to a list of FSLs associated
+        with the FSN targeted by the junction.  The client can then
+        mount one of the associated FSLs.  For NFSv4 and NFSv4.1
+        clients, the FSL information is returned in the fs_locations
+        and fs_locations_info attributes respectively.  </t>
 
         <t> The federation protocols do not limit where and
         how many times a fileset is mounted in the namespace.
@@ -621,8 +624,9 @@
         namespace is the top level directory of this fileset. A set of
         designated fileservers in the federation can export the root
         fileset to render the federation-wide unified namespace. When
-        a client mounts the root fileset from any of these designated
-        fileservers it can view a common federation-wide namespace.  </t>
+        a file-access client mounts the root fileset from any of these
+        designated fileservers it can view a common federation-wide
+        namespace.  </t>
 
         <t> The root fileset could be implemented either as an exported
         NFS file system or as data in the NSDB itself. The properties
@@ -777,9 +781,10 @@
 
         <t> A fileset may contain references to other filesets.
         These references are represented by junctions.  If a
-        client requests access to a fileset object that is a
-        junction, the fileserver resolves the junction to discover
-        one or more FSLs that implement the referenced fileset. </t>
+        file-access client requests access to a fileset object that
+        is a junction, the fileserver resolves the junction to
+        discover one or more FSLs that implement the referenced
+        fileset. </t>
 
         <t> There are many possible variations to this
         procedure, depending on how the junctions are
@@ -808,7 +813,7 @@
             empty) set of FSLs.  </t>
 
             <t> The fileserver converts one or more of the FSLs to
-            the location type used by the client (e.g.,
+            the location type used by the file-access client (e.g.,
             a Network File System (NFSv4) fs_location,
             as described in <xref target="3530bis"/>).  </t>
 
@@ -2187,9 +2192,8 @@
         are not deleted.  Any junction that has this FSN as
         its target may continue to point to this
         non-existent FSN.  A dangling reference may be
-        detected when a client tries to resolve the target
-        of a junction that refers to the deleted FSN and the
-        NSDB returns an error.  </t>
+        detected when a fileserver tries to resolve a junction
+        that refers to the deleted FSN.  </t>
 
         <section title="LDAP Request">
 
@@ -2612,8 +2616,8 @@
     this document, the use of these mechanisms is RECOMMENDED. Specifically,
     the use of RPCSEC_GSS <xref target="RFC2203"/>, which is built on the
     GSS-API <xref target="RFC2743"/>, is RECOMMENDED on all NFS connections
-    between a client and fileserver. The "Security Considerations" sections of
-    the NFSv4 <xref target="3530bis"/> and NFSv4.1 <xref target="RFC5661"/>
+    between a file-access client and fileserver. The "Security Considerations"
+    sections of the NFSv4 <xref target="3530bis"/> and NFSv4.1 <xref target="RFC5661"/>
     specifications contain special considerations for the handling of GETATTR
     operations for the fs_locations and fs_locations_info attributes. For all
     LDAP connections established by the federated filesystem protocols, the
@@ -2631,9 +2635,9 @@
     may compromise: a fileserver and an NSDB. </t>
 
     <t> If an attacker compromises a fileserver, the attacker can interfere
-    with the client's filesystem I/O operations (e.g., by returning fictitious
-    data in the response to a read request) or fabricating a referral. The
-    attacker's abilities are the same regardless of whether or not the
+    with a file-access client's filesystem I/O operations (e.g., by returning
+    fictitious data in the response to a read request) or fabricating a referral.
+    The attacker's abilities are the same regardless of whether or not the
     federation protocols are in use. While the federation protocols do not
     give the attacker additional capabilities, they are additional targets for
     attack. The LDAP protocol described in <xref target="nsdb-ops-fileservers"/>
@@ -2656,10 +2660,10 @@
     <t> It should be noted that the federation protocols do not directly
     provide access to filesystem data. The federation protocols only
     provide a mechanism for building a namespace. All data transfers
-    occur between a client and server just as they would if the federation
-    protocols were not in use. As a result, the federation protocols do not
-    require new user authentication and authorization mechanisms or require
-    a fileserver to act as a proxy for a client. </t>
+    occur between a file-access client and fileserver just as they would if
+    the federation protocols were not in use. As a result, the federation
+    protocols do not require new user authentication and authorization
+    mechanisms or require a fileserver to act as a proxy for a client. </t>
 
     </section>
 
