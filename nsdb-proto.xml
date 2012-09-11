@@ -578,32 +578,24 @@
 
     </section>
 
-    <section title="Mount Points, Junctions and Referrals">
+    <section title="Junctions and Referrals">
 
-        <t> A mount point is a directory in a parent fileset
-        where a target fileset may be attached.  If a file-access
-        client traverses the path leading from the root of the
-        namespace to the mount point of a target fileset, it
-        should be able to mount and access the data in that
-        target fileset (assuming appropriate permissions).  </t>
+        <t> A junction is a point in a particular fileset namespace
+        where a specific target fileset may be attached.  If a
+        file-access client traverses the path leading from the root
+        of a federated namespace to the junction referring to a
+        target fileset, it should be able to mount and access the
+        data in that target fileset (assuming appropriate
+        permissions).  In other words, a junction can be viewed as a
+        reference from a directory in one fileset to the root of the
+        target fileset.  </t>
 
-        <t> The directory where a fileset is mounted is
-        represented by a junction in the underlying filesystem.
-        In other words, a junction can be viewed as a reference
-        from a directory in one fileset to the root of the
-        target fileset.  A junction can be implemented as a
-        special marker on a directory that is interpreted by the
-        fileserver as a mount point, or by some other mechanism
-        in the underlying filesystem.  </t>
-
-        <t> What data is used by the underlying filesystem to
-        represent the junction is not defined by this protocol.
-        The essential property is that the server must be able
-        to find, given the junction, the FSN for the target
-        fileset.  The mechanism by which the server maps a junction
-        to an FSN is outside the scope of this document. The FSN
-        (as described earlier) contains the authoritative
-        NSDB node, and the FsnUuid (a UUID for the fileset).  </t>
+        <t> A junction can be implemented as a special marker on a
+        directory, or by some other mechanism in the fileserver's
+        underlying filesystem.  What data is used by the fileserver
+        to represent junctions is not defined by this document.  The
+        essential property is that given a junction, a fileserver
+        must be able to find the FSN for the target fileset.  </t>
 
         <t> When a file-access client reaches a junction, the
         fileserver refers the client to a list of FSLs associated
