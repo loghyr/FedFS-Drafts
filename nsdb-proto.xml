@@ -172,11 +172,9 @@
         file-access clients, the common namespace is constructed by
         mounting filesets that are physically located on different
         fileservers.  The namespace, which is defined in terms
-        of fileset definitions, fileset identifiers, the
-        location of each fileset in the namespace, and the
-        physical location of the implementation(s) of each
-        fileset, is stored in a set of namespace repositories,
-        each managed by an administrative entity. </t>
+        of fileset names and locations, is stored in a set of
+        namespace repositories, each managed by an administrative
+        entity. </t>
 
         <t> The namespace schema defines the model used for populating,
         modifying, and querying the namespace repositories.  It is not
