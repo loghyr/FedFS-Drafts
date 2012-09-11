@@ -3184,11 +3184,17 @@
 
     <section anchor="app-additional" title="Acknowledgments">
         <t> We would like to thank Andy Adamson of NetApp, Paul Lemahieu of EMC,
-            Robert Thurlow of Sun Microsystems, and Mario Wurzl of EMC for helping
+            Robert Thurlow of Oracle, and Mario Wurzl of EMC for helping
             to author this document. </t>
 
         <t> We would also like to thank George Amvrosiadis, Chuck Lever,
             Trond Myklebust, and Nicolas Williams for their comments. </t>
+
+        <t>
+            Finally, We would also like to thank Anday Adamson, Rob Thurlow,
+            Tom Haynes, and Chuck Lever for the editing effort to get
+            this document out the door.
+        </t>
 
         <t> The extract.sh shell script and formatting conventions were
             first described by the authors of the NFSv4.1 XDR specification
