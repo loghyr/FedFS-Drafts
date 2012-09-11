@@ -1904,10 +1904,10 @@
 
             <t> The DN of an FSN is REQUIRED to take the following
             form:  "fedfsFsnUuid=$FSNUUID,$NCE", where $FSNUUID
-            is the UUID of the FSN and $NCE is the DN of the NCE
-            ("o=fedfs" by default). Since LDAP requires a DN to be
-            unique, this ensures that each FSN entry has a unique
-            UUID value within the LDAP directory.  </t>
+            is the UUID of the FSN and $NCE is the DN of the NCE.
+            Since LDAP requires a DN to be unique, this ensures that
+            each FSN entry has a unique UUID value within the LDAP
+            directory.  </t>
 
             <t> A fedfsFsn MAY also have additional attributes, but
             these attributes MUST NOT be referenced by any part of
@@ -1956,8 +1956,8 @@
             <t> The DN of an FSL is REQUIRED to take the following
             form:  "fedfsFslUuid=$FSLUUID,fedfsFsnUuid=$FSNUUID,$NCE"
             where $FSLUUID is the FSL's UUID, $FSNUUID is the FSN's
-            UUID, and $NCE is the DN of the NCE ("o=fedfs" by default).
-            Since LDAP requires a DN to be unique, this ensures that each
+            UUID, and $NCE is the DN of the NCE.  Since LDAP
+            requires a DN to be unique, this ensures that each
             FSL entry has a unique UUID value within the LDAP
             directory.  </t>
 
@@ -1995,8 +1995,8 @@
             <t> The DN of an NFS FSL is REQUIRED to take the following
             form:  "fedfsFslUuid=$FSLUUID,fedfsFsnUuid=$FSNUUID,$NCE"
             where $FSLUUID is the FSL's UUID, $FSNUUID is the FSN's
-            UUID, and $NCE is the DN of the NCE ("o=fedfs" by default).
-            Since LDAP requires a DN to be unique, this ensures that each
+            UUID, and $NCE is the DN of the NCE.  Since LDAP
+            requires a DN to be unique, this ensures that each
             NFS FSL entry has a unique UUID value within the LDAP
             directory.  </t>
 
