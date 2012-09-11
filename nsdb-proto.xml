@@ -758,8 +758,8 @@
                 fileset locations are unspecified. </t>
 
             <t> For the FSN created above, create an
-                FSL with the appropriate information in
-                the NSDB node. </t>
+                FSL in the NSDB node that describes the
+                physical location of the fileset data.  </t>
 
             </list>
         </t>
