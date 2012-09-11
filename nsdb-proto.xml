@@ -2112,14 +2112,10 @@
     <section title="NSDB Operations for Administrators" anchor="nsdb-ops-admins">
 
         <t> The admin entity initiates and controls the commands
-        to manage fileset and namespace information.  The admin
-        entity, however, is stateless.  All state is maintained
-        at the NSDB nodes or at the fileserver.  </t>
-
-        <t> We require that each NSDB node be able to act as
-        an LDAP server and that the protocol used for
-        communicating between the admin entity and each NSDB
-        node is LDAP.  </t>
+        to manage fileset and namespace information.  The protocol
+        used for communicating between the admin entity and each
+        NSDB node MUST be the LDAPv3 <xref target="RFC2849"/>
+        protocol.  </t>
 
         <t> The names we assign to these operations are entirely
         for the purpose of exposition in this document, and are
