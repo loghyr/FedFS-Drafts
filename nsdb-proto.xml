@@ -645,12 +645,16 @@
 
         <t> Because junctions store a tuple containing an FSN UUID and
         the name and port of an NSDB node, an FSN UUID must be unique
-        only on a single NSDB node.  The probability of two FSN
-        records sharing the same UUID on a single NSDB host is zero,
-        due to the way FSN distinguished names are formed.  An FSN
-        UUID collision can be detected immediately when an
-        administrator attempts to publish an FSN or FSL by storing
-        it on an appropriate NSDB host.  </t>
+        only on a single NSDB node.  An FSN UUID collision can be
+        detected immediately when an administrator attempts to publish
+        an FSN or FSL by storing it under a specific NCE on an
+        authoritative NSDB host.  </t>
+
+        <t> Note that one NSDB node may store multiple NCEs, each under
+        a different namingContext.  If an NSDB node must contain more
+        than one NCE, the federation's admin entity SHOULD provide a
+        robust method for preventing FSN UUID collisions between FSNs
+        that reside on the same NSDB node but under different NCEs.  </t>
 
         <t> Because FSLs are children of FSNs, FSL UUIDs must be unique
         for just a single FSN.  As with FSNs, as soon as an FSL is
