@@ -1146,17 +1146,50 @@
 
             <t> The "labeledURI" attribute described in <xref target="RFC2079"/>.  </t>
 
+            <t> The UUID syntax (1.3.6.1.1.16.1) described in <xref target="RFC4530"/>.  </t>
+
+            <t> The UuidMatch rule described in <xref target="RFC4530"/>.  </t>
+
+            <t> The UuidOrderingMatch rule described in <xref target="RFC4530"/>.  </t>
+
             </list>
         </t>
+
+        <section title="fedfsUuid">
+
+            <t> A fedfsUuid is the base type for all of the
+            universally unique identifiers (UUIDs) used by the
+            federated filesystem protocols.  </t>
+
+            <t> The fedfsUuid type is based on rules and syntax
+            defined in <xref target="RFC4530"/>. </t>
+
+            <t> A fedfsUuid is a single-valued LDAP attribute. </t>
+
+            <t> &lt;CODE BEGINS> </t>
+
+            <figure><artwork><![CDATA[
+        ///
+        /// attributetype (
+        ///     1.3.6.1.4.1.31103.1.1 NAME 'fedfsUuid'
+        ///     DESC 'A UUID used by NSDB'
+        ///     EQUALITY uuidMatch
+        ///     ORDERING uuidOrderingMatch
+        ///     SYNTAX 1.3.6.1.1.16.1
+        ///     SINGLE-VALUE
+        ///     )
+        ///
+            ]]></artwork></figure>
+
+            <t> &lt;CODE ENDS> </t>
+
+        </section>
 
         <section title="fedfsFsnUuid">
 
             <t> A fedfsFsnUuid represents the UUID component of an FSN.
             An NSDB SHOULD ensure that no two FSNs it stores have the same
             fedfsFsnUuid. </t>
-
-            <t> The fedfsFsnUuid is a subclass of UUID
-            <xref target="RFC4530"/>, with the same encoding rules. </t>
 
             <t> This attribute is single-valued.  </t>
 
@@ -1167,7 +1200,7 @@
         /// attributetype (
         ///     1.3.6.1.4.1.31103.1.4 NAME 'fedfsFsnUuid'
         ///     DESC 'The FSN UUID component of an FSN'
-        ///     SUP UUID
+        ///     SUP fedfsUuid
         ///     SINGLE-VALUE
         ///     )
         ///
@@ -1240,9 +1273,6 @@
             An NSDB SHOULD ensure that no two FSLs it stores have the same
             fedfsFslUuid. </t>
 
-            <t> The fedfsFslUuid is a subclass of UUID
-            <xref target="RFC4530"/>, with the same encoding rules. </t>
-
             <t> This attribute is single-valued.  </t>
 
             <t> &lt;CODE BEGINS> </t>
@@ -1252,7 +1282,7 @@
         /// attributetype (
         ///     1.3.6.1.4.1.31103.1.8 NAME 'fedfsFslUuid'
         ///     DESC 'UUID of an FSL'
-        ///     SUP UUID
+        ///     SUP fedfsUuid
         ///     SINGLE-VALUE
         ///     )
         ///
@@ -2744,7 +2774,7 @@
         <ttcol align='left' >Description</ttcol>
         <ttcol align='left' >Reference</ttcol>
 
-        <c> 1.3.6.1.4.1.31103.1.1    </c> <c> fedfsUuid               </c> <c> deprecated </c>
+        <c> 1.3.6.1.4.1.31103.1.1    </c> <c> fedfsUuid               </c> <c> RFC-TBD1 </c>
         <c> 1.3.6.1.4.1.31103.1.2    </c> <c> fedfsNetAddr            </c> <c> deprecated </c>
         <c> 1.3.6.1.4.1.31103.1.3    </c> <c> fedfsNetPort            </c> <c> deprecated </c>
         <c> 1.3.6.1.4.1.31103.1.4    </c> <c> fedfsFsnUuid            </c> <c> RFC-TBD1 </c>
@@ -2809,7 +2839,7 @@
         <list style="hanging">
         <t hangText="Object Identifier:"> 1.3.6.1.4.1.31103.1.1 </t>
         <t hangText="Descriptor (short name):"> fedfsUuid </t>
-        <t hangText="Usage:"> attribute type, deprecated </t>
+        <t hangText="Usage:"> attribute type </t>
         </list>
     </t>
 
