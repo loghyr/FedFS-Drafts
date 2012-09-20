@@ -1180,7 +1180,7 @@
         <section title="fedfsFsnTTL">
 
             <t> A fedfsFsnTTL is the amount of time in seconds an FSN's
-            TTL and it's children FSL records SHOULD be cached by a
+            TTL and its children FSL records SHOULD be cached by a
             fileserver.  A fedfsFsnTTL MUST be encoded as an Integer
             syntax value <xref target="RFC4517"/>.  </t>
 
