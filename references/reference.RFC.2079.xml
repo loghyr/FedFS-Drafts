@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<reference anchor='RFC2079'>
+
+<front>
+<title abbrev='URI Attribute Type and Object Class'>Definition of an X.500 Attribute Type and an Object Class to Hold Uniform Resource Identifiers (URIs)</title>
+<author initials='M.' surname='Smith' fullname='Mark Smith'>
+<organization>Netscape Communications Corp.</organization>
+<address>
+<postal>
+<street>501 E. Middlefield Rd.</street>
+<city>Mountain View</city>
+<region>CA</region>
+<code>94043</code>
+<country>US</country></postal>
+<phone>+1 415 937 3477</phone>
+<email>mcs@netscape.com</email></address></author>
+<date year='1997' month='January' />
+<abstract>
+<t>Uniform Resource Locators (URLs) are being widely used to specify the location of Internet resources.  There is an urgent need to be able to include URLs in directories that conform to the LDAP and X.500 information models, and a desire to include other types of Uniform Resource Identifiers (URIs) as they are defined.  A number of independent groups are already experimenting with the inclusion of URLs in LDAP and X.500 directories.  This document builds on the experimentation to date and defines a new attribute type and an auxiliary object class to allow URIs, including URLs, to be stored in directory entries in a standard way.</t></abstract></front>
+
+<seriesInfo name='RFC' value='2079' />
+<format type='TXT' octets='8757' target='http://www.rfc-editor.org/rfc/rfc2079.txt' />
+</reference>
