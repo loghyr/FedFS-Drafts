@@ -2248,7 +2248,7 @@
             is "o=fedfs", the operation would be: </t>
 
             <figure><artwork><![CDATA[
-    dn: fedfsFsnUuid=e8c4761c-eb3b-4307-86fc-f702da197966,o=fedfs
+        dn: fedfsFsnUuid=e8c4761c-eb3b-4307-86fc-f702da197966,o=fedfs
         changeType: delete
             ]]></artwork></figure>
 
@@ -2282,7 +2282,7 @@
 <!--      If artwork lines are too long, version 1.34pre2 fails        -->
             <figure><artwork><![CDATA[
 
-        dn:fedfsFslUuid=$FSLUUID,fedfsFsnUuid=$FSNUUID,$NCE
+        dn: fedfsFslUuid=$FSLUUID,fedfsFsnUuid=$FSNUUID,$NCE
         changeType: add
         objectClass: fedfsNfsFsl
         fedfsFslUuid: $FSLUUID
@@ -2325,8 +2325,8 @@
 
             <figure><artwork><![CDATA[
 
-        dn:fedfsFslUuid=ba89a802-41a9-44cf-8447-dda367590eb3,
-            fedfsFsnUuid=e8c4761c-eb3b-4307-86fc-f702da197966,o=fedfs
+        dn: fedfsFslUuid=ba89a802-41a9-44cf-8447-dda367590eb3,
+         fedfsFsnUuid=e8c4761c-eb3b-4307-86fc-f702da197966,o=fedfs
         changeType: add
         objectClass: fedfsNfsFsl
         fedfsFslUuid: ba89a802-41a9-44cf-8447-dda367590eb3
@@ -2461,7 +2461,7 @@
             <figure><artwork><![CDATA[
 
         dn: fedfsFslUuid=ba89a802-41a9-44cf-8447-dda367590eb3,
-             fedfsFsnUuid=e8c4761c-eb3b-4307-86fc-f702da197966,o=fedfs
+         fedfsFsnUuid=e8c4761c-eb3b-4307-86fc-f702da197966,o=fedfs
         changeType: delete
 
             ]]></artwork></figure>
@@ -2502,7 +2502,7 @@
             <figure><artwork><![CDATA[
 
         dn: fedfsFslUuid=ba89a802-41a9-44cf-8447-dda367590eb3,
-             fedfsFsnUuid=e8c4761c-eb3b-4307-86fc-f702da197966,o=fedfs
+         fedfsFsnUuid=e8c4761c-eb3b-4307-86fc-f702da197966,o=fedfs
         changeType: modify
         replace: fedfsNfsReadClass
         fedfsNfsReadRank: 10
