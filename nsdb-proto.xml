@@ -2152,7 +2152,7 @@
         <t> The admin entity initiates and controls the commands
         to manage fileset and namespace information.  The protocol
         used for communicating between the admin entity and each
-        NSDB node MUST be the LDAPv3 <xref target="RFC2849"/>
+        NSDB node MUST be the LDAPv3 <xref target="RFC4510"/>
         protocol.  </t>
 
         <t> The names we assign to these operations are entirely
