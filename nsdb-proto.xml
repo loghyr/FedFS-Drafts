@@ -321,73 +321,103 @@
 
         <section anchor="nfs-uri" title="The NFS URI scheme">
 
-        <t> To capture the location of an NFS fileset, we extend the
-        NFS URL scheme specified in <xref target="RFC2224"/> (which
-        is defined only for NFS versions 2 and 3) to use it for
-        locating NFSv4 filesets.  This extention follows rules set
-        out for Uniform Resource Identifier schemes in
-        <xref target="RFC3986"/>.  In the following text, we refer
-        to this extended NFS URL scheme as an NFS URI. </t>
+        <t> To capture the location of an NFSv4 fileset, we extend
+        the NFS URL scheme specified in <xref target="RFC2224"/>.
+        This extention follows rules for defining Uniform Resource
+        Identifier schemes in <xref target="RFC3986"/>.  In the
+        following text, we refer to this extended NFS URL scheme as
+        an NFS URI. </t>
 
-        <t> The network location of an NFS fileset is stored in an
-        FSL record encoded as an NFS URI.  An NFS URI uses the
-        authority and path URI components, but not the query or
-        fragment components.  Use of the familiar "nfs" scheme name
+        <t> An NFS URI MUST contain both an authority and a path
+        component.  It MUST NOT contain a query component or a
+        fragment component.  Use of the familiar "nfs" scheme name
         is retained. </t>
 
             <section title="The NFS URI authority component">
 
-            <t> In its "server" field, the NFSv4 fs_location4 data type
-            contains a list of universal addresses or UTF-8 hostnames.
-            Each may optionally include a port number.  The NFSv4
-            fs_locations_item4 data type contains this data in its
-            "fli_entries" field <xref target="RFC5661"/>.  This
-            information is encoded in the authority component of an
-            NFS URI.  Sections 3.2.2 and 3.2.3 of <xref target="RFC3986"/>
-            specify how to represent this data in the "host" subcomponent
-            of the authority component of a URI. </t>
+            <t> The rules for encoding the authority component of a
+            generic URI are specified in section 3.2 of
+            <xref target="RFC3986"/>.  The authority component of
+            an NFS URI MUST contain the host subcomponent.  For
+            globally-scoped NFS URIs, a hostname used in such URIs
+            SHOULD be a fully qualified domain name.  See section
+            3.2.2 of <xref target="RFC3986"/> for rules on
+            encoding non-ASCII characters in hostnames. </t>
 
-            <t> The "server" and "fli_entries" fields can encode a list
-            of server hostnames that share the same pathname.  An FSL
-            record represents only a single hostname and pathname pair.
-            An NFS fileserver MAY combine a set of FSL records into a
-            single fs_location4 or fs_locations_item4 only if each FSL
-            record in the set contains the same pathname and extended
-            filesystem information. </t>
+            <t> An NFS URI MAY contain a port subcomponent as
+            described in section 3.2.3 of <xref target="RFC3986"/>.
+            If this subcomponent is missing, a port value of 2049
+            is assumed. </t>
 
             </section>
 
             <section title="The NFS URI path component">
 
-            <t> The path component of an NFS URI encodes the "rootpath"
-            field of the NFSv4 fs_location4 data type or the
-            "fli_rootpath" of the NFSv4 fs_locations_item4 data type
-            <xref target="RFC5661"/>.  The rules for encoding the path
-            component of a URI are specified in section 3.3 of
+            <t> The rules for encoding the path component of a
+            generic URI are specified in section 3.3 of
             <xref target="RFC3986"/>. </t>
 
-            <t> A URI path consists of a sequence of path segments
-            separated by a slash ("/") character <xref target="RFC3986"/>.
-            The component4 elements of an NFS pathname are encoded as
-            path segments in an NFS URI.  A slash ("/") character
-            contained in a component4 element MUST be represented using
-            URI percent encoding. </t>
+            <t> According to sections 5 and 6 of
+            <xref target="RFC2224"/>, NFS URLs specify a pathname
+            relative to an NFS fileserver's "public filehandle."
+            However, NFSv4 fileservers do not expose a "public
+            filehandle."  Instead, NFSv4 pathnames contained in an
+            NFS URI are evaluated relative to the pseudoroot of the
+            fileserver identified in the URI's authority component.
+            </t>
 
-            <t> A URI path can be empty.  In this case, the represented
-            NFS pathname is "/". </t>
+            <t> The component4 elements of an NFSv4 pathname are
+            encoded as path segments in an NFS URI.  NFSv4 pathnames
+            MUST be expressed in an NFS URI as an absolute path.
+            An NFS URI path component MUST NOT be empty.
+            The NFS URI path component starts with a slash ("/")
+            character, followed by one or more path segments
+            which each start with a slash ("/") character
+            <xref target="RFC3986"/>. </t>
 
-            <t> Although "." and ".." are legal to use within the path
-            component of a URI, they MUST NOT be used in the path
-            component of an NFS URI. </t>
+            <t> Therefore, a double slash always follows the
+            authority component of an NFS URI.  For example, the
+            NFSv4 pathname "/" is represented by two slash ("/")
+            characters following an NFS URI's authority component.
+            </t>
 
             <t> The component4 elements of an NFS pathname SHOULD be
             prepared using the component4 rules defined in Chapter 12
             "Internationalization" of <xref target="3530bis"/> prior to
             encoding the path component of an NFS URI.  Because a URI
-            is a US-ASCII string, any UTF-8 code point in a component4
-            element MUST use URI percent encoding. </t>
+            is a US-ASCII string, any non-ASCII UTF-8 code point in a
+            component4 element MUST be represented by URI percent
+            encoding.  URI-reserved characters such as the slash ("/")
+            character contained in a component4 element MUST be
+            represented by URI percent encoding. </t>
 
-        </section>
+            </section>
+
+            <section title="Encoding an NFS location in an FSL">
+
+            <t> The path component of an NFS URI encodes the
+            "rootpath" field of the NFSv4 fs_location4 data type or
+            the "fli_rootpath" of the NFSv4 fs_locations_item4 data
+            type (see <xref target="RFC5661"/>). </t>
+
+            <t> In its "server" field, the NFSv4 fs_location4 data type
+            contains a list of universal addresses or UTF-8 hostnames.
+            Each may optionally include a port number.  The NFSv4
+            fs_locations_item4 data type contains this data in its
+            "fli_entries" field (see <xref target="RFC5661"/>).  This
+            information is encoded in the authority component of an
+            NFS URI. </t>
+
+            <t> The "server" and "fli_entries" fields can encode
+            multiple server hostnames that share the same pathname.
+            An NFS URI, and hence an FSL record, represents only a
+            single hostname and pathname pair.  An NFS fileserver
+            MUST NOT combine a set of FSL records into a single
+            fs_location4 or fs_locations_item4 unless each FSL
+            record in the set contains the same rootpath value and
+            extended filesystem information. </t>
+
+            </section>
 
         </section>
 
