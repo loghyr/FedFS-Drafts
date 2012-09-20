@@ -2029,10 +2029,10 @@
         ///     SUP top STRUCTURAL
         ///     MUST (
         ///             fedfsFsnUuid
-        ///             fedfsFsnTTL
+        ///             $ fedfsFsnTTL
         ///     )
         ///     MAY (
-        ///             $ fedfsAnnotation
+        ///             fedfsAnnotation
         ///             $ fedfsDescr
         ///     ))
         ///
@@ -2080,7 +2080,7 @@
         ///             $ fedfsFsnUuid
         ///     )
         ///     MAY (
-        ///             $ fedfsAnnotation
+        ///             fedfsAnnotation
         ///             $ fedfsDescr
         ///     ))
         ///
