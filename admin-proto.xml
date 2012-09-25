@@ -17,10 +17,9 @@
     </title>
 
     <?rfc include="author-lentini-james.xml"?>
-    <?rfc include="author-everhart-craig.xml"?>
     <?rfc include="author-ellard-daniel.xml"?>
     <?rfc include="author-tewari-renu.xml"?>
-    <?rfc include="author-naik-manoj.xml"?>
+    <?rfc include="editor-lever-chuck.xml"?>
 
     <date/>
 
@@ -1994,6 +1993,11 @@
         We would like to thank Robert Thurlow for
         helping to author this document, including drafting the
         replication procedure text.
+      </t>
+
+      <t>
+        We would like to thank Craig Everhart and Manoj Naik, who
+        were co-authors of an earlier version of this document.
       </t>
 
       <t>
