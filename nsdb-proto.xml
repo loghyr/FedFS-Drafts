@@ -19,10 +19,9 @@
     </title>
 
     <?rfc include="author-lentini-james.xml"?>
-    <?rfc include="author-everhart-craig.xml"?>
     <?rfc include="author-ellard-daniel.xml"?>
     <?rfc include="author-tewari-renu.xml"?>
-    <?rfc include="author-naik-manoj.xml"?>
+    <?rfc include="editor-lever-chuck.xml"?>
 
     <date/>
 
@@ -3245,6 +3244,9 @@
         <t> We would like to thank Andy Adamson of NetApp, Paul Lemahieu of EMC,
             Robert Thurlow of Oracle, and Mario Wurzl of EMC for helping
             to author this document. </t>
+
+        <t> We would like to thank Craig Everhart and Manoj Naik, who
+            were co-authors of an earlier version of this document. </t>
 
         <t> We would also like to thank George Amvrosiadis, Chuck Lever,
             Trond Myklebust, Howard Chu, and Nicolas Williams for their comments. </t>
