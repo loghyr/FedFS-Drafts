@@ -2874,6 +2874,11 @@
     the object identifier descriptors defined in this document (listed below) will
     be registered via the Expert Review process. </t>
 
+    <t><cref>
+    RFC Editor: please replace "draft-ietf-nfsv4-federated-fs-protocol"
+    with this specification's RFC number and title.
+    </cref></t>
+
 <?rfc subcompact="yes" ?>
     <t>
         <list style="hanging">
