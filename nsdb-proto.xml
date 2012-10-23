@@ -209,8 +209,8 @@
         <list style="hanging" hangIndent="6">
 
             <t hangText="   NsdbName:"> the network location of the
-            NSDB node that contains authoritative information for
-            this FSN. </t>
+            Namespace Database (NSDB) node that contains authoritative
+            information for this FSN. </t>
 
             <t hangText="   FsnUuid:"> a UUID
             (universally unique identifier), conforming to
@@ -714,8 +714,8 @@
         the name and port of an NSDB node, an FSN UUID must be unique
         only on a single NSDB node.  An FSN UUID collision can be
         detected immediately when an administrator attempts to publish
-        an FSN or FSL by storing it under a specific NCE on an
-        authoritative NSDB host.  </t>
+        an FSN or FSL by storing it under a specific NSDB Container Entry
+        (NCE) on an authoritative NSDB host.  </t>
 
         <t> Note that one NSDB node may store multiple NCEs, each under
         a different namingContext.  If an NSDB node must contain more
@@ -967,10 +967,12 @@
 
         <t> An NSDB is constructed using an LDAP Directory.
         This LDAP Directory MAY have multiple naming contexts.
-        For each naming context, the LDAP Directory's root DSE
-        will have a namingContext attribute. Each namingContext
-        attribute contains the DN of the naming context's root
-        entry. For each naming context that contains federation
+        The LDAP Directory's DSA-specific entry (its rootDSE)
+        has a multi-valued namingContext attribute.  Each value
+        of the namingContext attribute is the DN of a naming
+        context's root entry (see <xref target="RFC4512"/>). </t>
+
+        <t> For each naming context that contains federation
         entries (e.g., FSNs and FSLs): </t>
 
         <t>
