@@ -322,8 +322,8 @@
 
         <t> To capture the location of an NFSv4 fileset, we extend
         the NFS URL scheme specified in <xref target="RFC2224"/>.
-        This extention follows rules for defining Uniform Resource
-        Identifier schemes in <xref target="RFC3986"/>.  In the
+        This extension follows rules for defining Uniform Resource
+        Identifier schemes (see <xref target="RFC3986"/>).  In the
         following text, we refer to this extended NFS URL scheme as
         an NFS URI. </t>
 
@@ -532,7 +532,7 @@
         fileservers and locations cached on file-access clients
         for the target fileset are invalidated.  </t>
 
-        <t> An FSL's parent FSN contains a TTL field which contains
+        <t> An FSL's parent FSN contains a TTL field containing
         a count in seconds of the time interval the FSL MAY be
         cached. This is an upper bound for the lifetime of the
         cached information, and thus can act as a lower bound for
@@ -630,7 +630,7 @@
         DNS service and a particular DNS server.  </t>
 
         <t> Each NSDB node is managed by a single administrative
-        entity.  A single admininistrative entity can manage
+        entity.  A single administrative entity can manage
         multiple NSDB nodes.  </t>
 
         <t> Each NSDB node stores the definition of the FSNs
@@ -2372,7 +2372,7 @@
             <t> For example, if the $FSNUUID is "e8c4761c-eb3b-4307-86fc-f702da197966",
             the $FSLUUID is "ba89a802-41a9-44cf-8447-dda367590eb3",
             the $HOST is "server.example.com", $PORT is "2049",
-            the $PATH is stored in the file "/tmp/fsl_path", $CURRENCY is "0" (an up to date
+            the $PATH is stored in the file "/tmp/fsl_path", $CURRENCY is "0" (an up-to-date
             copy), the FSL is writable, but not going, split, or accessible via RDMA,
             the simultaneous-use class is "1", the handle class is "0", the fileid class is
             "1", the write-verifier class is "1", the change class is "1", the readdir class is
@@ -2427,7 +2427,7 @@
 
             <t> When the administrator is unable to choose reasonable
             values for the LDAP attributes not explicitly contained
-            in a NFSv4 fs_locations attribute, the values in the
+            in an NFSv4 fs_locations attribute, the values in the
             following table are RECOMMENDED. </t>
 
             <texttable>
@@ -2481,7 +2481,7 @@
                 <c>See fedfsNfsReadRank note.</c>
                 <c>fedfsNfsVarSub</c>
                 <c>FALSE</c>
-                <c>NFSv4 does not define variable substituion in paths.</c>
+                <c>NFSv4 does not define variable substitution in paths.</c>
                 <c>fedfsNfsValidFor</c>
                 <c>0</c>
                 <c>Indicates no appropriate refetch interval (see 11.10.2 of <xref target="RFC5661"/>).</c>

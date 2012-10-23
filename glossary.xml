@@ -3,7 +3,7 @@
 <t>
 <list style="hanging">
 
-<t hangText="Administrator:"> An user with the necessary authority to
+<t hangText="Administrator:"> A user with the necessary authority to
     initiate administrative tasks on one or more servers.  </t>
 
 <t hangText="Admin Entity:"> A server or agent that administers a
