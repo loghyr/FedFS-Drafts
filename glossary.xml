@@ -10,16 +10,16 @@
     collection of fileservers and persistently stores the namespace
     information.  </t>
 
-<t hangText="Client:"> Any client that accesses the fileserver data
-    using a supported filesystem access protocol.  </t>
+<t hangText="Client:"> Any client that accesses fileserver data
+    using a supported file-access protocol.  </t>
 
 <t hangText="Federation:"> A set of server collections and singleton
     servers that use a common set of interfaces and protocols in order
     to provide to their clients a federated namespace accessible
     through a filesystem access protocol.  </t>
 
-<t hangText="Fileserver:"> A server exporting a filesystem via a
-    network filesystem access protocol.  </t>
+<t hangText="Fileserver:"> A server exporting one or more filesystems
+    via a file-access protocol.  </t>
 
 <t hangText="Fileset:"> The abstraction of a set of files and the
     directory tree that contains them. A fileset is the 
@@ -40,7 +40,7 @@
     A single filesystem MAY implement more than one fileset, if the
     client protocol and the fileserver permit this. </t>
 
-<t hangText="Filesystem Access Protocol:"> A network filesystem access
+<t hangText="File-access Protocol:"> A network filesystem access
     protocol such as NFSv3 <xref
     target="RFC1813"/>, NFSv4 <xref target="3530bis"/>, or
     CIFS (Common Internet File System) <xref target="MS-SMB"/> 
