@@ -1965,17 +1965,18 @@
 
         </section> <!-- LDAP Attributes -->
 
-        <section title="LDAP Objects">
+        <section title="LDAP Object Classes">
 
         <section title="fedfsNsdbContainerInfo">
 
             <t> A fedfsNsdbContainerInfo describes the location of
             the NCE.  </t>
 
-            <t> A fedfsFsn's fedfsNceDN attribute is REQUIRED.  </t>
+            <t> A fedfsNsdbContainerInfo's fedfsNceDN attribute is
+            REQUIRED.  </t>
 
-            <t> A fedfsFsn's fedfsAnnotation and fedfsDescr attributes
-            are OPTIONAL.  </t>
+            <t> A fedfsNsdbContainerInfo's fedfsAnnotation and
+            fedfsDescr attributes are OPTIONAL.  </t>
 
             <t> &lt;CODE BEGINS> </t>
 
@@ -2015,10 +2016,6 @@
             Since LDAP requires a DN to be unique, this ensures that
             each FSN entry has a unique UUID value within the LDAP
             directory.  </t>
-
-            <t> A fedfsFsn MAY also have additional attributes, but
-            these attributes MUST NOT be referenced by any part of
-            this document.  </t>
 
             <t> &lt;CODE BEGINS> </t>
 
@@ -2145,6 +2142,28 @@
         </section> <!-- LDAP Objects -->
 
     </section> <!-- LDAP Schema -->
+
+    <section title="LDAP Schema Extensibility">
+
+    <t> To maintain interoperability, the authors recommend avoiding
+    changes to the base schema specified in this document.  Instead,
+    consider using one of the following ways to extend the schema: </t>
+
+    <t>
+        <list style="symbols">
+
+        <t> Define a fedfsAnnotation key and values (see <xref
+        target="fedfsAnnotation"/>).  Register the new key and
+        values with IANA (see <xref target="annotation-registry"/>). </t>
+
+        <t> Define additional attribute types and object classes, then
+        have entries inherit from a class defined in this document and
+        from the implementation-defined ones. </t>
+
+        </list>
+    </t>
+
+    </section> <!-- LDAP Schema Extensibility -->
 
     </section> <!-- Mapping the NSDB onto LDAP -->
 
@@ -2371,7 +2390,7 @@
 
             <t> For example, if the $FSNUUID is "e8c4761c-eb3b-4307-86fc-f702da197966",
             the $FSLUUID is "ba89a802-41a9-44cf-8447-dda367590eb3",
-            the $HOST is "server.example.com", $PORT is "2049",
+            the $HOST is "server.example.com", $PORT is "20049",
             the $PATH is stored in the file "/tmp/fsl_path", $CURRENCY is "0" (an up-to-date
             copy), the FSL is writable, but not going, split, or accessible via RDMA,
             the simultaneous-use class is "1", the handle class is "0", the fileid class is
@@ -2390,7 +2409,7 @@
         objectClass: fedfsNfsFsl
         fedfsFslUuid: ba89a802-41a9-44cf-8447-dda367590eb3
         fedfsFsnUuid: e8c4761c-eb3b-4307-86fc-f702da197966
-        fedfsNfsURI: nfs://server.example.com//tmp/fsl_path
+        fedfsNfsURI: nfs://server.example.com:20049//tmp/fsl_path
         fedfsNfsCurrency: 0
         fedfsNfsGenFlagWritable: TRUE
         fedfsNfsGenFlagGoing: FALSE
@@ -2766,7 +2785,8 @@
 
     <section title="IANA Considerations">
 
-        <section title="Registry for the fedfsAnnotation Key Namespace">
+        <section title="Registry for the fedfsAnnotation Key Namespace"
+                 anchor="annotation-registry">
 
     <t> This document defines the fedfsAnnotation key in <xref target="fedfsAnnotation"/>.
     The fedfsAnnotation key namespace is to be managed by IANA. IANA is to create
