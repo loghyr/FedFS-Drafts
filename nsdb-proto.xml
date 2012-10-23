@@ -470,11 +470,10 @@
 
         <t> The period of time during which these FSL records MAY
         be cached is indicated by the parent FSN's TTL attribute.
-        A value of zero indicates that the results of resolving this
-        FSN SHOULD NOT be cached.  In addition, a fileserver SHOULD
-        check back with the NSDB node after the FSN TTL has expired
-        to discover if any new FSL records have been added for this
-        FSN. </t>
+        Fileservers MUST NOT use cached FSL records after the
+        parent FSN's TTL has expired.  An FSN TTL value of zero
+        indicates that fileservers MUST NOT cache the results of
+        resolving this FSN.</t>
 
         <t> The combination of FSL caching and FSL migration presents
         a challenge. For example, suppose there are three fileservers
@@ -885,7 +884,7 @@
 
             <t> The fileserver converts one or more of the FSLs to
             the location type used by the file-access client (e.g.,
-            an NFSv4 fs_location attribute as described in
+            an NFSv4 fs_locations attribute as described in
             <xref target="RFC5661"/>).  </t>
 
             <t> The fileserver redirects (in whatever manner is
@@ -2512,7 +2511,7 @@
 
         <section title="Delete an FSL">
 
-        <t> This operation deletes a Fileset location record.
+        <t> This operation deletes an FSL record.
         The admin requests the NSDB node storing the fedfsFsl to
         delete it from its database.  This operation does
         not result in fileset data being deleted on any fileserver. </t>

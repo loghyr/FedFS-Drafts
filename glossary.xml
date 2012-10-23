@@ -50,9 +50,8 @@
     implementation of a fileset at a particular moment in time.  An FSL
     MUST be something that can be translated into a protocol-specific
     description of a resource that a client can access directly, such
-    as an fs_location (for NFSv4), or share name (for CIFS).  Note that
-    not all FSLs need to be explicitly exported as long as they are
-    contained within an exported path on the fileserver.  </t>
+    as an fs_locations attribute (for NFSv4), or a share name (for
+    CIFS). </t>
 
 <t hangText="FSN (Fileset Name):"> A platform-independent and globally
     unique name for a fileset.  Two FSLs that implement replicas of
