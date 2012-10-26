@@ -269,7 +269,6 @@
     ///
     /// enum FedFsFslType {
     ///  FEDFS_NFS_FSL = 0
-    ///  /* other types TBD */
     /// };
     ///
     /// struct FedFsNfsFsl {
@@ -287,7 +286,6 @@
     /// enum FedFsPathType {
     ///  FEDFS_PATH_SYS = 0,
     ///  FEDFS_PATH_NFS = 1
-    ///  /* other types TBD */
     /// };
     ///
     /// union FedFsPath switch(FedFsPathType type) {
@@ -341,7 +339,6 @@
     /// enum FedFsConnectionSec {
     ///  FEDFS_SEC_NONE = 0,
     ///  FEDFS_SEC_TLS = 1 /* StartTLS mechanism; RFC4513, Section 3 */
-    ///  /* other mechanisms TBD */
     /// };
     ///
     /// union FedFsNsdbParams switch (FedFsConnectionSec secType) {
