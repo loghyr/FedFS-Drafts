@@ -719,10 +719,6 @@
         for just a single FSN.  As with FSNs, as soon as an FSL is
         published, its uniqueness is guaranteed.  </t>
 
-        <t> Of course, there is no way to guard against UUID re-use,
-        but that is highly unlikely provided that UUIDs are constructed
-        carefully.  </t>
-
         <t> A fileserver performs the operations described in
         <xref target="nsdb-ops-fileservers"/> as an unauthenticated user.
         Thus distinguished names of FSN and FSL records, as well as
