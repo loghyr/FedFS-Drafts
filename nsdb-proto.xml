@@ -477,7 +477,8 @@
         <t> The combination of FSL caching and FSL migration presents
         a challenge. For example, suppose there are three fileservers
         named A, B, and C.  Suppose further that fileserver A
-        contains a junction J to fileset X stored on fileserver B.
+        contains a junction J to fileset X stored on fileserver B
+        (see <xref target="junctions"/> for a description of junctions).
         </t>
 
         <t> Now suppose that fileset X is migrated from fileserver B
@@ -650,7 +651,7 @@
 
     </section>
 
-    <section title="Junctions and Referrals">
+    <section title="Junctions and Referrals" anchor="junctions">
 
         <t> A junction is a point in a particular fileset namespace
         where a specific target fileset may be attached.  If a
