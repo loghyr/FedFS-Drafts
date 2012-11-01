@@ -1905,7 +1905,7 @@
         <section title="fedfsNfsVarSub">
 
             <t> A fedfsNfsVarSub stores the
-            value of an FSL's NFSv4.1 FSLI4F_VAR_SUB bit
+            value of an FSL's NFSv4.1 FSLI4IF_VAR_SUB bit
             <xref target="RFC5661"/>. A value of "TRUE"
             indicates the bit is true. A value of
             "FALSE" indicates the bit is false. </t>
