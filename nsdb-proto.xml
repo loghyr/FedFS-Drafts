@@ -69,12 +69,12 @@
     containing one or more federated filesystems. Each federated
     filesystem's namespace is composed of the filesystems physically
     hosted on and exported by the federation's fileservers. A
-    federation MAY contain a common namespace across all its
-    fileservers. A federation MAY project multiple namespaces and
-    enable clients to traverse each one. A federation MAY contain
+    federation comprises a common namespace across all its
+    fileservers. A federation can project multiple namespaces and
+    enable clients to traverse each one. A federation can contain
     an arbitrary number of namespace repositories, each belonging
     to a different administrative entity, and each rendering a part
-    of the namespace. A federation MAY also have an arbitrary number
+    of the namespace. A federation might also have an arbitrary number
     of administrative entities responsible for administering disjoint
     subsets of the fileservers. </t>
 
