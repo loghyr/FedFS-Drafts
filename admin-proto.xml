@@ -889,8 +889,8 @@
           </t>
 
           <t>
-            If the path contains an invalid UTF-8 character,
-            then status FEDFS_ERR_BADCHAR MUST be returned.
+            If the path contains a character that is not supported by
+            the server, then status FEDFS_ERR_BADCHAR MUST be returned.
           </t>
 
           <t>
@@ -1027,8 +1027,8 @@
           </t>
 
           <t>
-            If the path contains an invalid UTF-8 character,
-            then status FEDFS_ERR_BADCHAR MUST be returned.
+            If the path contains a character that is not supported by
+            the server, then status FEDFS_ERR_BADCHAR MUST be returned.
           </t>
 
           <t>
@@ -1155,8 +1155,8 @@
           </t>
 
           <t>
-            If the path contains an invalid UTF-8 character,
-            then status FEDFS_ERR_BADCHAR MUST be returned.
+            If the path contains a character that is not supported by
+            the server, then status FEDFS_ERR_BADCHAR MUST be returned.
           </t>
 
           <t>
@@ -1405,8 +1405,8 @@
           </t>
 
           <t>
-            If the path contains an invalid UTF-8 character,
-            then status FEDFS_ERR_BADCHAR MUST be returned.
+            If the path contains a character that is not supported by
+            the server, then status FEDFS_ERR_BADCHAR MUST be returned.
           </t>
 
           <t>
@@ -1505,8 +1505,8 @@
           </t>
 
           <t>
-            If the path contains an invalid UTF-8 character,
-            then status FEDFS_ERR_BADCHAR MUST be returned.
+            If the path contains a character that is not supported by
+            the server, then status FEDFS_ERR_BADCHAR MUST be returned.
           </t>
 
           <t>
@@ -1577,9 +1577,9 @@
           </t>
 
           <t>
-            If the path contains an invalid UTF-8
-            character, then status FEDFS_ERR_BADCHAR
-            MUST be returned.
+            If the path contains a character that is not
+            supported by the server, then status
+            FEDFS_ERR_BADCHAR MUST be returned.
           </t>
 
           <t>
