@@ -1400,7 +1400,7 @@
 
           <t>
             The server SHOULD permit this operation even
-            on read-only filesets, but MAY return
+            on read-only filesets, but MUST return
             FEDFS_ERR_ROFS if this is not possible.
           </t>
 
@@ -1500,7 +1500,7 @@
 
           <t>
             The server SHOULD permit this operation even on
-            read-only filesets, but MAY return FEDFS_ERR_ROFS
+            read-only filesets, but MUST return FEDFS_ERR_ROFS
             if this is not possible.
           </t>
 
