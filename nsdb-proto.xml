@@ -1095,8 +1095,8 @@
         <t> The effect of the script is to remove leading white space from each
             line, plus a sentinel sequence of "///". </t>
 
-        <t> As stated above, code components extracted from this
-            document must include the following license: </t>
+        <t> Code components extracted from this document must include the
+            following license: </t>
 
             <t> &lt;CODE BEGINS> </t>
 
