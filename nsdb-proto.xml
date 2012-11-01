@@ -887,12 +887,10 @@
 
     <section title="Example Use Cases for Fileset Annotations">
 
-        <t> Fileset annotations MAY be used to convey additional
-        attributes of a fileset </t>
-
-        <t> For example, fileset annotations can be used to define
-        relationships between filesets that can be used by an
-        auxiliary replication protocol.  Consider the scenario
+        <t> Fileset annotations can convey additional attributes of
+        a fileset.  For example, fileset annotations can be used to
+        define relationships between filesets that can be used by
+        an auxiliary replication protocol.  Consider the scenario
         where a fileset is created and mounted at some point in
         the namespace.  A snapshot of the read-write FSL of that
         fileset is taken periodically at different frequencies
