@@ -1712,11 +1712,11 @@
 
           <t>
             On failure, an error value indicating the
-            type of error is returned. The operation
-            MAY return FEDFS_ERR_ACCESS if the operation's
+            type of error is returned.  If the operation's
             associated user does not have sufficient
             permissions to create/modify NSDB connection
-            parameters.
+            parameters, the operation MUST return
+            FEDFS_ERR_ACCESS.
           </t>
         </section>
 
@@ -1783,13 +1783,13 @@
 
           <t>
             On failure, an error value indicating the
-            type of error is returned. This operation MAY
+            type of error is returned. This operation MUST
             return FEDFS_ERR_NSDB_PARAMS to indicate that
             there are no connection parameters on record for
-            the given NSDB. The operation MAY return
-            FEDFS_ERR_ACCESS if the operation's associated
-            user does not have sufficient permissions to
-            view NSDB connection parameters.
+            the given NSDB. If the operation's associated
+            user does not have sufficient permissions to view
+            NSDB connection parameters, the operation MUST
+            return FEDFS_ERR_ACCESS.
           </t>
         </section>
 
@@ -1877,14 +1877,14 @@
 
           <t>
             On failure, an error value indicating the
-            type of error is returned. This operation MAY
+            type of error is returned. This operation MUST
             return FEDFS_ERR_NSDB_PARAMS to indicate that
             there are no connection parameters on record for
-            the given NSDB. The operation MAY return
-            FEDFS_ERR_ACCESS if the operation's associated
+            the given NSDB. If the operation's associated
             user does not have sufficient permissions to
             view the subset of NSDB connection parameters
-            returned by this procedure.
+            returned by this procedure, the operation MUST
+            return FEDFS_ERR_ACCESS.
           </t>
         </section>
 
