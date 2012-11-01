@@ -916,11 +916,12 @@
 
           <t>
             The server MAY enforce the local permissions on
-            the path, including the final component.  If the
-            path cannot be traversed because of insufficient
-            permissions, or the final component is an
-            unexecutable or unwritable directory, then the
-            operation MAY fail with status FEDFS_ERR_ACCESS.
+            the path, including the final component.  If a
+            server wishes to report that a path cannot be
+            traversed because of insufficient permissions,
+            or the final component is an unexecutable or
+            unwritable directory, then the operation MUST
+            fail with status FEDFS_ERR_ACCESS.
           </t>
 
           <t>
@@ -1057,12 +1058,12 @@
 
           <t>
             The server MAY enforce the local permissions on
-            the path, including the final component.  If the
-            path cannot be traversed because of insufficient
-            permissions, or the parent directory of the
-            junction is an unexecutable or unwritable directory,
-            then the operation MAY fail with status
-            FEDFS_ERR_ACCESS.
+            the path, including the final component.  If a
+            server wishes to report that a path cannot be
+            traversed because of insufficient permissions,
+            or the final component is an unexecutable or
+            unwritable directory, then the operation MUST
+            fail with status FEDFS_ERR_ACCESS.
           </t>
 
           <t>
@@ -1184,12 +1185,12 @@
 
           <t>
             The server MAY enforce the local permissions on
-            the path, including the final component.  If the
-            path cannot be traversed because of insufficient
-            permissions, or the parent directory of the
-            junction is an unexecutable or unwritable directory,
-            then the operation MAY fail with status
-            FEDFS_ERR_ACCESS.
+            the path, including the final component.  If a
+            server wishes to report that a path cannot be
+            traversed because of insufficient permissions,
+            or the final component is an unexecutable or
+            unwritable directory, then the operation MUST
+            fail with status FEDFS_ERR_ACCESS.
           </t>
 
           <t>
@@ -1422,11 +1423,12 @@
 
           <t>
             The server MAY enforce the local permissions on
-            the path, including the final component.  If the
-            path cannot be traversed because of insufficient
-            permissions, or the final component is an
-            unexecutable or unwritable directory, then the
-            operation MAY fail with status FEDFS_ERR_ACCESS.
+            the path, including the final component.  If a
+            server wishes to report that a path cannot be
+            traversed because of insufficient permissions,
+            or the final component is an unexecutable or
+            unwritable directory, then the operation MUST
+            fail with status FEDFS_ERR_ACCESS.
           </t>
 
           <t>
@@ -1519,12 +1521,14 @@
 
           <t>
             The server MAY enforce the local permissions on
-            the path, including the final component. If the
-            path cannot be traversed because of insufficient
-            permissions, or the parent directory of the junction
-            unexecutable or unwritable directory, then the
-            operation MAY fail with status FEDFS_ERR_ACCESS.
+            the path, including the final component.  If a
+            server wishes to report that a path cannot be
+            traversed because of insufficient permissions,
+            or the final component is an unexecutable or
+            unwritable directory, then the operation MUST
+            fail with status FEDFS_ERR_ACCESS.
           </t>
+
         </section>
 
         <section title="Errors">
@@ -1591,13 +1595,13 @@
           </t>
 
           <t>
-            The server MAY enforce the local permissions
-            on the path, including the final component.  If
-            the path cannot be traversed because of
-            insufficient permissions, or the parent directory
-            of the junction is an unexecutable or unwritable
-            directory, then the operation MAY fail with status
-            FEDFS_ERR_ACCESS.
+            The server MAY enforce the local permissions on
+            the path, including the final component.  If a
+            server wishes to report that a path cannot be
+            traversed because of insufficient permissions,
+            or the final component is an unexecutable or
+            unwritable directory, then the operation MUST
+            fail with status FEDFS_ERR_ACCESS.
           </t>
 
           <t>
