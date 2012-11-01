@@ -693,12 +693,6 @@
         designated fileservers it can view a common federation-wide
         namespace.  </t>
 
-        <t> The root fileset could be implemented either as an exported
-        NFS file system or as data in the NSDB itself. The properties
-        and schema definition of an NSDB-based root fileset and
-        the protocol details that describe how to configure and replicate
-        the root fileset are not defined in this document.  </t>
-
     </section>
 
     <section anchor="sec:uuid" title="UUID Considerations">
