@@ -194,7 +194,7 @@
 
     </section>
 
-    <section title="Fileset Name (FSN)">
+    <section title="Fileset Name (FSN)" anchor="fileset_name">
 
         <t> A fileset is uniquely represented by its fileset name
         (FSN).  An FSN is considered unique across a federation.
@@ -217,8 +217,11 @@
             <xref target="RFC4122"/>, that is used to uniquely
             identify an FSN. </t>
 
-            <t hangText="   FsnTTL:"> the time in seconds during
-            which the FSN's FSL information may be cached. </t>
+            <t hangText="   FsnTTL:"> the time-to-live of the FSN's
+            FSL information, in seconds.  Fileservers MUST NOT use
+            cached FSL records after the parent FSN's FsnTTL has expired.
+            An FsnTTL value of zero indicates that fileservers MUST NOT
+            cache the results of resolving this FSN.</t>
         </list>
         </t>
 
@@ -228,11 +231,11 @@
         and is indeed authenticated in cases where TLS security
         is in effect. </t>
 
-        <t> An FSN record also contains a cache time-to-live attribute.
-        The FsnUuid and NsdbName values never change during an FSN's
+        <t> The FsnUuid and NsdbName values never change during an FSN's
         lifetime.  However, an FSN's FSL information can change over
         time, and is typically cached on fileservers for performance.
-        More detail is provided in <xref target="fsl_caching"/>. </t>
+        More detail on FSL caching is provided in
+        <xref target="fsl_caching"/>. </t>
 
         <t> An FSN record may also contain: </t>
 
@@ -466,14 +469,10 @@
 
         <t> To resolve an FSN to a set of FSL records, a
         fileserver queries the NSDB node named in the FSN
-        for FSL records associated with this FSN. </t>
-
-        <t> The period of time during which these FSL records MAY
-        be cached is indicated by the parent FSN's TTL attribute.
-        Fileservers MUST NOT use cached FSL records after the
-        parent FSN's TTL has expired.  An FSN TTL value of zero
-        indicates that fileservers MUST NOT cache the results of
-        resolving this FSN.</t>
+        for FSL records associated with this FSN.  The parent
+        FSN's FsnTTL attribute (see <xref target="fileset_name"/>)
+        specifies the period of time during which a fileserver may
+        cache these FSL records. </t>
 
         <t> The combination of FSL caching and FSL migration presents
         a challenge. For example, suppose there are three fileservers
@@ -531,22 +530,21 @@
         fileservers and locations cached on file-access clients
         for the target fileset are invalidated.  </t>
 
-        <t> An FSL's parent FSN contains a TTL field containing
-        a count in seconds of the time interval the FSL MAY be
-        cached. This is an upper bound for the lifetime of the
-        cached information, and thus can act as a lower bound for
-        the lifetime of redirecting junctions.  </t>
+        <t> The FsnTTL field in the FSL's parent FSN (see
+        <xref target="fileset_name"/>) specifies an upper bound for
+        the lifetime of cached FSL information, and thus can act
+        as a lower bound for the lifetime of redirecting junctions. </t>
 
-        <t> For example, suppose this field contains the value 3600
-        seconds (one hour). In such a case, administrators SHOULD
-        keep the redirection in place for at least one hour after a
-        fileset migration has taken place, and FSL data MUST NOT be
-        cached by a referring fileserver for more than one hour
-        without a refresh. </t>
+        <t> For example, suppose the FsnTTL field contains the value
+        3600 seconds (one hour).  In such a case, administrators
+        SHOULD keep the redirection in place for at least one hour
+        after a fileset migration has taken place, because a referring
+        fileserver might cache the FSL data during that time before
+        refreshing it. </t>
 
         <t> To get file-access clients to access the destination
         fileserver more quickly, administrators SHOULD set the
-        FSN TTL field of the migrated fileset to a low number or
+        FsnTTL field of the migrated fileset to a low number or
         zero before migration begins.  It can be reset to a
         more reasonable number at a later point.  </t>
 
@@ -1242,10 +1240,13 @@
 
         <section title="fedfsFsnTTL">
 
-            <t> A fedfsFsnTTL is the amount of time in seconds an FSN's
-            TTL and its children FSL records SHOULD be cached by a
-            fileserver.  A fedfsFsnTTL MUST be encoded as an Integer
-            syntax value <xref target="RFC4517"/>.  </t>
+            <t> A fedfsFsnTTL is the time-to-live in seconds of a
+            cached FSN and its child FSL records.  It corresponds to
+            the FsnTTL as defined in <xref target="fileset_name"/>.
+            See also Section <xref target="fsl_caching"/> for
+            information about caching FSLs.  A fedfsFsnTTL MUST be
+            encoded as an Integer syntax value
+            <xref target="RFC4517"/>.  </t>
 
             <t> This attribute is single-valued.  </t>
 
