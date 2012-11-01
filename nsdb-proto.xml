@@ -1372,7 +1372,7 @@
                 <c>" </c>
             </texttable>
 
-            <t> A fedfsAnnotation value SHOULD be processed as follows: </t>
+            <t> A fedfsAnnotation value might be processed as follows: </t>
 
                 <t><list style="numbers">
             <t> Parse the attribute value according to the ANNOTATION rule,
@@ -1381,8 +1381,9 @@
                 escape sequences above. </t>
                 </list></t>
 
-            <t> A fedfsAnnotation attribute that does not adhere to this format SHOULD
-            be ignored. </t>
+            <t> A fedfsAnnotation attribute that does not adhere to this
+            format SHOULD be ignored in its entirety.  It MUST NOT prevent
+            further processing of its containing entry. </t>
 
             <t> The following are examples of valid fedfsAnnotation attributes: </t>
 
@@ -1390,6 +1391,7 @@
          "key1" = "foo"
          "another key" = "x=3"
          "key-2" = "A string with \" and \\ characters."
+         "key3"="bar"
             ]]></artwork></figure>
 
             <t> which correspond to the following key/value pairs: </t>
@@ -1403,6 +1405,8 @@
                 <c>x=3</c>
                 <c>key-2</c>
                 <c>A string with " and \ characters.</c>
+                <c>key3</c>
+                <c>bar</c>
             </texttable>
 
             <t> &lt;CODE BEGINS> </t>
