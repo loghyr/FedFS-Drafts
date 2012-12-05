@@ -741,6 +741,14 @@
             <xref target="RFC5246" />) and thus authenticate the
             identitiy of the NSDB. The certificate could be that of a
             certificate authority or a self-signed certificate.
+            To ensure that this security configuration information
+            does not cause vulnerabilities for other services,
+            trust anchors provided through secData MUST only be used
+            for the NSDB service (as opposed to being installed as
+            system-wide trust anchors for other services).  Most
+            popular TLS libraries provide ways in which this can be
+            done such as denoting a private file system location for
+            the certificates.
 
           </t>
         </list>
