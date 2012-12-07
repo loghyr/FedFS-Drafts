@@ -376,9 +376,12 @@
             fileserver identified in the URI's authority component.
             </t>
 
-            <t> The component4 elements of an NFSv4 pathname are
-            encoded as path segments in an NFS URI.  NFSv4 pathnames
-            MUST be expressed in an NFS URI as an absolute path.
+            <t> Each component of an NFSv4 pathname is represented
+            as a component4 string (see Section 3.2, "Basic Data
+            Types" of <xref target="RFC5661" />).  The component4
+            elements of an NFSv4 pathname are encoded as path
+            segments in an NFS URI.  NFSv4 pathnames MUST be
+            expressed in an NFS URI as an absolute path.
             An NFS URI path component MUST NOT be empty.
             The NFS URI path component starts with a slash ("/")
             character, followed by one or more path segments
