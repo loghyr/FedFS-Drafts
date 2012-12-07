@@ -1264,7 +1264,7 @@
             See also Section <xref target="fsl_caching"/> for
             information about caching FSLs.  A fedfsFsnTTL MUST be
             encoded as an Integer syntax value
-            <xref target="RFC4517"/>.  </t>
+            <xref target="RFC4517"/> in the range [0, 4294967295].  </t>
 
             <t> This attribute is single-valued.  </t>
 
