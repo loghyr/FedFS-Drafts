@@ -525,7 +525,8 @@
 
           <t hangText="FEDFS_ERR_NSDB_LDAP_VAL:">
             Indicates the same error as FEDFS_ERR_NSDB_LDAP, and
-            allows the LDAP protocol error value to be returned back to the client.
+            allows the LDAP protocol error value to be returned back
+            to an ADMIN protocol client.
           </t>
 
           <t hangText="FEDFS_ERR_NSDB_NONCE:">
@@ -566,7 +567,7 @@
           <t hangText="FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL:">
             Indicates the same error as FEDFS_ERR_NSDB_LDAP_REFERRAL,
             and allows the LDAP protocol error value to be returned
-            back to the client.
+            back to an ADMIN protocol client.
           </t>
 
           <t hangText="FEDFS_ERR_NSDB_LDAP_REFERRAL_NOTFOLLOWED:">
@@ -593,8 +594,8 @@
 
           <t hangText="FEDFS_ERR_DELAY:">
             The fileserver initiated the request, but was not able to
-            complete it in a timely fashion.  The client should wait
-            and then try the request with a new RPC transaction ID.
+            complete it in a timely fashion.  The ADMIN protocol client
+            should wait and then try the request with a new RPC transaction ID.
           </t>
 
           <t hangText="FEDFS_ERR_NO_CACHE:">
@@ -880,14 +881,15 @@
             a pathname in the form of an array of one or more
             UTF-8 path component strings. It is not required that
             this path be accessible in any other manner (e.g.,
-            to a client).  This path does not appear in the federated
-            namespace, except by coincidence; there is no requirement
-            that the global namespace parallel the server namespace, nor
-            is it required that this path be relative to the server
-            pseudo-root.  It does not need to be a path that
-            is accessible via NFS (although the junction will
-            be of limited utility if the directory specified
-            by the path is not also accessible via NFS).
+            to a file-access client).  This path does not appear
+            in the federated namespace, except by coincidence;
+            there is no requirement that the global namespace
+            parallel the server namespace, nor is it required that
+            this path be relative to the server pseudo-root.  It
+            does not need to be a path that is accessible via NFS
+            (although the junction will be of limited utility if
+            the directory specified by the path is not also
+            accessible via NFS).
           </t>
 
           <t>
@@ -1021,12 +1023,12 @@
             is identified by a pathname in the form of an array of one
             or more UTF-8 path component strings. It is not required
             that this path be accessible in any other manner (e.g.,
-            to a client).  This path does not appear in the federated
-            namespace, except by coincidence; there is no requirement
-            that the global namespace reflect the server namespace,
-            nor is it required that this path be relative to
-            the server pseudo-root.  It does not need to be a
-            path that is accessible via NFS.
+            to a file-access client).  This path does not appear in
+            the federated namespace, except by coincidence; there is
+            no requirement that the global namespace reflect the
+            server namespace, nor is it required that this path be
+            relative to the server pseudo-root.  It does not need to
+            be a path that is accessible via NFS.
           </t>
 
           <t>
@@ -1155,7 +1157,7 @@
             in the form of an array of one or more UTF-8 path
             component strings. It is not required that this
             path be accessible in any other manner (e.g., to
-            a client).  This path does not appear in the
+            a file-access client).  This path does not appear in the
             federated namespace, except by coincidence; there is
             no requirement that the global namespace reflect
             the server namespace, nor is it required that this

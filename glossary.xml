@@ -10,16 +10,19 @@
     collection of fileservers and persistently stores the namespace
     information.  </t>
 
-<t hangText="Client:"> Any client that accesses fileserver data
-    using a supported file-access protocol.  </t>
+<t hangText="File-access Client:"> Standard off-the-shelf network
+    attached storage (NAS) client software that communicates with
+    fileservers using a standard file-access protocol. </t>
 
-<t hangText="Federation:"> A set of server collections and singleton
-    servers that use a common set of interfaces and protocols in order
-    to provide to their clients a federated namespace accessible
-    through a filesystem access protocol.  </t>
+<t hangText="Federation:"> A set of fileserver collections and
+    singleton fileservers that use a common set of interfaces and
+    protocols in order to provide to file-access clients a federated
+    namespace accessible through a filesystem access protocol.  </t>
 
-<t hangText="Fileserver:"> A server exporting one or more filesystems
-    via a file-access protocol.  </t>
+<t hangText="Fileserver:"> A server that stores physical fileset data,
+    or refers file-access clients to other fileservers.  A fileserver
+    provides access to its shared filesystem data via a file-access
+    protocol. </t>
 
 <t hangText="Fileset:"> The abstraction of a set of files and the
     directory tree that contains them. A fileset is the 
@@ -38,7 +41,7 @@
     <vspace blankLines="1" />
 
     A single filesystem MAY implement more than one fileset, if the
-    client protocol and the fileserver permit this. </t>
+    file-access protocol and the fileserver permit this. </t>
 
 <t hangText="File-access Protocol:"> A network filesystem access
     protocol such as NFSv3 <xref
@@ -49,8 +52,8 @@
 <t hangText="FSL (Fileset Location):"> The location of the
     implementation of a fileset at a particular moment in time.  An FSL
     MUST be something that can be translated into a protocol-specific
-    description of a resource that a client can access directly, such
-    as an fs_locations attribute (for NFSv4), or a share name (for
+    description of a resource that a file-access client can access directly,
+    such as an fs_locations attribute (for NFSv4), or a share name (for
     CIFS). </t>
 
 <t hangText="FSN (Fileset Name):"> A platform-independent and globally
@@ -65,7 +68,7 @@
     of another fileset.  </t>
 
 <t hangText="Namespace:"> A filename/directory tree that a
-    sufficiently authorized client can observe.  </t>
+    sufficiently authorized file-access client can observe.  </t>
 
 <t hangText="NSDB (Namespace Database) Service:"> A service that maps
     FSNs to FSLs.  The NSDB may also be used to store other
@@ -77,10 +80,10 @@
     track of the FSLs (and related info) that implement a given
     partition of the FSNs.  </t>
 
-<t hangText="Referral:"> A server response to a client access that
-    directs the client to evaluate the current object as a reference
-    to an object at a different location (specified by an FSL) in
-    another fileset, and possibly hosted on another fileserver.  The
+<t hangText="Referral:"> A server response to a file-access client
+    access that directs the client to evaluate the current object as a
+    reference to an object at a different location (specified by an FSL)
+    in another fileset, and possibly hosted on another fileserver.  The
     client re-attempts the access to the object at the new location. 
     </t>
 
