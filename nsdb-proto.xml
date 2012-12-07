@@ -312,14 +312,21 @@
         </list>
         </t>
 
-        <t> This document defines an FSL subtype for NFS. An NFS FSL
-        contains information suitable for use in one of the NFSv4
-        referral attributes (e.g., fs_locations or fs_locations_info). </t>
+        <t> In addition to the attributes defined above, an FSL
+        record contains attributes that allow a fileserver to
+        construct referrals.  For each file-access protocol, a
+        corresponding FSL record subtype is defined. </t>
 
-        <t> A fileset MAY be accessible by protocols other than NFS. For
-        each such protocol, a corresponding FSL subtype SHOULD be defined.
-        The contents and format of such FSL subtypes are not defined in
-        this document. </t>
+        <t> This document defines an FSL subtype for NFS.  An NFS
+        FSL contains information suitable for use in one of the
+        NFSv4 referral attributes (e.g., fs_locations or
+        fs_locations_info, described in <xref target="RFC5661" />).
+        <xref target="fedfsnfsfsl" /> describes the contents of an
+        NFS FSL record. </t>
+
+        <t> A fileset also may be accessible by file-access
+        protocols other than NFS.  The contents and format of
+        such FSL subtypes are not defined in this document. </t>
 
         <section anchor="nfs-uri" title="The NFS URI scheme">
 
@@ -2100,7 +2107,7 @@
 
         </section>
 
-        <section title="fedfsNfsFsl">
+        <section title="fedfsNfsFsl" anchor="fedfsnfsfsl">
 
             <t> A fedfsNfsFsl is used to represent an
             NFS FSL. The fedfsNfsFsl inherits all of the
