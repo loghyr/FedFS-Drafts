@@ -394,7 +394,7 @@
             characters following an NFS URI's authority component.
             </t>
 
-            <t> The component4 elements of an NFSv4 pathname SHOULD
+            <t> The component4 elements of an NFSv4 pathname MUST
             be prepared using the component4 rules defined in Chapter
             12 "Internationalization" of <xref target="3530bis"/>
             prior to encoding the path component of an NFS URI.

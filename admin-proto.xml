@@ -661,7 +661,7 @@
           <t hangText="FedFsPathComponent:">
             A case sensitive UTF-8
             string containing a filesystem path component.
-            It SHOULD be prepared using the component4 rules defined
+            It MUST be prepared using the component4 rules defined
             in Chapter 12 "Internationalization" of
             <xref target="3530bis" />.
           </t>
