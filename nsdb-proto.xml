@@ -2735,10 +2735,12 @@
     between a file-access client and fileserver. The "Security Considerations"
     sections of the NFSv4.0 <xref target="3530bis"/> and NFSv4.1 <xref target="RFC5661"/>
     specifications contain special considerations for the handling of GETATTR
-    operations for the fs_locations and fs_locations_info attributes. For all
-    LDAP connections established by the federated filesystem protocols, the
-    use of TLS <xref target="RFC5246"/>, as described in <xref target="RFC4513"/>,
-    is RECOMMENDED. </t>
+    operations for the fs_locations and fs_locations_info attributes. </t>
+
+    <t> NSDB nodes and NSDB clients MUST implement support for TLS
+    <xref target="RFC5246"/>, as described in <xref target="RFC4513"/>.
+    For all LDAP connections established by the federated filesystem
+    protocols, the use of TLS is RECOMMENDED. </t>
 
     <t> If an NSDB client chooses to follow an LDAP referral, the NSDB
     client SHOULD authenticate the LDAP referral's target NSDB using the
