@@ -920,7 +920,7 @@
 
           <t>
             If any component of the path does not exist, then
-            the operation fails with status FEDFS_ERR_INVAL.
+            the operation MUST fail with status FEDFS_ERR_INVAL.
           </t>
 
           <t>
@@ -936,7 +936,9 @@
           <t>
             The operation SHOULD fail with status FEDFS_ERR_NSDB_PARAMS
             if the fileserver does not have any connection parameters
-            on record for the specified NSDB.
+            on record for the specified NSDB, or the server may allow
+            the operation to proceed using some set of default
+            NSDB connection parameters.
           </t>
 
           <t>
@@ -1032,7 +1034,7 @@
 
           <t>
             If the fileset is read-only, then this operation
-            SHOULD indicate this with a status of
+            MUST indicate this with a status of
             FEDFS_ERR_ROFS.
           </t>
 
@@ -1265,7 +1267,7 @@
 
           <t>
             In the case of a LDAP failure, the fileserver
-            MAY return either FEDFS_ERR_NSDB_LDAP or
+            MUST return either FEDFS_ERR_NSDB_LDAP or
             FEDFS_ERR_NSDB_LDAP_VAL. FEDFS_ERR_NSDB_LDAP
             indicates that an LDAP protocol error occurred
             during the resolution. FEDFS_ERR_NSDB_LDAP_VAL
@@ -1285,7 +1287,7 @@
             4.5.3 of <xref target="RFC4511" />, the fileserver
             SHOULD process the LDAP referral using the same
             policies as the fileserver's file-access protocol
-            server. The fileserver can indicate a failure
+            server. The fileserver MUST indicate a failure
             while processing the LDAP referral using
             FEDFS_ERR_NSDB_LDAP_REFERRAL,
             FEDFS_ERR_NSDB_LDAP_REFERRAL_VAL,
@@ -1309,8 +1311,11 @@
             If the fileserver has a cache of FSL records,
             the process of resolving an FSN using an NSDB
             SHOULD result in the cache being updated. A
-            failure to update the cache can be indicated
-            with the FEDFS_ERR_NO_CACHE_UPDATE status value.
+            failure to update the cache MAY be indicated
+            with the FEDFS_ERR_NO_CACHE_UPDATE status value,
+            or the operation may complete successfully.
+          </t>
+          <t>
             When updating the cache, new FSLs for the given
             FSN SHOULD be added to the cache and deleted
             FSLs SHOULD be removed from the cache. This
@@ -1441,10 +1446,11 @@
           </t>
 
           <t>
-            The operation SHOULD fail with status
-            FEDFS_ERR_NSDB_PARAMS if the fileserver does
-            not have any connection parameters on record
-            for the specified NSDB.
+            The operation SHOULD fail with status FEDFS_ERR_NSDB_PARAMS
+            if the fileserver does not have any connection parameters
+            on record for the specified NSDB, or the server may allow
+            the operation to proceed using some set of default
+            NSDB connection parameters.
           </t>
 
           <t>
