@@ -720,9 +720,10 @@
 
             <vspace blankLines="1" />
 
-            A value of FEDFS_SEC_NONE indicates that no security
-            mechanism is necessary. In this case, the secData array
-            will have 0 length.
+            A value of FEDFS_SEC_NONE indicates that a transport
+            security mechanism MUST NOT be used when connecting to
+            the NSDB. In this case, the secData array will have a
+            length of zero.
 
             <vspace blankLines="1" />
 
