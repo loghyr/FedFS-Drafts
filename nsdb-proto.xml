@@ -1453,7 +1453,7 @@
 
             <t> A fedfsNfsURI stores the host and pathname components
             of an FSL.  A fedfsNfsURI MUST be encoded as an NFS URI
-            <xref target="nfs-uri"/>. </t>
+            (see <xref target="nfs-uri"/>). </t>
 
             <t> The fedfsNfsURI is a subtype of the labeledURI type
             <xref target="RFC2079"/>, with the same encoding rules. </t>
