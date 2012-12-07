@@ -639,10 +639,7 @@
             notation. It SHOULD be prepared using the server4 rules
             defined in Chapter 12 "Internationalization" of
             <xref target="3530bis" />. The DNS name MUST be
-            represented using a fully qualified domain name. A
-            system (i.e., fileserver or administrative host) SHOULD
-            resolve the fully qualified domain name to a network
-            address using the system's standard resolution mechanisms.
+            represented using a fully qualified domain name.
 
             <vspace blankLines="1" />
 
