@@ -647,7 +647,7 @@
             port on the NSDB (see <xref target='RFC4511' />). The value
             MUST be in the range 0 to 65535. A value of
             0 indicates that the standard LDAP port
-            number, 389, SHOULD be assumed.
+            number, 389, MUST be assumed.
 
             <vspace blankLines="1" />
 
@@ -755,16 +755,17 @@
 
       <section title="FedFsNsdbName Equality" anchor="nsdb-equality">
         <t>
-          Two FedFsNsdbNames are considered equal if both
-          their DNS name and port values are the same.
-          As described above, the standard LDAP port
-          number, 389, SHOULD be assumed if a port
-          number of 0 is specified. Therefore, the
-          FedFsNsdbName "(nsdb.example.com, 0)" is considered
-          equal to "(nsdb.example.com, 389)" but not equal
-          to "(nsdb.example.com, 1066)" since the port number
-          is different or "(nsdb.foo.example.com, 389)" since
-          the DNS name is different.
+          Two FedFsNsdbNames are considered equal if their respective
+          hostname and port fields contain the same values.  The only
+          exception to this rule is that a value of 0 in the port field
+          always matches the standard LDAP port number, 389.
+        </t>
+        <t>
+          Therefore, the FedFsNsdbName "(nsdb.example.com, 0)"
+          is considered equal to "(nsdb.example.com, 389)" but
+          not equal to "(nsdb.example.com, 1066)" since the port
+          numbers are different, or "(nsdb.foo.example.com, 389)"
+          since the hostnames are different.
         </t>
       </section>
     </section>
