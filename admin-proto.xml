@@ -947,7 +947,7 @@
           </t>
 
           <t>
-            If successful, subsequent references via NFSv4
+            If successful, subsequent references via NFSv4.0
             <xref target="3530bis" /> or NFSv4.1 <xref target="RFC5661" />
             clients to the directory that has been replaced by
             the junction will result in a referral to a current
@@ -1385,7 +1385,7 @@
           <t>
             This operation indicates the replication
             information to be returned for a particular
-            fileset.  An NFSv4.x client might request
+            fileset.  An NFSv4 client might request
             fs_locations or fs_locations_info at any time
             to detect other copies of this fileset, and
             this operation supports this by supplying the
@@ -1497,7 +1497,7 @@
           <t>
             This operation removes any replication information
             from the fileset in which the path resides, such
-            that NFSv4.x client requests for fs_locations or
+            that NFSv4 client requests for fs_locations or
             fs_locations_info in the absence of a junction will
             not be satisfied.
           </t>
