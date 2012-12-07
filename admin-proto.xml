@@ -653,7 +653,7 @@
 
             FSNs are immutable and invariant. The attributes of an
             FSN, including the fedfsNsdbName, are expected to remain
-            constant. Therefore, a FedFsNsdbName SHOULD NOT contain a
+            constant. Therefore, a FedFsNsdbName MUST NOT contain a
             network address, such as an IPv4 or IPv6 address, as
             this would indefinitely assign the network address.
           </t>
