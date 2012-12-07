@@ -2930,7 +2930,7 @@
         <list style="hanging">
         <t hangText="Object Identifier:"> 1.3.6.1.4.1.31103.1.4 </t>
         <t hangText="Descriptor (short name):"> fedfsFsnUuid </t>
-        <t hangText="Usage:"> attribute type (historic) </t>
+        <t hangText="Usage:"> attribute type </t>
         </list>
     </t>
 
