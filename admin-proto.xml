@@ -626,7 +626,7 @@
           <t hangText="FedFsUuid:">
             A universally unique identifier (UUID) as described in
             <xref target="RFC4122" /> as a version 4 UUID.  The UUID
-            should be formatted in network byte order.
+            MUST be formatted in network byte order.
           </t>
 
           <t hangText="FedFsNsdbName:">
