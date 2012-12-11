@@ -1929,8 +1929,18 @@
         The ONC RPC protocol supports authentication, integrity
         and privacy via the RPCSEC_GSS framework <xref target="RFC2203" />.
         Fileservers which support the FedFS administration protocol
-        described above MUST support RPCSEC_GSS. When RPCSEC_GSS is employed,
-        RPCSEC_GSS data integrity SHOULD be used.
+        described above MUST support RPCSEC_GSS.
+      </t>
+
+      <t>
+        As with NFSv4.1 (see Section 2.2.1.1.1.1 of
+        <xref target="RFC5661" />), FedFS administration protocol clients
+        and servers MUST support RPCSEC_GSS’s integrity and authentication
+        services.  FedFS administration protocol servers MUST support
+        RPCSEC_GSS’s privacy service.  FedFS administration protocol
+        clients SHOULD support RPCSEC_GSS’s privacy service.  When
+        RPCSEC_GSS is employed on behalf of the FedFS administration
+        protocol, RPCSEC_GSS data integrity SHOULD be used.
       </t>
 
       <t>
