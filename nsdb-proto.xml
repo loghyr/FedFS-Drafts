@@ -2211,7 +2211,7 @@
     therefore we define in these sections the minimum level of
     LDAP functionality required to implement an NSDB node. </t>
 
-    <t> The NSDB sub-protocols are defined in 
+    <t> The NSDB sub-protocols are defined in
     <xref target="nsdb-ops-admins"/> and
     <xref target="nsdb-ops-fileservers"/>.
     The descriptions of LDAP messages in these
