@@ -2821,24 +2821,25 @@
         the authors was assigned the Internet Private Enterprise
         Numbers range 1.3.6.1.4.1.31103.x. Within this range, the subrange
         1.3.6.1.4.1.31103.1.x is permanently dedicated for use by the
-        federated file system protocols. </t>
+        federated file system protocols.  Unassigned OIDs in this range
+        MAY be used for Private Use or Experimental Use as defined in
+        <xref target="RFC5226" />.  New permanent FedFS OID assignments
+        MUST NOT be made using OIDs in this range. </t>
 
         <t> IANA is to create and maintain a new registry entitled "FedFS
-        Object Identifiers" for the purpose of administering the FedFS Object
-        Identifier (OID) range.  The location of this registry should be
-        under the heading "Federated File System (FedFS) Parameters",
-        created in <xref target="annotation-registry"/>.  The URL address
-        can be based off of the new heading name, for example:
+        Object Identifiers" for the purpose of recording the allocations of
+        FedFS Object Identifiers (OIDs) specified by this document.  No
+        future allocations in this registry are allowed. </t>
+
+        <t> The location of this registry should be under the heading
+        "Federated File System (FedFS) Parameters", created in
+        <xref target="annotation-registry"/>.  The URL address can be based
+        off of the new heading name, for example:
         http://www.iana.org/assignments/fedfs-parameters/ ... </t>
 
-        <t> Future allocations from the 1.3.6.1.4.1.31103.1.x range are to
-        be assigned by IANA using the "RFC Required" policy defined in
-        <xref target="RFC5226"/>. Registration requests MUST include an OID
-        value from the 1.3.6.1.4.1.31103.1.x range, a short description of
-        the OID, and a reference to the specification that defines the OID's
-        usage. For viewing, the registry should be sorted numerically by OID
-        value. The initial contents of the FedFS Object Identifiers registry
-        are given in <xref target="oid_registry"/>. </t>
+        <t> For viewing, the registry should be sorted numerically by OID
+        value. The contents of the FedFS Object Identifiers registry are
+        given in <xref target="oid_registry"/>. </t>
 
         <t> Note: A descriptor designated below as "historic" reserves an OID
         used in a past version of the NSDB protocol.  Registering such OIDs
