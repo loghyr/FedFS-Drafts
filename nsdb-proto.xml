@@ -226,9 +226,9 @@
         </t>
 
         <t> The NsdbName is not physically stored as an attribute
-        of the record.  The NsdbName is obvious to NSDB clients,
-        and is indeed authenticated in cases where TLS security
-        is in effect. </t>
+        of the record.  The NsdbName is obvious to any client that
+        accesses an NSDB, and is indeed authenticated in cases where
+        TLS security is in effect. </t>
 
         <t> The FsnUuid and NsdbName values never change during an FSN's
         lifetime.  However, an FSN's FSL information can change over
@@ -646,10 +646,6 @@
         NSDB node is authoritative for the filesets that it
         defines.  </t>
 
-        <t> Each NSDB node supports an LDAP <xref target="RFC4510"/>
-        interface.  The information stored on an NSDB node is
-        accessed and updated by LDAP clients.  </t>
-
         <t> An NSDB MAY be replicated throughout the federation.
         If an NSDB is replicated, the NSDB MUST exhibit loose,
         converging consistency as defined in <xref target="RFC3254"/>.
@@ -657,6 +653,27 @@
         scope of this document. Many LDAP implementations support
         replication.  These features MAY be used to replicate
         the NSDB. </t>
+
+        <section title="NSDB Client">
+
+            <t> Each NSDB node supports an LDAP
+            <xref target="RFC4510"/> interface.  An NSDB client
+            is software that uses the LDAP protocol to access or
+            update namespace information stored on an NSDB node.
+            Details of these transactions are discussed in
+            <xref target="nsdb-config"/>. </t>
+
+            <t> A domain's administrative entity uses NSDB client
+            software to manage information stored on NSDB nodes. </t>
+
+            <t> Fileservers act as an NSDB client when contacting a
+            particular NSDB node to resolve an FSN to a set of FSL
+            records.  The resulting location information is then
+            transferred to file-access clients via referrals.
+            Therefore file-access clients never have need to access
+            NSDBs directly. </t>
+
+        </section>
 
     </section>
 
@@ -946,7 +963,7 @@
     </section>
     </section>
 
-    <section title="NSDB Configuration and Schema">
+    <section title="NSDB Configuration and Schema" anchor= "nsdb-config">
 
     <t> This section describes how an NSDB is constructed using
     an LDAP Version 3 <xref target="RFC4510"/> Directory.
