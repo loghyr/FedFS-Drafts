@@ -1926,6 +1926,8 @@
 
     <section title="Security Considerations">
       <t>
+        The Security Considerations of <xref target="RFC5531" /> apply
+        to the protocol described in this document.
         The ONC RPC protocol supports authentication, integrity
         and privacy via the RPCSEC_GSS framework <xref target="RFC2203" />.
         Fileservers which support the FedFS administration protocol
