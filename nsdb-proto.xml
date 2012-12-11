@@ -3299,26 +3299,35 @@
     </references>
 
     <section anchor="app-additional" title="Acknowledgments">
-        <t> We would like to thank Andy Adamson of NetApp, Paul Lemahieu of EMC,
-            Robert Thurlow of Oracle, and Mario Wurzl of EMC for helping
-            to author this document. </t>
+      <t>
+        The authors and editor would like to thank Craig Everhart and
+        Manoj Naik, who were co-authors of an earlier version of this
+        document.  In addition, we would like to thank Andy Adamson,
+        Paul Lemahieu, Mario Wurzl, and Robert Thurlow for helping to
+        author this document.
+      </t>
 
-        <t> We would like to thank Craig Everhart and Manoj Naik, who
-            were co-authors of an earlier version of this document. </t>
+      <t>
+        We would like to thank George Amvrosiadis, Trond Myklebust,
+        Howard Chu, and Nicolas Williams for their comments and review.
+      </t>
 
-        <t> We would also like to thank George Amvrosiadis, Chuck Lever,
-            Trond Myklebust, Howard Chu, and Nicolas Williams for their comments. </t>
+      <t>
+        The editor gratefully acknowledges the IESG reviewers,
+        whose constructive comments helped make this a much stronger
+        document.
+      </t>
 
-        <t>
-            Finally, we would also like to thank Andy Adamson, Rob Thurlow,
-            Tom Haynes, and Chuck Lever for the editing effort to get
-            this document out the door.
-        </t>
+      <t>
+        Finally, we would like to thank Andy Adamson, Rob Thurlow,
+        and Tom Haynes for helping to get this document out the door.
+      </t>
 
-        <t> The extract.sh shell script and formatting conventions were
-            first described by the authors of the NFSv4.1 XDR specification
-            <xref target="RFC5662"/>. </t>
-
+      <t>
+        The extract.sh shell script and formatting conventions were
+        first described by the authors of the NFSv4.1 XDR specification
+        <xref target="RFC5662"/>.
+      </t>
     </section>
 
 </back>

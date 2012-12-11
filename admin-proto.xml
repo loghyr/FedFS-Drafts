@@ -2018,33 +2018,29 @@
 
     <section anchor="app-additional" title="Acknowledgments">
       <t>
-        We would like to thank Robert Thurlow for
-        helping to author this document, including drafting the
-        replication procedure text.
+        The authors and editor would like to thank Craig Everhart and
+        Manoj Naik, who were co-authors of an earlier version of this
+        document.  In addition, we would like to thank Paul Lemahieu,
+        Mario Wurzl, and Robert Thurlow for helping to author this
+        document.
       </t>
 
       <t>
-        We would like to thank Craig Everhart and Manoj Naik, who
-        were co-authors of an earlier version of this document.
+        We would like to thank Trond Myklebust for suggesting
+        improvements to the FSL pathname format, David Noveck for
+        his suggestions on internationalization and path encoding
+        rules, and Nicolas Williams for his suggestions.
       </t>
 
       <t>
-        We would also like to thank Paul Lemahieu and Mario Wurzl
-        for helping to author this document.
+        The editor gratefully acknowledges the IESG reviewers,
+        whose constructive comments helped make this a much stronger
+        document.
       </t>
 
       <t>
-        We would also like to thank Trond Myklebust for suggesting improvements
-        to the FSL pathname format, Chuck Lever for suggesting improvements to the
-        XDR type definitions and error codes, David Noveck for his suggestions
-        on internationalization and path encoding rules, and Nicolas Williams for
-        his suggestions.
-      </t>
-
-      <t>
-        Finally, we would also like to thank Andy Adamson, Rob Thurlow,
-        Tom Haynes, and Chuck Lever for the editing effort to get
-        this document out the door.
+        Finally, we would like to thank Andy Adamson, Rob Thurlow,
+        and Tom Haynes for helping to get this document out the door.
       </t>
 
       <t>
