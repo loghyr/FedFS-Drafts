@@ -412,9 +412,11 @@
             type (see <xref target="RFC5661"/>). </t>
 
             <t> In its "server" field, the NFSv4 fs_location4 data type
-            contains a list of universal addresses or UTF-8 hostnames.
-            Each may optionally include a port number.  The NFSv4
-            fs_locations_item4 data type contains this data in its
+            contains a list of universal addresses and DNS labels.
+            Each may optionally include a port number.  The exact
+            encoding requirements for this information is found in
+            Section 12.6 of <xref target="3530bis"/>.  The NFSv4
+            fs_locations_item4 data type encodes the same data in its
             "fli_entries" field (see <xref target="RFC5661"/>).  This
             information is encoded in the authority component of an
             NFS URI. </t>
