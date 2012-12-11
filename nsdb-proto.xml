@@ -1038,7 +1038,7 @@
          +---- [ou=system]
         ]]></artwork></figure>
 
-        <t> In this case, the o=fedfs namingContext has an NSBD
+        <t> In this case, the o=fedfs namingContext has an NSDB
         Container Entry at o=fedfs, the dc=example,dc=com namingContext
         has an NSDB Container Entry at ou=fedfs,ou=corp-it,dc=example,dc=com,
         and the ou=system namingContext has no NSDB Container Entry. </t>
