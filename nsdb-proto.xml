@@ -2267,15 +2267,6 @@
         The fedfsFsnTTL is chosen by the administrator
         as described in <xref target="fsl_caching"/>. </t>
 
-        <t> The NSDB node that receives the request
-        SHOULD check all of the attributes for validity and
-        consistency, but this is not generally possible for
-        LDAP servers because the consistency requirements
-        cannot be expressed in the LDAP schema (although
-        many LDAP servers can be extended, via plug-ins or
-        other mechanisms, to add functionality beyond the
-        strict definition of LDAP). </t>
-
         <section title="LDAP Request">
 
             <t> This operation is implemented using the LDAP ADD
