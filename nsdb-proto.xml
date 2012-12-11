@@ -225,8 +225,7 @@
         </list>
         </t>
 
-        <t> The FsnUuid is a required attribute of an FSN
-        record, but the NsdbName is not stored as an attribute
+        <t> The NsdbName is not physically stored as an attribute
         of the record.  The NsdbName is obvious to NSDB clients,
         and is indeed authenticated in cases where TLS security
         is in effect. </t>
@@ -244,13 +243,13 @@
         <t>
         <list style="hanging" hangIndent="6">
 
-            <t hangText="   Annotations:"> optional name/value pairs
+            <t hangText="   Annotations:"> name/value pairs
             that can be interpreted by a fileserver. The semantics
             of this field are not defined by this document. These
             tuples are intended to be used by higher-level
             protocols. </t>
 
-            <t hangText="   Descriptions:"> optional text
+            <t hangText="   Descriptions:"> text
             descriptions. The semantics of this field are
             not defined by this document. </t>
 
@@ -299,13 +298,13 @@
         <t>
         <list style="hanging" hangIndent="6">
 
-            <t hangText="   Annotations:"> optional name/value pairs
+            <t hangText="   Annotations:"> name/value pairs
             that can be interpreted by a fileserver. The semantics
             of this field are not defined by this document. These
             tuples are intended to be used by higher-level
             protocols. </t>
 
-            <t hangText="   Descriptions:"> optional text
+            <t hangText="   Descriptions:"> text
             descriptions. The semantics of this field are
             not defined by this document. </t>
 
@@ -1166,8 +1165,7 @@
 
         <section title="LDAP Attributes">
 
-        <t> This section describes the required attributes of the NSDB
-        LDAP schema. The following definitions are used below: </t>
+        <t> The following definitions are used below: </t>
 
         <t>
             <list style="symbols">
@@ -2553,8 +2551,8 @@
         <t> This operation updates the attributes of a given FSL.
         This command results in a change in the attributes of the
         fedfsFsl at the NSDB node maintaining this FSL.
-        The attributes that must not change are the fedfsFslUuid
-        and the fedfsFsnUuid of the fileset this FSL implements.
+        The values of the fedfsFslUuid and fedfsFsnUuid attributes
+        MUST NOT change during an FSL update.
         </t>
 
         <section title="LDAP Request">
