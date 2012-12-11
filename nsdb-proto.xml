@@ -1373,20 +1373,16 @@
             the following ABNF <xref target="RFC5234"/> rules: </t>
 
 <?rfc subcompact="yes" ?>
-                <t><list style="empty">
-            <t> ANNOTATION = KEY EQUALS VALUE </t>
+            <t><list style="empty">
+            <t> ANNOTATION = KEY "=" VALUE </t>
             <t> KEY        = ITEM </t>
             <t> VALUE      = ITEM </t>
-            <t> ITEM       = BLANK DQUOTE STR DQUOTE BLANK </t>
-            <t> BLANK      = 0*EMPTY </t>
-            <t> EMPTY      = SPACE / HTAB </t>
-            <t> HTAB       = %x09 ; horizontal tab </t>
-            <t> STR        = 0*UTF8 </t>
-              </list></t>
+            <t> ITEM       = *WSP DQUOTE UTF8-octets DQUOTE *WSP </t>
+            </list></t>
 <?rfc subcompact="no" ?>
 
-           <t> The DQUOTE, EQUALS, UTF8, and SPACE rules are defined
-           in <xref target="RFC4512"/>. </t>
+           <t> DQUOTE and WSP are defined in <xref target="RFC5234"/>,
+           and UTF8-octets is defined in <xref target="RFC3629"/>. </t>
 
            <t> The following escape sequences are allowed: </t>
 
@@ -3265,6 +3261,7 @@
         <?rfc include="references/reference.RFC.2578.xml"?>
         <?rfc include="references/reference.RFC.2743.xml"?>
         <?rfc include="references/reference.RFC.2849.xml"?>
+        <?rfc include="references/reference.RFC.3629.xml"?>
         <?rfc include="references/reference.RFC.3986.xml"?>
         <?rfc include="references/reference.RFC.4122.xml"?>
         <?rfc include="references/reference.RFC.4510.xml"?>
