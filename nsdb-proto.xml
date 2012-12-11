@@ -397,7 +397,7 @@
             be prepared using the component4 rules defined in Chapter
             12 "Internationalization" of <xref target="3530bis"/>
             prior to encoding the path component of an NFS URI.
-            As specified in [RFC3986], any non-ASCII UTF-8 code points
+            As specified in [RFC3986], any non-ASCII characters
             and any URI-reserved characters, such as the slash ("/")
             character, contained in a component4 element MUST be
             represented by URI percent encoding. </t>
